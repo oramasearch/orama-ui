@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { EventLoggerPanel } from "@/components/EventLoggerPanel";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -16,7 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={geist.className}>{children}</body>
+      <body className={geist.className}>
+        {children}
+        <EventLoggerPanel />
+      </body>
     </html>
   );
 }

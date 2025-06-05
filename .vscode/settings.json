@@ -3,5 +3,9 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#d82a65",
+    "titleBar.inactiveBackground": "#d82a65",
+  },
 }
