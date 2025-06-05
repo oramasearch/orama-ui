@@ -1,62 +1,60 @@
 import React from 'react';
+import { Hit } from '@orama/core';
 
-interface SearchResult {
-  document?: any;
-  score?: number;
-  datasource_id?: string;
-}
-
-interface SearchResultsItemProps {
-  result: SearchResult;
-  onClick?: (result: SearchResult) => void;
+interface SearchResultsItemProps<T extends React.ElementType = 'div'> {
+  result: Hit;
+  as?: T;
+  onClick?: (result: Hit) => void;
   children?: React.ReactNode;
   className?: string;
 }
 
-const SearchResultsItem: React.FC<SearchResultsItemProps> = ({
+const SearchResultsItem = <T extends React.ElementType = 'div'>({
   result,
+  as,
   onClick,
   children,
   className,
   ...props
-}) => {
-  const handleClick = () => {
-    const customEvent = new CustomEvent(
-      "search:result-click",
-      {
-        detail: {
-          document: result.document,
-          score: result.score,
-          datasource: result.datasource_id,
-        },
+}: SearchResultsItemProps<T> & Omit<React.ComponentPropsWithoutRef<T>, keyof SearchResultsItemProps<T>>) => {
+  const Component = as || 'div';
+  
+  const handleClick = React.useCallback(() => {
+    const customEvent = new CustomEvent('search:result-click', {
+      detail: {
+        document: result.document,
+        score: result.score,
+        datasource: result.id,
       },
-    );
-    window.dispatchEvent(customEvent)
+    });
+    window.dispatchEvent(customEvent);
 
-    if (onClick) {
-      onClick(result)
-    }
-  }
+    onClick?.(result);
+  }, [result, onClick]);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      handleClick()
+      handleClick();
     }
-  }
+  }, [handleClick]);
+
+  const isInteractive = Boolean(onClick) || Component === 'a' || props.href;
+  const needsKeyboardHandling = isInteractive && Component !== 'a' && Component !== 'button';
 
   return (
-    <li
+    <Component
       className={className}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
+      onClick={isInteractive ? handleClick : undefined}
+      onKeyDown={needsKeyboardHandling ? handleKeyDown : undefined}
+      role={needsKeyboardHandling ? 'button' : undefined}
+      tabIndex={needsKeyboardHandling ? 0 : undefined}
+      aria-label={isInteractive ? 'Search result' : undefined}
       {...props}
     >
       {children}
-    </li>
-  )
+    </Component>
+  );
 }
 
-export default SearchResultsItem
+export default React.memo(SearchResultsItem)

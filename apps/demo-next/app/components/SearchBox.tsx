@@ -4,7 +4,7 @@ import { Search, X } from "lucide-react";
 import { CollectionManager, Hit } from "@orama/core";
 import SearchInput from "@repo/ui/components/SearchInput";
 import useSearch from "@repo/ui/hooks/useSearch";
-import SearchResultItem from "@repo/ui/components/SearchResultsItem";
+import SearchResultsItem from "@repo/ui/components/SearchResultsItem";
 import SearchResultsList from "@repo/ui/components//SearchResultsList";
 
 const collectionManager = new CollectionManager({
@@ -75,11 +75,12 @@ export const SearchBox = () => {
         {results.length > 0 && (
           <div className="mt-3 max-h-96 overflow-y-auto">
             <SearchResultsList className="mt-5 space-y-2" results={results}>
-              {(result: Hit, index: number) => (
-                <SearchResultItem
-                  key={index}
+              {(result: Hit) => (
+                <SearchResultsItem
                   className="border-b-neutral-200 border-b-1 pb-4 last:border-b-0 cursor-pointer"
                   result={result}
+                  as={"a"}
+                  href={result.document?.path as string}
                 >
                   {/* USE WHATEVER CONTENT YOU WANT HERE */}
                   {result.document?.title as string && <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
@@ -93,7 +94,7 @@ export const SearchBox = () => {
                       {result.document?.category as string}
                     </span>
                   )}
-                </SearchResultItem>
+                </SearchResultsItem>
               )}
             </SearchResultsList>
           </div>
@@ -101,7 +102,7 @@ export const SearchBox = () => {
 
         {/* no results case */}
         {results.length === 0 && searchTerm && (
-          <div className="mt-4 text-sm text-slate-500 text-center">
+          <div className="mt-12 text-sm text-slate-500 text-center">
             No results found for{" "}
             <span className="font-semibold">{searchTerm}</span>
           </div>
