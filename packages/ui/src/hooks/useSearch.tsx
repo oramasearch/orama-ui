@@ -1,15 +1,8 @@
-import { useRef, useState } from "react";
 import {
-  type CollectionManager,
   type SearchParams,
   type Hit,
 } from "@orama/core";
-
-interface UseSearchOptions {
-  client?: CollectionManager;
-  initialSearchTerm?: string;
-  onSearchTermChange?: (val: string) => void;
-}
+import { initialSearchState, useSearchContext, useSearchDispatch } from "../context/SearchContext";
 
 type GroupedResult = {
   count: number;
@@ -29,56 +22,76 @@ type GroupedResults = GroupedResult[];
  * });
  */
 
-function useSearch({
-  client,
-  initialSearchTerm = "",
-  onSearchTermChange
-}: UseSearchOptions) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [results, setResults] = useState<Hit[]>([]);
-  const [groupedResults, setGroupedResults] = useState<GroupedResults>([]);
-  const [selectedFacet, setSelectedFacet] = useState<string | null>(null);
-  const [count, setCount] = useState(0);
-  const currentTermRef = useRef(initialSearchTerm);
+function useSearch() {
+  const searchState = useSearchContext();
+  const dispatch = useSearchDispatch();
 
-  const onSearch = async (options: SearchParams & { groupBy?: string, filterBy?: Record<string, string>[] }) => {
-    currentTermRef.current = options.term || initialSearchTerm;
-    onSearchTermChange?.(options.term || initialSearchTerm);
-
-    setLoading(true);
-    setError(null);
-
+  const onSearch = async (
+    options: SearchParams & {
+      groupBy?: string;
+      filterBy?: Record<string, string>[];
+    },
+  ) => {
+    dispatch({
+      type: 'SET_SEARCH_TERM',
+      payload: { searchTerm: options.term || initialSearchState.searchTerm }
+    });
+    dispatch({
+      type: 'SET_LOADING',
+      payload: { loading: true }
+    });
+    dispatch({
+      type: 'SET_ERROR',
+      payload: { error: null }
+    });
     const groupBy = options.groupBy || null;
 
-
     try {
-      await client
+      await searchState.client
         ?.search({
           ...options,
           term: options.term,
           limit: options.limit || 10,
           ...(groupBy ? { facets: { [groupBy]: {} } } : {}),
-          ...(options.filterBy && options.filterBy.length > 0 ? {
-            where: options.filterBy.reduce((acc, filter) => {
-              const entry = Object.entries(filter)[0];
-              if (entry) {
-                const [key, value] = entry;
-                setSelectedFacet(value);
-                if (value === "All") {
-                  return acc;
-                }
-                acc[key] = value;
+          ...(options.filterBy && options.filterBy.length > 0
+            ? {
+                where: options.filterBy.reduce(
+                  (acc, filter) => {
+                    const entry = Object.entries(filter)[0];
+                    if (entry) {
+                      const [key, value] = entry;
+                      dispatch({
+                        type: 'SET_SELECTED_FACET',
+                        payload: { selectedFacet: key },
+                      });
+                      if (value === "All") {
+                        return acc;
+                      }
+                      acc[key] = value;
+                    }
+                    return acc;
+                  },
+                  {} as Record<string, string>,
+                ),
               }
-              return acc;
-            }, {} as Record<string, string>),
-          } : {})
+            : {}),
         })
         .then((res) => {
-          setResults(res.hits || []);
-          setCount(res.count || 0);
+          dispatch({
+            type: 'SET_RESULTS',
+            payload: { results: res.hits || [] }
+          });
+          dispatch({
+            type: 'SET_COUNT',
+            payload: { count: res.count || 0 }
+          });
 
-          if (groupBy && res.facets && res.facets[groupBy] && res.hits?.length > 0) {
+          if (
+            groupBy &&
+            res.facets &&
+            res.facets[groupBy] &&
+            res.hits?.length > 0
+          ) {
             const grouped: GroupedResults = Object.entries(
               (res.facets[groupBy] as { values: Record<string, number> })
                 .values,
@@ -92,26 +105,52 @@ function useSearch({
               hits: res.hits || [],
               count: res.count || 0,
             });
-            setGroupedResults(grouped);
+            dispatch({
+              type: 'SET_GROUPED_RESULTS',
+              payload: { groupedResults: grouped }
+            });
           }
         });
     } catch (e) {
-      setError(e as Error);
+      dispatch({
+        type: 'SET_ERROR',
+        payload: { error: e as Error }
+      });
     } finally {
-      setLoading(false);
+      dispatch({
+        type: 'SET_LOADING',
+        payload: { loading: false }
+      });
     }
-  };
+  }
+
+  const onReset = () => {
+    dispatch({
+      type: 'SET_SEARCH_TERM',
+      payload: { searchTerm: '' }
+    });
+    dispatch({
+      type: 'SET_RESULTS',
+      payload: { results: [] }
+    });
+    dispatch({
+      type: 'SET_GROUPED_RESULTS',
+      payload: { groupedResults: [] }
+    });
+    dispatch({
+      type: 'SET_SELECTED_FACET',
+      payload: { selectedFacet: null }
+    });
+    dispatch({
+      type: 'SET_COUNT',
+      payload: { count: 0 }
+    });
+  }
 
   return {
     onSearch,
-    loading,
-    error,
-    results,
-    groupedResults,
-    selectedFacet,
-    term: currentTermRef.current,
-    count
+    onReset
   };
 }
 
-export default useSearch
+export default useSearch;

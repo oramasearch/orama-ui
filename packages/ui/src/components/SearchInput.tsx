@@ -1,121 +1,128 @@
-import React, { useState, useRef, ChangeEvent } from "react";
+import React, {
+  useRef,
+  ChangeEvent,
+  ElementType,
+  useReducer,
+} from 'react'
+import { PolymorphicComponentProps } from '@/types'
+import { SearchContext, SearchDispatchContext, searchReducer, useSearchContext } from '../context/SearchContext'
+import useSearch from '../hooks/useSearch'
+import { CollectionManager, SearchParams } from '@orama/core'
 
-/**
- * Props for the SearchInput component.
- */
-interface SearchInputProps {
+export interface SearchRootProps extends React.PropsWithChildren {
   /**
-   * Optional unique identifier for the input element.
-   * If not provided, a random ID will be generated.
-   * Useful for associating the label explicitly.
+   * The Orama client instance to be used for search operations.
+   * If not provided, it will use the client from the SearchContext.
    */
-  inputId?: string;
-  /**
-   * Optional visible label text for the search input.
-   * It's recommended to provide either a `label` or an `ariaLabel` for accessibility.
-   */
-  label?: string;
-  /**
-   * Placeholder text for the search input.
-   * @default 'Search...'
-   */
-  placeholder?: string;
-  /**
-   * Optional icon to display before the input field.
-   * Can be any renderable React node (e.g., an SVG component, an image).
-   */
-  icon?: React.ReactNode;
-  /**
-   * Callback function that is invoked when the search input's value changes.
-   * Receives the new input value as its only argument.
-   * @param value The current value of the search input.
-   */
-  onValueChange?: (value: string) => void;
-  /**
-   * Optional ARIA label for the search input.
-   * Crucial for accessibility, especially if a visible `label` is not provided.
-   * If not provided, and `label` is present, `label` will be used as `aria-label`.
-   */
-  ariaLabel?: string;
-  /**
-   * Optional class name for the main container div.
-   */
-  containerClassName?: string;
-  /**
-   * Optional class name for the label element.
-   */
-  labelClassName?: string;
-  /**
-   * Optional class name for the div wrapping the icon, input, and reset button.
-   */
-  wrapperClassName?: string;
-  /**
-   * Optional class name for the icon span.
-   */
-  iconClassName?: string;
-  /**
-   * Optional class name for the input element.
-   */
-  inputClassName?: string;
-  /**
-   * Optional class name for the reset button.
-   */
-  resetButtonClassName?: string;
-  /**
-   * Text or ReactNode for the reset button.
-   * @default '&times;' (a multiplication X)
-   */
-  resetButtonContent?: React.ReactNode;
+  client?: CollectionManager
 }
 
+export const SearchRoot = ({ client, children }: SearchRootProps) => {
+  const searchState = useSearchContext()
+  const [state, dispatch] = useReducer(searchReducer, {
+    ...searchState,
+    client: client || searchState.client,
+  })
+
+  return (
+    <SearchContext value={state}>
+      <SearchDispatchContext value={dispatch}>
+        {children}
+      </SearchDispatchContext>
+    </SearchContext>
+  )
+}
+
+interface SearchInputWrapperOwnProps {
+  className?: string
+}
+
+export type SearchInputWrapperProps<T extends ElementType = 'div'> =
+  PolymorphicComponentProps<T, SearchInputWrapperOwnProps>
+
 /**
- * A flexible and accessible unstyled search input component.
- *
- * It allows for a leading icon, a clear/reset button, and emits an event
- * when its value changes. Styling is left to the consumer via CSS classes.
- *
+ * A wrapper component for the search input field.
+ * It allows for custom styling and structure around the search input.
+ * This component can be used to group the search input with its label and any additional elements.
  * @example
  * ```tsx
- * <SearchInput
- * label="Search articles"
- * placeholder="Enter keywords..."
- * onValueChange={(term) => console.log(term)}
- * />
+ * <SearchInput.Wrapper className="search-input-wrapper">
+ *   <SearchInput.Label htmlFor="search-input">Search</SearchInput.Label>
+ *   <SearchInput.Field
+ *     inputId="search-input"
+ *     placeholder="Search..."
+ *     onValueChange={(value) => console.log(value)}
+ *   />
+ * </SearchInput.Wrapper>
  * ```
- *
- * @example
- * ```tsx
- * import { FaSearch } from 'react-icons/fa'; // Example icon
- *
- * <SearchInput
- * icon={<FaSearch />}
- * ariaLabel="Search products" // Important if no visible label
- * onValueChange={(term) => performSearch(term)}
- * />
- * ```
+ * @param className Optional class name for custom styling.
+ * @param as The HTML element type to render the wrapper as. Defaults to 'div'.
+ * @param children The content to be wrapped, typically including the label and input field.
  */
-const SearchInput: React.FC<SearchInputProps> = ({
+export const SearchInputWrapper = <T extends ElementType = 'div'>({
+  client,
+  children,
+  className = '',
+  as,
+  ...props
+}: SearchInputWrapperProps<T>) => {
+
+  const Component = as || 'div'
+  return (
+    <Component className={className} {...props}>
+      {children}
+    </Component>
+  )
+}
+
+export interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /**
+   * The `id` attribute for the input field.
+   * If not provided, a unique ID will be generated.
+   */
+  inputId?: string
+  /**
+   * Placeholder text for the input field.
+   * @default 'Search...'
+   */
+  placeholder?: string
+  /**
+   * Callback function that is called when the input value changes.
+   * It receives the new value as an argument.
+   */
+  onValueChange?: (value: string) => void
+  /**
+   * Aria label for accessibility purposes.
+   */
+  ariaLabel?: string
+  /**
+   * Optional class name for custom styling of the input field.
+   */
+  className?: string
+  /**
+   * Search parameters to be used for the search operation.
+   * This can include filters, grouping, etc.
+   * Get them from Orama
+   */
+  searchParams?: SearchParams
+} 
+
+
+export const SearchInputField: React.FC<SearchInputProps> = ({
   inputId,
-  label,
-  placeholder = "Search...",
-  icon,
-  onValueChange,
+  placeholder = 'Search...',
   ariaLabel,
-  containerClassName,
-  labelClassName,
-  wrapperClassName,
-  iconClassName,
-  inputClassName,
-  resetButtonClassName,
-  resetButtonContent = <>&times;</>, // Default to HTML entity for 'X'
+  className,
+  searchParams,
+  ...rest
 }) => {
-  const [value, setValue] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { onSearch } = useSearch()
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   const generatedId = useRef<string>(
-    `search-input-${Math.random().toString(36).substring(2, 9)}`,
-  );
-  const currentInputId = inputId || generatedId.current;
+    `search-input-${Math.random().toString(36).substring(2, 9)}`
+  )
+  const currentInputId = inputId || generatedId.current
 
   /**
    * Handles the change event of the input field.
@@ -123,76 +130,82 @@ const SearchInput: React.FC<SearchInputProps> = ({
    * @param event The input change event.
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const newValue = event.target.value;
-    setValue(newValue);
+    const newValue = event.target.value
 
-    const valueChangeEvent = new CustomEvent("search:user-prompt-changed", {
-      detail: {
-        value: newValue,
-        timestamp: new Date().toISOString(),
-      },
-    });
-    document.dispatchEvent(valueChangeEvent);
+    onSearch({
+      term: newValue,
+      limit: 10, // You can adjust the limit as needed
+      groupBy: 'category' // Adjust the grouping as needed
+      // TODO: pass searchParams to customize the search further
+    })
 
-    if (onValueChange) {
-      onValueChange(newValue);
-    }
-  };
+    rest.onChange?.(event)
 
-  /**
-   * Handles the click event of the reset button.
-   * Clears the input field, calls the onValueChange callback with an empty string,
-   * and focuses the input field.
-   */
-  const handleReset = (): void => {
-    setValue("");
-    if (onValueChange) {
-      onValueChange("");
-    }
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  const effectiveAriaLabel = ariaLabel || label;
+    // const valueChangeEvent = new CustomEvent('search:user-prompt-changed', {
+    //   detail: {
+    //     value: newValue,
+    //     timestamp: new Date().toISOString()
+    //   }
+    // })
+    // document.dispatchEvent(valueChangeEvent)
+  }
 
   return (
-    <div className={containerClassName}>
-      {label && (
-        <label htmlFor={currentInputId} className={labelClassName}>
-          {label}
-        </label>
-      )}
-      <div className={wrapperClassName}>
-        {icon && (
-          <span className={iconClassName} aria-hidden="true">
-            {icon}
-          </span>
-        )}
-        <input
-          type="search"
-          id={currentInputId}
-          ref={inputRef}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          aria-label={effectiveAriaLabel}
-          className={inputClassName}
-        />
-        {value && (
-          <button
-            type="button"
-            onClick={handleReset}
-            aria-label="Clear search input"
-            className={resetButtonClassName}
-          >
-            {resetButtonContent}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-};
+    <input
+      type='search'
+      id={currentInputId}
+      ref={inputRef}
+      onChange={handleChange}
+      placeholder={placeholder}
+      aria-label={ariaLabel}
+      className={className}
+      {...rest}
+    />
+  )
+}
 
-export default SearchInput;
+export type SearchInputLabelProps = {
+  /**
+   * The `htmlFor` attribute associates the label with the input element.
+   * If not provided, it defaults to an empty string.
+   */
+  htmlFor?: string
+  /**
+   * The content of the label.
+   * This is the text that will be displayed alongside the input field.
+   */
+  children?: React.ReactNode
+  /**
+   * Optional class name for the label element.
+   * This allows for custom styling of the label.
+   * @default ''
+   * */
+  className?: string
+  /**
+   * The HTML element type to render the label as.
+   * Defaults to 'label', but can be overridden to any valid React element type.
+   */
+  as?: React.ElementType
+}
+
+export const SearchInputLabel: React.FC<SearchInputLabelProps> = ({
+  htmlFor = '',
+  children,
+  className,
+  as = 'label'
+}) => {
+  const Component = as
+  return (
+    <Component htmlFor={htmlFor} className={className}>
+      {children}
+    </Component>
+  )
+}
+
+const SearchInput = {
+  Input: SearchInputField,
+  Label: SearchInputLabel,
+  Wrapper: SearchInputWrapper
+}
+
+export default SearchInput
