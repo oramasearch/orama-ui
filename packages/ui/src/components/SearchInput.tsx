@@ -2,36 +2,11 @@ import React, {
   useRef,
   ChangeEvent,
   ElementType,
-  useReducer,
 } from 'react'
 import { PolymorphicComponentProps } from '@/types'
-import { SearchContext, SearchDispatchContext, searchReducer, useSearchContext } from '../context/SearchContext'
 import useSearch from '../hooks/useSearch'
-import { CollectionManager, SearchParams } from '@orama/core'
-
-export interface SearchRootProps extends React.PropsWithChildren {
-  /**
-   * The Orama client instance to be used for search operations.
-   * If not provided, it will use the client from the SearchContext.
-   */
-  client?: CollectionManager
-}
-
-export const SearchRoot = ({ client, children }: SearchRootProps) => {
-  const searchState = useSearchContext()
-  const [state, dispatch] = useReducer(searchReducer, {
-    ...searchState,
-    client: client || searchState.client,
-  })
-
-  return (
-    <SearchContext value={state}>
-      <SearchDispatchContext value={dispatch}>
-        {children}
-      </SearchDispatchContext>
-    </SearchContext>
-  )
-}
+import { SearchParams } from '@orama/core'
+import { useSearchContext } from '../context/SearchContext'
 
 interface SearchInputWrapperOwnProps {
   className?: string
@@ -60,7 +35,6 @@ export type SearchInputWrapperProps<T extends ElementType = 'div'> =
  * @param children The content to be wrapped, typically including the label and input field.
  */
 export const SearchInputWrapper = <T extends ElementType = 'div'>({
-  client,
   children,
   className = '',
   as,
@@ -104,7 +78,10 @@ export interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputEle
    * This can include filters, grouping, etc.
    * Get them from Orama
    */
-  searchParams?: SearchParams
+  searchParams?: Omit<SearchParams, 'term'> & {
+    groupBy?: string
+    filterBy?: Record<string, string>[]
+  }
 } 
 
 
@@ -134,9 +111,8 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
 
     onSearch({
       term: newValue,
-      limit: 10, // You can adjust the limit as needed
-      groupBy: 'category' // Adjust the grouping as needed
-      // TODO: pass searchParams to customize the search further
+      limit: 10, 
+      ...searchParams,
     })
 
     rest.onChange?.(event)

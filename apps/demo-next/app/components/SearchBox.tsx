@@ -1,11 +1,14 @@
 'use client'
 import { useState } from 'react'
 import { Star, ArrowLeft } from 'lucide-react'
-import { CollectionManager, Hit } from '@orama/core'
-import SearchInput, { SearchRoot } from '@repo/ui/components/SearchInput'
+import { CollectionManager } from '@orama/core'
+import SearchInput from '@repo/ui/components/SearchInput'
+import SearchRoot from '@repo/ui/components/SearchRoot'
 import useChat from '@repo/ui/hooks/useChat'
 import SearchResults from "@repo/ui/components/SearchResults";
 import FacetTabs from '@repo/ui/components/FacetTabs'
+import { useSearchContext, useSearchDispatch } from '@repo/ui/context/SearchContext'
+import { cn } from "@/lib/utils"
 
 const collectionManager = new CollectionManager({
   url: 'https://collections.orama.com',
@@ -13,22 +16,26 @@ const collectionManager = new CollectionManager({
   readAPIKey: 'uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y'
 })
 
-export const SearchBox = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+export const InnerSearchBox = () => {
+  const { searchTerm, selectedFacet } = useSearchContext()
+  const dispatch = useSearchDispatch()
   const [displayChat, setDisplayChat] = useState(false)
 
   // WIP
   const { onAsk, interactions } = useChat({
     client: collectionManager,
     initialUserPrompt: searchTerm,
-    onUserPromptChange: setSearchTerm
+    onUserPromptChange: (searchTerm) => dispatch({
+      type: 'SET_SEARCH_TERM',
+      payload: { searchTerm },
+    }),
   })
 
   return (
     <>
       <div className='w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white h-140 flex flex-col'>
         {!displayChat && (
-          <SearchRoot client={collectionManager}>
+          <>
             <SearchInput.Wrapper className='relative mb-1'>
               <SearchInput.Label
                 htmlFor='product-search'
@@ -41,21 +48,15 @@ export const SearchBox = () => {
                 ariaLabel='Search for products'
                 placeholder='Find your next favorite thing...'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-pink-400 transition-colors'
+                searchParams={{
+                  groupBy: 'category',
+                }}
               />
             </SearchInput.Wrapper>
-            {/* Search input with icon and reset button */}
-
-            {/* Display error state */}
-            {/* {state.error && (
-              <div className='mt-3 text-sm text-red-500'>
-                Error: {error.message}
-              </div>
-            )} */}
 
             <button
               className='mt-3 w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200'
               onClick={() => {
-                console.log('Get AI summary for:', searchTerm)
                 setDisplayChat(true)
               }}
             >
@@ -64,66 +65,127 @@ export const SearchBox = () => {
               Ask AI for summary
             </button>
 
-            {/* <FacetTabs
-              groupedResults={state.groupedResults}
-              className='mt-4 flex flex-wrap gap-2'
-              tabClassName={`cursor-pointer px-3 py-1 text-sm font-medium bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-1 focus:ring-pink-500 transition-colors `}
-              selectedTabClassName='ring-1 ring-pink-500'
-              selectedTab={selectedFacet}
-              searchTerm={searchTerm}
-              onSearch={state.onSearch}
-            /> */}
+            <FacetTabs.Wrapper>
+              <FacetTabs.List
+                className='space-x-2 mt-4'
+              >
+                {(group) => (
+                  <FacetTabs.Item
+                    isSelected={group.name === selectedFacet}
+                    group={group}
+                    className={cn(
+                      'px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer',
+                      group.name === selectedFacet
+                        ? 'bg-pink-100 text-pink-800 dark:bg-pink-700 dark:text-pink-200'
+                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                    )}
+                  >
+                    {group.name} ({group.count})
+                  </FacetTabs.Item>
+                )}
+              </FacetTabs.List>
+            </FacetTabs.Wrapper>
 
-              <SearchResults.Wrapper className='mt-4 overflow-y-auto'>
-                <SearchResults.NoResults>
-                  {(searchTerm) => (
-                    <>
-                      {searchTerm ? (
-                        <p className='text-sm text-slate-500 dark:text-slate-400'>
-                          {`No results found for "${searchTerm}". Please try a different search term.`}
-                        </p>
-                      ) : (
-                        <div className='flex flex-col justify-center'>
-                          {/* add a section with initial chat suggestions list */}
-                          <p className='text-sm text-slate-800 dark:text-slate-400 font-semibold mb-2'>
-                            Suggestions
+            <SearchResults.NoResults className='mt-4'>
+              {(searchTerm) => (
+                <>
+                  {searchTerm ? (
+                    <p className='text-sm text-slate-500 dark:text-slate-400'>
+                      {`No results found for "${searchTerm}". Please try a different search term.`}
+                    </p>
+                  ) : (
+                    <div className='flex flex-col justify-center'>
+                      <p className='text-sm text-slate-800 dark:text-slate-400 font-semibold mb-2'>
+                        Suggestions
+                      </p>
+                      <ul className='mt-1 space-y-1'>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>What is Orama?</li>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>How to use Orama?</li>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>What are the features of Orama?</li>
+                      </ul>
+                    </div>
+                  )}
+                </>
+              )}
+            </SearchResults.NoResults>
+
+            <SearchResults.GroupsWrapper className='mt-4 overflow-y-auto' groupBy='category'>
+              {(group) => (
+                <div key={group.name} className='mb-4'>
+                  <h2 className='text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3'>
+                    {group.name}
+                  </h2>
+                  <SearchResults.GroupList group={group}>
+                    {hit => (
+                      <SearchResults.Item
+                        onClick={() => console.log(`Clicked on ${hit.document?.title}`)}
+                      >
+                        {typeof hit.document?.title === "string" && (
+                          <h3 className='text-lg font-semibold text-slate-800 dark:text-slate-200'>
+                            {hit.document?.title}
+                          </h3>
+                        )}
+                        {typeof hit.document?.content === "string" && (
+                          <p className='text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden'>
+                            {hit.document?.content.substring(0, 100)}
+                            ...
                           </p>
-                          {/* You can add more content here, like a list of suggestions or tips */}
-                          <ul className='mt-1 space-y-1'>
-                            <li className='text-sm text-slate-500 dark:text-slate-400'>What is Orama?</li>
-                            <li className='text-sm text-slate-500 dark:text-slate-400'>How to use Orama?</li>
-                            <li className='text-sm text-slate-500 dark:text-slate-400'>What are the features of Orama?</li>
-                          </ul>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </SearchResults.NoResults>
-                <SearchResults.List
-                  className="space-y-2"
-                  itemClassName="border-b-neutral-200 border-b-1 pb-4 last:border-b-0 cursor-pointer"
-                >
-                  {(result: Hit) => (
-                    <SearchResults.Item
-                      result={result}
-                      onClick={() => console.log(`Clicked on ${result.document?.title}`)}
-                    >
-                      {(result.document?.title as string) && (
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                          {result.document?.title as string}
-                        </h3>
-                      )}
-                      {(result.document?.content as string) && (
-                        <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
-                          {(result.document?.content as string).substring(0, 100)}
-                          ...
+                        )}
+                      </SearchResults.Item>
+                    )}
+                  </SearchResults.GroupList>
+                </div>
+              )}
+            </SearchResults.GroupsWrapper>
+
+            {/* <SearchResults.Wrapper className='mt-4 overflow-y-auto'>
+              <SearchResults.NoResults>
+                {(searchTerm) => (
+                  <>
+                    {searchTerm ? (
+                      <p className='text-sm text-slate-500 dark:text-slate-400'>
+                        {`No results found for "${searchTerm}". Please try a different search term.`}
+                      </p>
+                    ) : (
+                      <div className='flex flex-col justify-center'>
+                        <p className='text-sm text-slate-800 dark:text-slate-400 font-semibold mb-2'>
+                          Suggestions
                         </p>
-                      )}
-                    </SearchResults.Item>
-                  )}
-                </SearchResults.List>
-              </SearchResults.Wrapper>
-          </SearchRoot>
+                        <ul className='mt-1 space-y-1'>
+                          <li className='text-sm text-slate-500 dark:text-slate-400'>What is Orama?</li>
+                          <li className='text-sm text-slate-500 dark:text-slate-400'>How to use Orama?</li>
+                          <li className='text-sm text-slate-500 dark:text-slate-400'>What are the features of Orama?</li>
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                )}
+              </SearchResults.NoResults>
+              <SearchResults.List
+                className="space-y-2"
+                itemClassName="border-b-neutral-200 border-b-1 pb-4 last:border-b-0 cursor-pointer"
+              >
+                {(result: Hit) => (
+                  <SearchResults.Item
+                    result={result}
+                    onClick={() => console.log(`Clicked on ${result.document?.title}`)}
+                  >
+                    {(result.document?.title as string) && (
+                      <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                        {result.document?.title as string}
+                      </h3>
+                    )}
+                    {(result.document?.content as string) && (
+                      <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
+                        {(result.document?.content as string).substring(0, 100)}
+                        ...
+                      </p>
+                    )}
+                  </SearchResults.Item>
+                )}
+              </SearchResults.List>
+            </SearchResults.Wrapper> */}
+          </>
         )}
 
         {displayChat && (
@@ -157,15 +219,16 @@ export const SearchBox = () => {
                   rows={2}
                   placeholder='Ask your question...'
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    console.log('Search term changed:', e.target.value)
+                  }}
                   autoFocus
                 ></textarea>
                 <div className='flex justify-end'>
                   <button
                     className='bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors'
                     onClick={() => {
-                      onAsk({ term: searchTerm })
-                      setSearchTerm('')
+                      onAsk({ term: 'what is orama?' })
                     }}
                   >
                     <ArrowLeft className='w-6 h-6 transform rotate-90' />
@@ -177,5 +240,13 @@ export const SearchBox = () => {
         )}
       </div>
     </>
+  )
+}
+
+export const SearchBox = () => {
+  return (
+    <SearchRoot client={collectionManager}>
+      <InnerSearchBox />
+    </SearchRoot>
   )
 }

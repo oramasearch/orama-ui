@@ -1,46 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Hit } from "@orama/core";
 import { useSearchContext } from "../context/SearchContext";
-
-/* I want to do something like this:
-<SearchResults.Wrapper>
-  <SearchResults.List>
-    {(result, index) => (
-      <SearchResults.Item
-        result={result}
-        onClick={() => console.log(`Clicked on ${result.document?.title}`)}
-      >
-        {(result.document?.title as string) && (
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-            {result.document?.title as string}
-          </h3>
-        )}
-        {(result.document?.content as string) && (
-          <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
-            {(result.document?.content as string).substring(0, 100)}
-            ...
-          </p>
-        )}
-      </SearchResults.Item>
-    )}
-  </SearchResults.List>
-  <SearchResults.NoResults>
-    <p>No results found for your search.</p>
-  </SearchResults.NoResults>
-  <SearchResults.Error>
-    <p>There was an error fetching the results.</p>
-  </SearchResults.Error>
-  <SearchResults.Loading>
-    <p>Loading results...</p>
-  </SearchResults.Loading>
-  <SearchResults.Empty>
-    <p>Start typing to see results.</p>
-  </SearchResults.Empty>
-</SearchResults.Wrapper>
-*/
+import { GroupedResult, GroupedResults } from "@/types";
 
 export interface SearchResultsWrapperProps {
   children: React.ReactNode;
+  /**
+ * Optional class name for custom styling.
+ */
   className?: string;
 }
 
@@ -48,9 +15,70 @@ export const SearchResultsWrapper: React.FC<SearchResultsWrapperProps> = ({
   children,
   className = "",
 }) => {
+
   return (
     <div className={className}>
       {children}
+    </div>
+  );
+}
+
+export interface SearchResultsGroupedWrapperProps {
+  children: (groupedResult: GroupedResult) => React.ReactNode;
+  groupBy: string;
+  className?: string;
+}
+export const SearchResultsGroupedWrapper: React.FC<SearchResultsGroupedWrapperProps> = ({
+  children,
+  groupBy,
+  className = "",
+}) => {
+  const { results } = useSearchContext();
+
+  const groupedResults = useMemo(() => {
+    if (!results || results.length === 0) {
+      return [];
+    }
+    const groupsMap = new Map<string, GroupedResult>();
+
+    results.forEach((result) => {
+      const groupValue = result.document?.[groupBy];
+      
+      if (!groupValue || (typeof groupValue !== "string" && typeof groupValue !== "number")) {
+        return;
+      }
+
+      const groupKey = String(groupValue);
+      
+      if (groupsMap.has(groupKey)) {
+        const existingGroup = groupsMap.get(groupKey)!;
+        existingGroup.hits.push(result);
+        existingGroup.count += 1;
+      } else {
+        groupsMap.set(groupKey, {
+          name: groupKey,
+          hits: [result],
+          count: 1,
+        });
+      }
+    });
+
+    const groupsArray = Array.from(groupsMap.values());
+    
+    return groupsArray;
+  }, [results, groupBy]);
+
+  if (!results || results.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={className} role="region" aria-label="Grouped search results">
+      {groupedResults.map((group) => (
+        <React.Fragment key={group.name}>
+          {children(group)}
+        </React.Fragment>
+      ))}
     </div>
   );
 }
@@ -90,26 +118,48 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
   itemClassName,
   ...props
 }) => {
-  const { searchTerm, results } = useSearchContext()
-  console.log('SearchInputLabel rendered with term [SearchResultsList]:', searchTerm, results)
+  const { results } = useSearchContext()
   
   if (!results || results.length === 0) {
     return null
   }
 
   return (
-    <ul className={className} aria-live="polite" role="list" {...props}>
-      {results.map((result, index) => (
-        <li key={result.id || `result-${index}`} className={itemClassName}>
-          {children(result, index)}
-        </li>
-      ))}
-    </ul>
+    <div>
+      <ul className={className} aria-live="polite" {...props}>
+        {results.map((result, index) => (
+          <li key={result.id || `result-${index}`} className={itemClassName}>
+            {children(result, index)}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
+const SearchResultsGroupList: React.FC<{
+  children: (result: Hit, index: number) => React.ReactNode;
+  group: GroupedResult;
+  className?: string;
+  itemClassName?: string;
+}> = ({
+  children,
+  group,
+  className = "",
+  itemClassName = "",
+}) => {
+  return (
+    <ul className={className}>
+      {group.hits.map((hit, index) => (
+        <li key={hit.id} className={itemClassName}>
+          {children(hit, index)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 interface SearchResultsItemProps<T extends React.ElementType = "div"> {
-  result: Hit;
   as?: T;
   onClick?: (result: Hit) => void;
   children?: React.ReactNode;
@@ -117,7 +167,6 @@ interface SearchResultsItemProps<T extends React.ElementType = "div"> {
 }
 
 const SearchResultsItem = <T extends React.ElementType = "div">({
-  result,
   as,
   onClick,
   children,
@@ -127,29 +176,6 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
   Omit<React.ComponentPropsWithoutRef<T>, keyof SearchResultsItemProps<T>>) => {
   const Component = as || "div";
 
-  const handleClick = React.useCallback(() => {
-    const customEvent = new CustomEvent("search:result-click", {
-      detail: {
-        document: result.document,
-        score: result.score,
-        datasource: result.id,
-      },
-    });
-    window.dispatchEvent(customEvent);
-
-    onClick?.(result);
-  }, [result, onClick]);
-
-  const handleKeyDown = React.useCallback(
-    (event: React.KeyboardEvent) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        handleClick();
-      }
-    },
-    [handleClick],
-  );
-
   const isInteractive = Boolean(onClick) || Component === "a" || props.href;
   const needsKeyboardHandling =
     isInteractive && Component !== "a" && Component !== "button";
@@ -157,8 +183,6 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
   return (
     <Component
       className={className}
-      onClick={isInteractive ? handleClick : undefined}
-      onKeyDown={needsKeyboardHandling ? handleKeyDown : undefined}
       role={needsKeyboardHandling ? "button" : undefined}
       tabIndex={needsKeyboardHandling ? 0 : undefined}
       aria-label={isInteractive ? "Search result" : undefined}
@@ -172,6 +196,8 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
 const SearchResults = {
   Wrapper: SearchResultsWrapper,
   List: SearchResultsList,
+  GroupsWrapper: SearchResultsGroupedWrapper,
+  GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
   NoResults: SearchResultsNoResults,
 }

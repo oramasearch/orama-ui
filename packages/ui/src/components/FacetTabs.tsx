@@ -1,74 +1,121 @@
-import React from "react";
-import useSearch from "../hooks/useSearch";
+
+import React, { ReactNode } from 'react';
+import { GroupCount } from '@/types';
+import { SearchParams } from '@orama/core';
+import { useSearchContext, useSearchDispatch } from '../context/SearchContext';
+import useSearch from '../hooks/useSearch';
+
+interface WrapperProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface ListProps {
+  children: (group: GroupedResult) => ReactNode;
+  className?: string;
+  itemClassName?: string;
+  allTab?: ReactNode;
+}
+
+interface ItemProps {
+  children: ReactNode;
+  isSelected?: boolean;
+  onClick?: () => void;
+  searchParams?: SearchParams
+  className?: string;
+  disabled?: boolean;
+  group: GroupCount;
+}
 
 interface GroupedResult {
   name: string;
   count: number;
 }
 
-interface SearchParams {
-  term: string;
-  limit: number;
-  filterBy: Array<{ category: string }>;
-}
+const Wrapper: React.FC<WrapperProps> = ({ children, className = '' }) => {
+  return (
+    <div className={className}>
+      {children}
+    </div>
+  );
+};
 
-interface FacetTabsProps {
-  groupedResults: GroupedResult[];
-  selectedTab?: string | null;
-  searchTerm: string;
-  tabClassName?: string;
-  selectedTabClassName?: string;
-  onSearch: (params: SearchParams) => void;
-  limit?: number;
-  className?: string;
-  buttonClassName?: string;
-}
+const List: React.FC<ListProps> = ({ children, className, itemClassName, allTab }) => {
+  const { groupsCount } = useSearchContext();
 
-const FacetTabs: React.FC<FacetTabsProps> = ({
-  groupedResults,
-  searchTerm,
-  onSearch,
-  selectedTab,
-  selectedTabClassName,
-  className,
-  limit = 10,
-  tabClassName,
-}) => {
-  if (!groupedResults || groupedResults.length === 0) {
-    return null;
+  if (!groupsCount || groupsCount.length === 0) {
+    return null; 
   }
 
-  const handleTabClick = (groupName: string) => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("search:facet-tab-click", {
-          detail: { groupName, searchTerm },
-        }),
-      );
+  return (
+    <ul className={className}>
+      {allTab && (
+        <li className={itemClassName}>
+          {allTab}
+        </li>
+      )}
+      {groupsCount.map((group: GroupedResult) => (
+        <li key={group.name} className={itemClassName}>
+          {children(group)}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const Item: React.FC<ItemProps> = ({ 
+  children, 
+  group,
+  isSelected = false,
+  searchParams,
+  onClick, 
+  className = '',
+  disabled = false,
+  ...props
+}) => {
+  const { onSearch } = useSearch();
+  const { searchTerm } = useSearchContext();
+  const dispatch = useSearchDispatch();
+
+  const handleClick = () => {
+    if (!disabled) {
+      onSearch({
+        ...(searchParams ? { ...searchParams } : {}),
+        term: searchParams?.term || searchTerm || '',
+        limit: searchParams?.limit || 10,
+        filterBy: [{ category: group.name }],
+      });
+
+      dispatch({
+        type: 'SET_SELECTED_FACET',
+        payload: { selectedFacet: group.name },
+      });
+
+      if (onClick) {
+        onClick();
+      }
     }
-    onSearch({
-      term: searchTerm,
-      limit,
-      filterBy: [{ category: groupName }],
-    });
   };
 
   return (
-    <div className={className}>
-      {groupedResults.map((group) => (
-        <button
-          key={group.name}
-          aria-selected={selectedTab === group.name}
-          className={`${tabClassName} ${
-            selectedTab === group.name ? selectedTabClassName : ""
-          }`}
-          onClick={() => handleTabClick(group.name)}
-        >
-          {group.name} ({group.count})
-        </button>
-      ))}
-    </div>
+    <button
+      className={className}
+      onClick={handleClick}
+      disabled={disabled}
+      type="button"
+      data-selected={isSelected}
+      data-disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
   );
+};
+
+const FacetTabs = {
+  Wrapper,
+  List,
+  Item
 };
 
 export default FacetTabs;

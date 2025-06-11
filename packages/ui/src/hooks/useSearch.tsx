@@ -1,30 +1,21 @@
 import {
   type SearchParams,
-  type Hit,
 } from "@orama/core";
+import { useState } from "react";
 import { initialSearchState, useSearchContext, useSearchDispatch } from "../context/SearchContext";
-
-type GroupedResult = {
-  count: number;
-  name: string;
-  hits: Hit[];
-};
-
-type GroupedResults = GroupedResult[];
+import { GroupsCount } from "../types";
 /**
  * A custom hook for managing search functionality with orama.
  *
  * @example
- * const { onSearch, loading, error } = useSearch({
- *   client: collectionManager,
- *   initialSearchTerm: 'initial term',
- *   onSearchTermChange: (term) => console.log(term),
- * });
+ * const { onSearch, loading, error } = useSearch();
  */
 
 function useSearch() {
   const searchState = useSearchContext();
   const dispatch = useSearchDispatch();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const onSearch = async (
     options: SearchParams & {
@@ -36,14 +27,8 @@ function useSearch() {
       type: 'SET_SEARCH_TERM',
       payload: { searchTerm: options.term || initialSearchState.searchTerm }
     });
-    dispatch({
-      type: 'SET_LOADING',
-      payload: { loading: true }
-    });
-    dispatch({
-      type: 'SET_ERROR',
-      payload: { error: null }
-    });
+    setLoading(true);
+    setError(null);
     const groupBy = options.groupBy || null;
 
     try {
@@ -92,35 +77,35 @@ function useSearch() {
             res.facets[groupBy] &&
             res.hits?.length > 0
           ) {
-            const grouped: GroupedResults = Object.entries(
+            const grouped: GroupsCount= Object.entries(
               (res.facets[groupBy] as { values: Record<string, number> })
                 .values,
             ).map(([name, count]) => ({
               name,
-              hits: res.hits.filter((hit) => hit.document?.[groupBy] === name),
               count: count,
             }));
-            grouped.unshift({
-              name: "All",
-              hits: res.hits || [],
-              count: res.count || 0,
-            });
+            console.log('Grouped Results:', grouped);
             dispatch({
-              type: 'SET_GROUPED_RESULTS',
-              payload: { groupedResults: grouped }
+              type: 'SET_GROUPS_COUNT',
+              payload: { groupsCount: grouped }
+            });
+          } else {
+            const grouped = res.hits?.length
+              ? [{
+                  name: "All",
+                  count: res.count || 0,
+                }]
+              : null;
+            dispatch({
+              type: 'SET_GROUPES_COUNT',
+              payload: { groupsCount: grouped }
             });
           }
         });
     } catch (e) {
-      dispatch({
-        type: 'SET_ERROR',
-        payload: { error: e as Error }
-      });
+      setError(e as Error);
     } finally {
-      dispatch({
-        type: 'SET_LOADING',
-        payload: { loading: false }
-      });
+      setLoading(false);
     }
   }
 
@@ -134,8 +119,8 @@ function useSearch() {
       payload: { results: [] }
     });
     dispatch({
-      type: 'SET_GROUPED_RESULTS',
-      payload: { groupedResults: [] }
+      type: 'SET_GROUPES_COUNT',
+      payload: { groupsCount: null }
     });
     dispatch({
       type: 'SET_SELECTED_FACET',
@@ -149,7 +134,9 @@ function useSearch() {
 
   return {
     onSearch,
-    onReset
+    onReset,
+    loading,
+    error,
   };
 }
 
