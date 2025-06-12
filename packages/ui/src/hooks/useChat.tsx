@@ -1,21 +1,12 @@
-import { useRef, useState } from "react";
-import {
-  type CollectionManager,
-  type AnswerSession,
-  type SearchParams,
-} from "@orama/core";
+import { useState } from "react";
+import { useChatContext, useChatDispatch } from "../context/ChatContext";
+import { AnswerSession } from "@orama/core";
 
-interface UseChatOptions {
-  client?: CollectionManager;
-  initialUserPrompt?: string;
-  onUserPromptChange?: (val: string) => void;
-}
-
-type Interaction = {
-  query: string;
-  interactionId: string;
-  response: string;
-};
+// type Interaction = {
+//   query: string;
+//   interactionId: string;
+//   response: string;
+// };
 /**
  * A custom hook for managing chat functionality with orama.
  *
@@ -23,67 +14,22 @@ type Interaction = {
  * const { onAsk, loading, error } = useChat();
  */
 
-function useChat({
-  client,
-  initialUserPrompt = "",
-  onUserPromptChange,
-}: UseChatOptions) {
+function useChat() {
+  const { client, interactions, answerSession } = useChatContext();
+  const dispatch = useChatDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [interactions, setInteractions] = useState<Interaction[]>([]);
-  const [answerSession, setAnswerSession] = useState<AnswerSession | null>(null);
-  const currentPromptRef = useRef(initialUserPrompt);
 
-  const onAsk = async (
-    options: SearchParams
-  ) => {
-    currentPromptRef.current = options.term || initialUserPrompt;
-    onUserPromptChange?.(options.term || initialUserPrompt);
-
-    setLoading(true);
-    setError(null);
-
-    if (!client) {
-      setError(new Error("Client is not initialized"));
-      setLoading(false);
-      return;
+  async function streamAnswer(session: AnswerSession | null, userPrompt: string) {
+    if (!session) {
+      throw new Error("Answer session is not initialized");
     }
-
-    if (!answerSession) {
-      try {
-        const session = client.createAnswerSession({
-          events: {
-            onStateChange: (state) => {
-              const normalizedState = state.filter((stateItem) => !!stateItem.query)
-
-              if (normalizedState.length > 0) {
-                console.log("Normalized state:", normalizedState);
-                const updatedInteractions = [
-                  ...interactions,
-                  ...normalizedState.map((interaction, index) => {
-                    return {
-                      query: interaction.query,
-                      interactionId: interaction.id,
-                      response: interaction.response
-                    }
-                  }),
-                ];
-                setInteractions(updatedInteractions as any[]);
-              }
-            }
-          },
-        });
-        setAnswerSession(session);
-      } catch (err) {
-        setError(err as Error);
-        setLoading(false);
-        return;
-      }
+    if (!userPrompt) {
+      throw new Error("User prompt cannot be empty");
     }
-
     try {
-      const answerStream = answerSession?.answerStream({
-        query: currentPromptRef.current,
+      const answerStream = session?.answerStream({
+        query: userPrompt,
       });
       
       const processAsyncGenerator = async () => {
@@ -101,14 +47,71 @@ function useChat({
       setLoading(false);
       return;
     }
+  }
+
+  const onAsk = async ({
+    userPrompt
+  }: {
+    userPrompt: string;
+  }) => {
+    setLoading(true);
+    setError(null);
+
+    if (!userPrompt) {
+      setError(new Error("User prompt cannot be empty"));
+      setLoading(false);
+      return;
+    }
+
+    if (!client) {
+      setError(new Error("Client is not initialized"));
+      setLoading(false);
+      return;
+    }
+
+    if (!answerSession) {
+      try {
+        const session = client.createAnswerSession({
+          events: {
+            onStateChange: (state) => {
+              const normalizedState = state.filter((stateItem) => !!stateItem.query)
+              console.log("State change detected:", normalizedState);
+
+              if (normalizedState.length > 0) {
+                console.log("Normalized state:", normalizedState);
+                const updatedInteractions = [
+                  ...(interactions ?? []),
+                  ...normalizedState,
+                ];
+                dispatch({
+                  type: "SET_INTERACTIONS",
+                  payload: { interactions: updatedInteractions },
+                });
+              }
+            }
+          },
+        });
+        console.log("Created answer session:", session);
+        dispatch({
+          type: "SET_ANSWER_SESSION",
+          payload: { answerSession: session },
+        });
+        await streamAnswer(session, userPrompt);
+        return;
+      } catch (err) {
+        setError(err as Error);
+        setLoading(false);
+        return;
+      }
+    }
+
+    await streamAnswer(answerSession, userPrompt);
   };
 
   return {
     onAsk,
-    interactions,
     loading,
     error,
-    prompt: currentPromptRef.current,
   };
 }
 

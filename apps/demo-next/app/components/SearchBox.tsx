@@ -1,14 +1,17 @@
 'use client'
-import { useState } from 'react'
-import { Star, ArrowLeft } from 'lucide-react'
+import React, { useState } from 'react'
+import { Star, ArrowLeft, ArrowUp } from 'lucide-react'
 import { CollectionManager } from '@orama/core'
 import SearchInput from '@repo/ui/components/SearchInput'
 import SearchRoot from '@repo/ui/components/SearchRoot'
+import ChatRoot from '@repo/ui/components/ChatRoot'
 import useChat from '@repo/ui/hooks/useChat'
-import SearchResults from "@repo/ui/components/SearchResults";
+import SearchResults from '@repo/ui/components/SearchResults'
 import FacetTabs from '@repo/ui/components/FacetTabs'
-import { useSearchContext, useSearchDispatch } from '@repo/ui/context/SearchContext'
-import { cn } from "@/lib/utils"
+import { useSearchContext } from '@repo/ui/context/SearchContext'
+import { cn } from '@/lib/utils'
+import { useChatContext } from '@repo/ui/context/ChatContext'
+import PromptTextArea from '@repo/ui/components/PromptTextArea'
 
 const collectionManager = new CollectionManager({
   url: 'https://collections.orama.com',
@@ -17,19 +20,10 @@ const collectionManager = new CollectionManager({
 })
 
 export const InnerSearchBox = () => {
-  const { searchTerm, selectedFacet } = useSearchContext()
-  const dispatch = useSearchDispatch()
+  const { selectedFacet } = useSearchContext()
+  const { interactions } = useChatContext()
   const [displayChat, setDisplayChat] = useState(false)
-
-  // WIP
-  const { onAsk, interactions } = useChat({
-    client: collectionManager,
-    initialUserPrompt: searchTerm,
-    onUserPromptChange: (searchTerm) => dispatch({
-      type: 'SET_SEARCH_TERM',
-      payload: { searchTerm },
-    }),
-  })
+  const { onAsk } = useChat()
 
   return (
     <>
@@ -49,7 +43,7 @@ export const InnerSearchBox = () => {
                 placeholder='Find your next favorite thing...'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-pink-400 transition-colors'
                 searchParams={{
-                  groupBy: 'category',
+                  groupBy: 'category'
                 }}
               />
             </SearchInput.Wrapper>
@@ -66,9 +60,7 @@ export const InnerSearchBox = () => {
             </button>
 
             <FacetTabs.Wrapper>
-              <FacetTabs.List
-                className='space-x-2 mt-4 flex gap-1'
-              >
+              <FacetTabs.List className='space-x-2 mt-4 flex gap-1'>
                 {(group) => (
                   <FacetTabs.Item
                     isSelected={group.name === selectedFacet}
@@ -99,9 +91,15 @@ export const InnerSearchBox = () => {
                         Suggestions
                       </p>
                       <ul className='mt-1 space-y-1'>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>What is Orama?</li>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>How to use Orama?</li>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>What are the features of Orama?</li>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                          What is Orama?
+                        </li>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                          How to use Orama?
+                        </li>
+                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                          What are the features of Orama?
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -109,23 +107,28 @@ export const InnerSearchBox = () => {
               )}
             </SearchResults.NoResults>
 
-            <SearchResults.GroupsWrapper className='mt-4 overflow-y-auto' groupBy='category'>
+            <SearchResults.GroupsWrapper
+              className='mt-4 overflow-y-auto'
+              groupBy='category'
+            >
               {(group) => (
                 <div key={group.name} className='mb-4'>
                   <h2 className='text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3'>
                     {group.name}
                   </h2>
                   <SearchResults.GroupList group={group}>
-                    {hit => (
+                    {(hit) => (
                       <SearchResults.Item
-                        onClick={() => console.log(`Clicked on ${hit.document?.title}`)}
+                        onClick={() =>
+                          console.log(`Clicked on ${hit.document?.title}`)
+                        }
                       >
-                        {typeof hit.document?.title === "string" && (
+                        {typeof hit.document?.title === 'string' && (
                           <h3 className='text-lg font-semibold text-slate-800 dark:text-slate-200'>
                             {hit.document?.title}
                           </h3>
                         )}
-                        {typeof hit.document?.content === "string" && (
+                        {typeof hit.document?.content === 'string' && (
                           <p className='text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden'>
                             {hit.document?.content.substring(0, 100)}
                             ...
@@ -201,40 +204,48 @@ export const InnerSearchBox = () => {
             </button>
             <div>
               <div>
-                {interactions.length > 0 &&
+                {interactions &&
+                  interactions.length > 0 &&
                   interactions.map((interaction, index) => (
-                    <div
-                      key={index}
-                      className='mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto'
-                    >
-                      <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-                        {interaction.response}
-                      </p>
-                    </div>
+                    <React.Fragment key={index}>
+                      {interaction && (
+                        <div className='mb-4'>
+                          {/* add query */}
+                          <p className='text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2 text-right'>
+                            {interaction.query}
+                          </p>
+                          <p className='p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm'>
+                            {interaction.response}
+                          </p>
+                        </div>
+                      )}
+                    </React.Fragment>
                   ))}
               </div>
-              <div className='mt-4 border-1 border-gray-200 rounded-lg p-4 bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-pink-500 transition-colors flex flex-col gap-2'>
-                <textarea
-                  className='w-full p-0 border-0 rounded-lg focus:outline-none resize-none'
-                  rows={2}
-                  placeholder='Ask your question...'
-                  value={searchTerm}
+              <PromptTextArea.Wrapper className='flex flex-col gap-3.5 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-200 p-2 border-1 border-gray-300 rounded-lg bg-white dark:bg-gray-800'>
+                <PromptTextArea.Field
+                  placeholder='Type your question here...'
+                  rows={1}
+                  maxLength={500}
                   onChange={(e) => {
-                    console.log('Search term changed:', e.target.value)
+                    const userPrompt = e.target.value.trim()
+                    console.log('User prompt changed:', userPrompt)
                   }}
+                  className='w-full border-0 focus:outline-none'
                   autoFocus
-                ></textarea>
+                />
                 <div className='flex justify-end'>
-                  <button
-                    className='bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors'
-                    onClick={() => {
-                      onAsk({ term: 'what is orama?' })
+                  <PromptTextArea.Button
+                    onAsk={(prompt) => {
+                      console.log('Asking with prompt:', prompt)
                     }}
+                    className='inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                    aria-label='Ask AI'
                   >
-                    <ArrowLeft className='w-6 h-6 transform rotate-90' />
-                  </button>
+                    <ArrowUp className='w-4 h-4' />
+                  </PromptTextArea.Button>
                 </div>
-              </div>
+              </PromptTextArea.Wrapper>
             </div>
           </div>
         )}
@@ -246,7 +257,9 @@ export const InnerSearchBox = () => {
 export const SearchBox = () => {
   return (
     <SearchRoot client={collectionManager}>
-      <InnerSearchBox />
+      <ChatRoot client={collectionManager}>
+        <InnerSearchBox />
+      </ChatRoot>
     </SearchRoot>
   )
 }

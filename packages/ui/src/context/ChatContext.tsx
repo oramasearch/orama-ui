@@ -1,16 +1,20 @@
-import { CollectionManager, Interaction } from "@orama/core";
+import { AnswerSession, CollectionManager, Interaction } from "@orama/core";
 import { createContext, useContext } from "react";
 
 export type ChatContextProps = {
   client: CollectionManager | null;
   initialUserPrompt?: string;
-  interactions?: Interaction[];
+  userPrompt?: string;
+  interactions?: (Interaction | undefined)[];
+  answerSession: AnswerSession | null;
 }
 
 export const initialChatState: ChatContextProps = {
   client: null,
   initialUserPrompt: "",
   interactions: [],
+  userPrompt: "",
+  answerSession: null,
 };
 
 export const ChatContext = createContext<ChatContextProps>(initialChatState);
@@ -42,8 +46,38 @@ export const chatReducer = (state: ChatContextProps, action: { type: string; pay
       return { ...state, client: action.payload?.client || null };
     case "SET_INITIAL_USER_PROMPT":
       return { ...state, initialUserPrompt: action.payload?.initialUserPrompt || "" };
+    case "SET_ANSWER_SESSION":
+      return { ...state, answerSession: action.payload?.answerSession || null };
+    case "ADD_INTERACTION":
+      return {
+        ...state,
+        interactions: [...(state.interactions || []), action.payload?.interactions?.[0]],
+      };
     case "SET_INTERACTIONS":
-      return { ...state, interactions: action.payload?.interactions || [] };
+      return {
+        ...state,
+        interactions: action.payload?.interactions || [],
+      };
+    case "CLEAR_INTERACTIONS":
+      return {
+        ...state,
+        interactions: [],
+      };
+    case "SET_USER_PROMPT":
+      return {
+        ...state,
+        userPrompt: action.payload?.userPrompt || "",
+      };
+    case "CLEAR_USER_PROMPT":
+      return {
+        ...state,
+        userPrompt: "",
+      };
+    case "CLEAR_INITIAL_USER_PROMPT":
+      return {
+        ...state,
+        initialUserPrompt: "",
+      };
     default:
       return state;
   }

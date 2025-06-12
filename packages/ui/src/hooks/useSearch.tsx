@@ -12,7 +12,7 @@ import { GroupsCount } from "../types";
  */
 
 function useSearch() {
-  const searchState = useSearchContext();
+  const { client } = useSearchContext();
   const dispatch = useSearchDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -23,6 +23,12 @@ function useSearch() {
       filterBy?: Record<string, string>[];
     },
   ) => {
+    if (!client) {
+      setError(new Error("Client is not initialized"));
+      setLoading(false);
+      return
+    }
+    
     dispatch({
       type: 'SET_SEARCH_TERM',
       payload: { searchTerm: options.term || initialSearchState.searchTerm }
@@ -32,7 +38,7 @@ function useSearch() {
     const groupBy = options.groupBy || null;
 
     try {
-      await searchState.client
+      await client
         ?.search({
           ...options,
           term: options.term,
