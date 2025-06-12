@@ -17,14 +17,10 @@ type Interaction = {
   response: string;
 };
 /**
- * A custom hook for managing search functionality with orama.
+ * A custom hook for managing chat functionality with orama.
  *
  * @example
- * const { onSearch, loading, error } = useSearch({
- *   client: collectionManager,
- *   initialSearchTerm: 'initial term',
- *   onSearchTermChange: (term) => console.log(term),
- * });
+ * const { onAsk, loading, error } = useChat();
  */
 
 function useChat({
@@ -55,7 +51,7 @@ function useChat({
 
     if (!answerSession) {
       try {
-        const session = await client.createAnswerSession({
+        const session = client.createAnswerSession({
           events: {
             onStateChange: (state) => {
               const normalizedState = state.filter((stateItem) => !!stateItem.query)

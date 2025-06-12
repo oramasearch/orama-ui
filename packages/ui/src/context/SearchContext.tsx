@@ -1,4 +1,3 @@
-// Create a context for search functionality to store state and methods that cn be shared across components.
 import { createContext, useContext } from "react";
 import { CollectionManager, SearchParams, Hit } from "@orama/core";
 import { GroupsCount } from "../types";
