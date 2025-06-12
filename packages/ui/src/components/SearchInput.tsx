@@ -93,7 +93,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   searchParams,
   ...rest
 }) => {
-  const { onSearch } = useSearch()
+  const { onSearch, onReset } = useSearch()
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const generatedId = useRef<string>(
@@ -107,7 +107,12 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
    * @param event The input change event.
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const newValue = event.target.value
+    const newValue = event.target.value.trim()
+
+    if (newValue === '') {
+      onReset()
+      return
+    }
 
     onSearch({
       term: newValue,

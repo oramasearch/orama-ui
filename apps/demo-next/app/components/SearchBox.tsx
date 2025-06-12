@@ -37,12 +37,12 @@ export const InnerSearchBox = () => {
         {!displayChat && (
           <>
             <SearchInput.Wrapper className='relative mb-1'>
-              <SearchInput.Label
+              {/* <SearchInput.Label
                 htmlFor='product-search'
                 className='text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2 block'
               >
                 Search Products
-              </SearchInput.Label>
+              </SearchInput.Label> */}
               <SearchInput.Input
                 inputId='product-search'
                 ariaLabel='Search for products'
@@ -67,7 +67,7 @@ export const InnerSearchBox = () => {
 
             <FacetTabs.Wrapper>
               <FacetTabs.List
-                className='space-x-2 mt-4'
+                className='space-x-2 mt-4 flex gap-1'
               >
                 {(group) => (
                   <FacetTabs.Item

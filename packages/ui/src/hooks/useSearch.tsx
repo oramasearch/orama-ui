@@ -84,7 +84,10 @@ function useSearch() {
               name,
               count: count,
             }));
-            console.log('Grouped Results:', grouped);
+            grouped.unshift({
+              name: "All",
+              count: res.count || 0,
+            });
             dispatch({
               type: 'SET_GROUPS_COUNT',
               payload: { groupsCount: grouped }
@@ -119,7 +122,7 @@ function useSearch() {
       payload: { results: [] }
     });
     dispatch({
-      type: 'SET_GROUPES_COUNT',
+      type: 'SET_GROUPS_COUNT',
       payload: { groupsCount: null }
     });
     dispatch({

@@ -49,11 +49,6 @@ const List: React.FC<ListProps> = ({ children, className, itemClassName, allTab 
 
   return (
     <ul className={className}>
-      {allTab && (
-        <li className={itemClassName}>
-          {allTab}
-        </li>
-      )}
       {groupsCount.map((group: GroupedResult) => (
         <li key={group.name} className={itemClassName}>
           {children(group)}

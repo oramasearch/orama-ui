@@ -17,7 +17,7 @@ export const initialSearchState: SearchContextProps = {
   client: null,
   searchTerm: "",
   results: null,
-  selectedFacet: null,
+  selectedFacet: "All",
   groupsCount: null,
   count: 0,
 };
@@ -45,7 +45,6 @@ export const useSearchDispatch = () => {
 };
 
 export const searchReducer = (state: SearchContextProps, action: { type: string; payload?: Partial<SearchContextProps> }) => {
-  console.log("Search reducer action:", action);
   switch (action.type) {
     case "SET_CLIENT":
       return { ...state, client: action.payload?.client || null };
