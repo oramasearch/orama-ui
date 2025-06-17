@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@repo/tailwind-config";
-@import "@repo/ui/styles.css";
+@import "@orama/ui/styles.css";
 
 :root {
   --foreground-rgb: 0, 0, 0;

@@ -2,16 +2,16 @@
 import React, { useState } from 'react'
 import { Star, ArrowLeft, ArrowUp, ArrowDown } from 'lucide-react'
 import { CollectionManager } from '@orama/core'
-import SearchInput from '@repo/ui/components/SearchInput'
-import SearchRoot from '@repo/ui/components/SearchRoot'
-import ChatRoot from '@repo/ui/components/ChatRoot'
-import ChatInteractions from '@repo/ui/components/ChatInteractions'
-import SearchResults from '@repo/ui/components/SearchResults'
-import Suggestions from '@repo/ui/components/Suggestions'
-import FacetTabs from '@repo/ui/components/FacetTabs'
-import { useSearchContext } from '@repo/ui/context/SearchContext'
+import SearchInput from '@orama/ui/components/SearchInput'
+import SearchRoot from '@orama/ui/components/SearchRoot'
+import ChatRoot from '@orama/ui/components/ChatRoot'
+import ChatInteractions from '@orama/ui/components/ChatInteractions'
+import SearchResults from '@orama/ui/components/SearchResults'
+import Suggestions from '@orama/ui/components/Suggestions'
+import FacetTabs from '@orama/ui/components/FacetTabs'
+import { useSearchContext } from '@orama/ui/context/SearchContext'
 import { cn } from '@/lib/utils'
-import PromptTextArea from '@repo/ui/components/PromptTextArea'
+import PromptTextArea from '@orama/ui/components/PromptTextArea'
 
 const collectionManager = new CollectionManager({
   url: 'https://collections.orama.com',
@@ -214,7 +214,7 @@ export const InnerSearchBox = () => {
             </button>
             <div className='flex flex-col gap-2 relative h-full'>
               <ChatInteractions.Wrapper className='max-h-96 overflow-y-auto grow flex-1 items-start relative'>
-                {(interaction) => (
+                {(interaction, index, totalInteractions) => (
                   <>
                     <ChatInteractions.UserPrompt
 
@@ -253,30 +253,44 @@ export const InnerSearchBox = () => {
                         <p>Error: {interaction.error}</p>
                       </div>
                     )}
-                    <ChatInteractions.AssistantMessage className='mb-5 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm'>
+                    <ChatInteractions.AssistantMessage className='mb-2 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm'>
                       {interaction.response}
                     </ChatInteractions.AssistantMessage>
-                    {interaction.related && (
-                      // add related suggestions here
-                      <div className='mt-4'>
-                        <h3 className='text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2'>
-                          Related Suggestions ${JSON.stringify(interaction.related)}
-                        </h3>
-                        <ul className='space-y-2'>
-                          {/* {interaction.related.map((suggestion, index) => (
-                            <li
-                              key={index}
-                              className='text-sm text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200'
-                              onClick={() => {
-                                console.log(`Clicked on suggestion: ${suggestion}`)
-                              }}
-                            >
-                              {suggestion}
-                            </li>
-                          ))} */}
-                        </ul>
-                      </div>
-                    )}
+                    {interaction.response && !interaction.loading && <ul className='mb-2'>
+                      {index === totalInteractions && (
+                        <li>
+                          <ChatInteractions.RegenerateLatest
+                            className='text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer'
+                            onClick={() => {
+                              console.log('Regenerate latest interaction')
+                            }}
+                          >
+                            Regenerate latest response
+                          </ChatInteractions.RegenerateLatest>
+                        </li>
+                      )}
+                      <li>
+                        <ChatInteractions.CopyMessage
+                          interaction={interaction}
+                          className='text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer'
+                          onClick={() => {
+                            console.log('Copy message clicked')
+                          }}
+                        >
+                          Copy message
+                        </ChatInteractions.CopyMessage>
+                      </li>
+                      <li>
+                        <ChatInteractions.Reset
+                          className='text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer'
+                          onClick={() => {
+                            console.log('Reset clicked')
+                          }}
+                        >
+                          Reset
+                        </ChatInteractions.Reset>
+                      </li>
+                    </ul>}
                   </>
                 )}
               </ChatInteractions.Wrapper>

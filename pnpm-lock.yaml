@@ -23,15 +23,15 @@ importers:
       '@orama/core':
         specifier: ^0.1.8
         version: 0.1.8
+      '@orama/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@radix-ui/react-scroll-area':
         specifier: ^1.2.9
         version: 1.2.9(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
         specifier: ^1.2.3
         version: 1.2.3(@types/react@19.1.6)(react@19.1.0)
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -96,7 +96,7 @@ importers:
 
   apps/docs:
     dependencies:
-      '@repo/ui':
+      '@orama/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:

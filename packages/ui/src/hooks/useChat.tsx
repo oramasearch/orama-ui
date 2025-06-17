@@ -14,6 +14,7 @@ function useChat() {
   const dispatch = useChatDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [copied, setCopied] = useState('');
 
   async function streamAnswer(session: AnswerSession | null, userPrompt: string) {
     if (!session) {
@@ -26,9 +27,9 @@ function useChat() {
       const answerStream = session?.answerStream({
         query: userPrompt,
       });
-      dispatch({
-        type: "CLEAR_USER_PROMPT",
-      });
+      // dispatch({
+      //   type: "CLEAR_USER_PROMPT",
+      // });
       
       const processAsyncGenerator = async () => {
         if (!answerStream) {
@@ -103,8 +104,69 @@ function useChat() {
     await streamAnswer(answerSession, userPrompt);
   };
 
+  const abortAnswer = () => {
+    if (!answerSession) {
+      throw new Error("Answer session is not initialized");
+    }
+
+    answerSession.abort();
+  }
+
+  const regenerateLatest = async () => {
+    if (!answerSession) {
+      throw new Error("Answer session is not initialized");
+    }
+
+    answerSession.regenerateLast({ stream: false });
+  }
+
+  const reset = async () => {
+    if (!answerSession) {
+      throw new Error('Answer session is not initialized');
+    }
+
+    if (interactions && interactions.length < 1) {
+      return
+    }
+
+    // TODO: SDK should abort any streaming before cleaning the sessions. It is not doing that today
+    const lastInteraction = interactions && interactions.length > 0 ? interactions[interactions.length - 1] : undefined;
+    if (
+      lastInteraction && lastInteraction.loading
+    ) {
+      abortAnswer()
+    }
+
+    answerSession.clearSession()
+  
+    dispatch({ type: 'CLEAR_INTERACTIONS' });
+    dispatch({ type: 'CLEAR_USER_PROMPT' });
+    dispatch({ type: 'CLEAR_INITIAL_USER_PROMPT' });
+  }
+
+  const copyToClipboard = (message: string) => {
+    setError(null);
+    setCopied('');
+    if (!navigator.clipboard) {
+      console.error("Clipboard API not supported");
+      return;
+    }
+    navigator.clipboard.writeText(message).then(() => {
+      console.log("Message copied to clipboard");
+      setCopied(message);
+    }).catch((err) => {
+      console.error("Failed to copy message to clipboard", err);
+      setError(new Error("Failed to copy message to clipboard"));
+    });
+  };
+
   return {
     onAsk,
+    abortAnswer,
+    regenerateLatest,
+    copyToClipboard,
+    copiedMessage: copied,
+    reset,
     loading,
     error,
   };

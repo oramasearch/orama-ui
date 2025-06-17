@@ -1,9 +1,10 @@
+import useChat from '../hooks/useChat';
 import { useChatContext, useChatDispatch } from '../context/ChatContext';
 import { AnyObject, Interaction } from '@orama/core';
-import React, { ReactNode, use, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 export interface ChatInteractionsWrapperProps {
-  children: (interaction: Interaction, index: number) => ReactNode;
+  children: (interaction: Interaction, index?: number, totalInteractions?: number) => ReactNode;
   className?: string;
   'aria-label'?: string;
   scrollToLast?: boolean;
@@ -37,8 +38,9 @@ export interface SourcesProps {
 
 export interface ScrollToBottomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  children?: ReactNode;
 }
+
+export interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({ 
   children,
@@ -49,7 +51,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   const dispatch = useChatDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-
+  // TODO: Review scroll behavior and options
   useEffect(() => {
     // HANDLE SCROLL TO LAST INTERACTION TRIGGERED BY USER, IF VIA BUTTON OR AUTOMATICALLY
     if (scrollToLastInteraction && wrapperRef.current) {
@@ -88,6 +90,9 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   useEffect(() => {
     // HANDLE VISIBILITY OF LAST INTERACTION ON SCROLL
     const handleScroll = () => {
+      if (isIntersecting) return;
+      console.log('Scroll event detected');
+
       if (wrapperRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = wrapperRef.current;
         const isAtBottom = scrollHeight - scrollTop <= clientHeight + 1;
@@ -109,7 +114,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
     return () => {
       currentWrapper?.removeEventListener('scroll', handleScroll);
     };
-  }, [wrapperRef, dispatch]);
+  }, [wrapperRef, dispatch, isIntersecting]);
 
   useEffect(() => {
     // SCROLL TO LAST INTERACTION ON MOUNT
@@ -121,6 +126,10 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
 
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
+            if (!entry.isIntersecting && !isIntersecting) {
+              console.log('Last interaction is not visible');
+              setIsIntersecting(true);
+            }
             dispatch({
               type: 'SET_LAST_INTERACTION_VISIBLE',
               payload: { lastInteractionVisible: entry.isIntersecting }
@@ -142,7 +151,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
         }
       }
     }
-  }, [interactions, dispatch]);
+  }, [interactions, dispatch, isIntersecting]);
 
   if (!interactions || interactions.length === 0) {
     return null;
@@ -156,7 +165,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
       {interactions.map((interaction, index) => 
         interaction ? (
           <div key={index}>
-            {children(interaction, index)}
+            {children(interaction, index, interactions.length - 1)}
           </div>
         ) : null
       )}
@@ -266,10 +275,79 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
   );
 };
 
+const Reset: React.FC<ActionButtonProps> = ({ 
+  children,
+  onClick,
+  ...rest
+}) => {
+  const { reset } = useChat();
+
+  const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    reset();
+    if (onClick) {
+      onClick(e);
+    }
+  }
+
+  return (
+    <button onClick={handleReset} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+const RegenerateLatest: React.FC<ActionButtonProps> = ({ 
+  children,
+  onClick,
+  ...rest
+}) => {
+  const { regenerateLatest } = useChat();
+
+  const handleRegenerate = (e: React.MouseEvent<HTMLButtonElement>) => {
+    regenerateLatest();
+    if (onClick) {
+      onClick(e);
+    }
+  }
+
+  return (
+    <button onClick={handleRegenerate} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+const CopyMessage: React.FC<ActionButtonProps & {
+  interaction: Interaction;
+}> = ({ 
+  onClick,
+  interaction,
+  children,
+  ...rest
+}) => {
+  const { copyToClipboard } = useChat();
+
+  const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
+    copyToClipboard(interaction.response || '');
+    if (onClick) {
+      onClick(e);
+    }
+  }
+
+  return (
+    <button onClick={handleCopy} {...rest}>
+      {children}
+    </button>
+  );
+}
+
 const ChatInteractions = {
   UserPrompt,
   AssistantMessage,
+  Reset,
+  RegenerateLatest,
   UserActions,
+  CopyMessage,
   Sources,
   ScrollToBottomButton,
   Wrapper: ChatInteractionsWrapper

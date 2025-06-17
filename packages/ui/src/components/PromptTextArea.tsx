@@ -36,7 +36,7 @@ interface PromptTextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLText
 }
 
 interface PromptTextAreaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onAsk: (prompt: string) => void;
+  onAsk?: (prompt: string) => void;
   disabled?: boolean;
   isLoading?: boolean;
   buttonText?: string;

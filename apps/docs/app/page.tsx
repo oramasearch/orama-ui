@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { Card } from "@repo/ui/card";
-import { TurborepoLogo } from "@repo/ui/turborepo-logo";
 
 const LINKS = [
   {
@@ -65,10 +63,6 @@ export default function Page() {
                 width={614}
               />
             </div>
-
-            <div className="flex justify-center items-center z-50">
-              <TurborepoLogo />
-            </div>
           </div>
           <div className="z-50 flex flex-col items-center justify-center gap-5 px-6 text-center lg:gap-6">
             <svg
@@ -90,14 +84,6 @@ export default function Page() {
             </svg>
           </div>
         </div>
-      </div>
-
-      <div className="grid mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        {LINKS.map(({ title, href, description }) => (
-          <Card href={href} key={title} title={title}>
-            {description}
-          </Card>
-        ))}
       </div>
     </main>
   );
