@@ -14,7 +14,6 @@ interface ListProps {
   children: (group: GroupedResult) => ReactNode;
   className?: string;
   itemClassName?: string;
-  allTab?: ReactNode;
 }
 
 interface ItemProps {
@@ -40,7 +39,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, className = '' }) => {
   );
 };
 
-const List: React.FC<ListProps> = ({ children, className, itemClassName, allTab }) => {
+const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
   const { groupsCount } = useSearchContext();
 
   if (!groupsCount || groupsCount.length === 0) {

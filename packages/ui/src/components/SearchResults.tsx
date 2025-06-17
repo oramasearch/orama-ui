@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Hit } from "@orama/core";
 import { useSearchContext } from "../context/SearchContext";
-import { GroupedResult, GroupedResults } from "@/types";
+import { GroupedResult } from "@/types";
 
 export interface SearchResultsWrapperProps {
   children: React.ReactNode;

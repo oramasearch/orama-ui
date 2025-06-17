@@ -6,7 +6,6 @@ import React, {
 import { PolymorphicComponentProps } from '@/types'
 import useSearch from '../hooks/useSearch'
 import { SearchParams } from '@orama/core'
-import { useSearchContext } from '../context/SearchContext'
 
 interface SearchInputWrapperOwnProps {
   className?: string
