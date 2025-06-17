@@ -1,16 +1,16 @@
 'use client'
 import React, { useState } from 'react'
-import { Star, ArrowLeft, ArrowUp } from 'lucide-react'
+import { Star, ArrowLeft, ArrowUp, ArrowDown } from 'lucide-react'
 import { CollectionManager } from '@orama/core'
 import SearchInput from '@repo/ui/components/SearchInput'
 import SearchRoot from '@repo/ui/components/SearchRoot'
 import ChatRoot from '@repo/ui/components/ChatRoot'
-import useChat from '@repo/ui/hooks/useChat'
+import ChatInteractions from '@repo/ui/components/ChatInteractions'
 import SearchResults from '@repo/ui/components/SearchResults'
+import Suggestions from '@repo/ui/components/Suggestions'
 import FacetTabs from '@repo/ui/components/FacetTabs'
 import { useSearchContext } from '@repo/ui/context/SearchContext'
 import { cn } from '@/lib/utils'
-import { useChatContext } from '@repo/ui/context/ChatContext'
 import PromptTextArea from '@repo/ui/components/PromptTextArea'
 
 const collectionManager = new CollectionManager({
@@ -21,9 +21,7 @@ const collectionManager = new CollectionManager({
 
 export const InnerSearchBox = () => {
   const { selectedFacet } = useSearchContext()
-  const { interactions } = useChatContext()
   const [displayChat, setDisplayChat] = useState(false)
-  const { onAsk } = useChat()
 
   return (
     <>
@@ -31,6 +29,7 @@ export const InnerSearchBox = () => {
         {!displayChat && (
           <>
             <SearchInput.Wrapper className='relative mb-1'>
+              {/* OPTIONAL LABEL */}
               {/* <SearchInput.Label
                 htmlFor='product-search'
                 className='text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2 block'
@@ -61,7 +60,7 @@ export const InnerSearchBox = () => {
 
             <FacetTabs.Wrapper>
               <FacetTabs.List className='space-x-2 mt-4 flex gap-1'>
-                {(group) => (
+                {(group) => ( // TODO: consider to pass isSelected as second boolean argument
                   <FacetTabs.Item
                     isSelected={group.name === selectedFacet}
                     group={group}
@@ -86,22 +85,34 @@ export const InnerSearchBox = () => {
                       {`No results found for "${searchTerm}". Please try a different search term.`}
                     </p>
                   ) : (
-                    <div className='flex flex-col justify-center'>
+                    <Suggestions.Wrapper className='flex flex-col justify-center'>
                       <p className='text-sm text-slate-800 dark:text-slate-400 font-semibold mb-2'>
                         Suggestions
                       </p>
-                      <ul className='mt-1 space-y-1'>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                      <Suggestions.List className='mt-1 space-y-1'>
+                        <Suggestions.Item
+                          onClick={() => setDisplayChat(true)}
+                          className='text-sm text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200'
+                          itemClassName='cursor-pointer'
+                        >
                           What is Orama?
-                        </li>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                        </Suggestions.Item>
+                        <Suggestions.Item
+                          onClick={() => setDisplayChat(true)}
+                          className='text-sm text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200'
+                          itemClassName='cursor-pointer'
+                        >
                           How to use Orama?
-                        </li>
-                        <li className='text-sm text-slate-500 dark:text-slate-400'>
+                        </Suggestions.Item>
+                        <Suggestions.Item
+                          onClick={() => setDisplayChat(true)}
+                          className='text-sm text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200'
+                          itemClassName='cursor-pointer'
+                        >
                           What are the features of Orama?
-                        </li>
-                      </ul>
-                    </div>
+                        </Suggestions.Item>
+                      </Suggestions.List>
+                    </Suggestions.Wrapper>
                   )}
                 </>
               )}
@@ -123,6 +134,7 @@ export const InnerSearchBox = () => {
                           console.log(`Clicked on ${hit.document?.title}`)
                         }
                       >
+                        {/* CUSTOM ITEM CONTENT */}
                         {typeof hit.document?.title === 'string' && (
                           <h3 className='text-lg font-semibold text-slate-800 dark:text-slate-200'>
                             {hit.document?.title}
@@ -192,61 +204,117 @@ export const InnerSearchBox = () => {
         )}
 
         {displayChat && (
-          // I want text area to be always aligned to the bottom of the container
-          <div className='flex flex-col justify-between h-full'>
-            {/* addd back to search button */}
+          <div className='flex flex-col justify-between h-full gap-1'>
             <button
-              className='mb-4 flex items-center text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer'
+              className='mb-1 flex items-center text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer'
               onClick={() => setDisplayChat(false)}
             >
               <ArrowLeft className='w-4 h-4 mr-2' />
               Back to search
             </button>
-            <div>
-              <div>
-                {interactions &&
-                  interactions.length > 0 &&
-                  interactions.map((interaction, index) => (
-                    <React.Fragment key={index}>
-                      {interaction && (
-                        <div className='mb-4'>
-                          {/* add query */}
-                          <p className='text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2 text-right'>
-                            {interaction.query}
-                          </p>
-                          <p className='p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm'>
-                            {interaction.response}
-                          </p>
+            <div className='flex flex-col gap-2 relative h-full'>
+              <ChatInteractions.Wrapper className='max-h-96 overflow-y-auto grow flex-1 items-start relative'>
+                {(interaction) => (
+                  <>
+                    <ChatInteractions.UserPrompt
+
+                      className='max-w-xs p-4 bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl rounded-br-md mb-2'
+                      aria-label='User message'
+                    >
+                      {interaction.query}
+                    </ChatInteractions.UserPrompt>
+                    <ChatInteractions.Sources
+                      sources={Array.isArray(interaction.sources) ? interaction.sources : []}
+                      className='flex flex-row gap-2 mb-2 mt-3 overflow-auto overflow-x-scroll pb-2'
+                      itemClassName='group inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer'
+                    >
+                      {(document, index: number) => (
+                        <div className='flex items-center gap-2 max-w-xs' key={index}>
+                          <div className='w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 group-hover:bg-blue-600 transition-colors'></div>
+                          <div className='flex flex-col min-w-0'>
+                            <span className='text-xs font-semibold text-gray-900 dark:text-gray-100 truncate'>
+                              {document?.title as string}
+                            </span>
+                            <span className='text-xs text-gray-500 dark:text-gray-400 truncate'>
+                              {typeof document?.content === 'string' ? document.content.substring(0, 40) : ''}...
+                            </span>
+                          </div>
                         </div>
                       )}
-                    </React.Fragment>
-                  ))}
-              </div>
-              <PromptTextArea.Wrapper className='flex flex-col gap-3.5 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-200 p-2 border-1 border-gray-300 rounded-lg bg-white dark:bg-gray-800'>
-                <PromptTextArea.Field
-                  placeholder='Type your question here...'
-                  rows={1}
-                  maxLength={500}
-                  onChange={(e) => {
-                    const userPrompt = e.target.value.trim()
-                    console.log('User prompt changed:', userPrompt)
-                  }}
-                  className='w-full border-0 focus:outline-none'
-                  autoFocus
-                />
-                <div className='flex justify-end'>
-                  <PromptTextArea.Button
-                    onAsk={(prompt) => {
-                      console.log('Asking with prompt:', prompt)
-                    }}
-                    className='inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed'
-                    aria-label='Ask AI'
-                  >
-                    <ArrowUp className='w-4 h-4' />
-                  </PromptTextArea.Button>
-                </div>
-              </PromptTextArea.Wrapper>
+                    </ChatInteractions.Sources>
+                    {interaction.loading && !interaction.response && ( // use your custom skeleton loader here
+                      <div className='animate-pulse mb-2'>
+                        <div className='h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2'></div>
+                        <div className='h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2'></div>
+                      </div>
+                    )}
+                    {interaction.error && ( // use your custom error message component here
+                      <div className='p-4 bg-red-100 dark:bg-red-700 rounded-lg max-w-80% mx-auto text-sm text-red-800 dark:text-red-200'>
+                        <p>Error: {interaction.error}</p>
+                      </div>
+                    )}
+                    <ChatInteractions.AssistantMessage className='mb-5 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm'>
+                      {interaction.response}
+                    </ChatInteractions.AssistantMessage>
+                    {interaction.related && (
+                      // add related suggestions here
+                      <div className='mt-4'>
+                        <h3 className='text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2'>
+                          Related Suggestions ${JSON.stringify(interaction.related)}
+                        </h3>
+                        <ul className='space-y-2'>
+                          {/* {interaction.related.map((suggestion, index) => (
+                            <li
+                              key={index}
+                              className='text-sm text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200'
+                              onClick={() => {
+                                console.log(`Clicked on suggestion: ${suggestion}`)
+                              }}
+                            >
+                              {suggestion}
+                            </li>
+                          ))} */}
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                )}
+              </ChatInteractions.Wrapper>
+              <ChatInteractions.ScrollToBottomButton
+                className='absolute bottom-2 right-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full p-2 shadow-sm hover:shadow-md transition-shadow duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 cursor-pointer'
+                aria-label='Scroll to bottom'
+                onClick={() => {
+                  console.log('Scroll to bottom clicked')
+                }}
+              >
+                <ArrowDown className='w-4 h-4' />
+              </ChatInteractions.ScrollToBottomButton>
             </div>
+            <PromptTextArea.Wrapper className='flex flex-col gap-3.5 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-200 p-2 border-1 border-gray-300 rounded-lg bg-white dark:bg-gray-800 cursor-text'>
+              <PromptTextArea.Field
+                placeholder='Type your question here...'
+                rows={1}
+                maxLength={500}
+                onChange={(e) => {
+                  const userPrompt = e.target.value.trim()
+                  console.log('User prompt changed:', userPrompt)
+                }}
+                className='w-full border-0 focus:outline-none'
+                autoFocus
+              />
+              {/* on click focus on the text area */}
+              <div className='flex justify-end items-center gap-2'>
+                <PromptTextArea.Button
+                  onAsk={(prompt) => {
+                    console.log('Asking with prompt:', prompt)
+                  }}
+                  className='inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                  aria-label='Ask AI'
+                >
+                  <ArrowUp className='w-4 h-4' />
+                </PromptTextArea.Button>
+              </div>
+            </PromptTextArea.Wrapper>
           </div>
         )}
       </div>

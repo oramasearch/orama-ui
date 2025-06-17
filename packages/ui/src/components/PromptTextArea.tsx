@@ -1,14 +1,6 @@
 import { useChatContext, useChatDispatch } from '../context/ChatContext';
 import useChat from '../hooks/useChat';
-import React from 'react';
-
-/*
-I want to use this interface
-<PromptTextArea.Wrapper>
-  <PromptTextArea.Field />
-  <PromptTextArea.Button />
-</PromptTextArea.Wrapper>
-*/
+import React, { useEffect } from 'react';
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -18,7 +10,17 @@ export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
   children,
   className = '',
 }) => {
-  return <div className={className}>{children}</div>;
+  const focusTextArea = () => {
+    const textArea = document.querySelector('textarea');
+    if (textArea instanceof HTMLTextAreaElement) {
+      textArea.focus();
+    }
+  };
+  return (
+    <div className={className} onClick={focusTextArea}>
+      {children}
+    </div>
+  );
 };
 
 interface PromptTextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -52,20 +54,19 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   ...props
 }) => {
   const { onAsk } = useChat();
+  const { userPrompt } = useChatContext();
   const dispatch = useChatDispatch();
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default behavior of adding a new line
-      console.log('Enter key pressed');
+      e.preventDefault();
       const userPrompt = e.currentTarget.value.trim();
       if (userPrompt) {
         dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } });
-        // Trigger the onAsk method if it exists
         if (onAsk) {
           onAsk({ userPrompt });
         }
-        // clear the input field after asking
         e.currentTarget.value = '';
         dispatch({ type: 'CLEAR_USER_PROMPT' });
       }
@@ -78,6 +79,13 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
     dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } });
   };
 
+  useEffect(() => {
+    if (!userPrompt && textAreaRef.current) {
+      console.log('Clearing text area');
+      textAreaRef.current.value = '';
+    }
+  }, [userPrompt]);
+
   return (
     <textarea
       onChange={handleChange}
@@ -89,6 +97,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
       style={{ resize: 'none' }}
+      ref={textAreaRef}
       {...props}
     />
   );
@@ -106,7 +115,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   const { onAsk } = useChat()
 
   const handleAsk = async () => {
-    if (!userPrompt || !onAsk || loading) return;
+    if (!userPrompt) return;
 
     setLoading(true)
     try {

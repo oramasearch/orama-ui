@@ -2,11 +2,6 @@ import { useState } from "react";
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import { AnswerSession } from "@orama/core";
 
-// type Interaction = {
-//   query: string;
-//   interactionId: string;
-//   response: string;
-// };
 /**
  * A custom hook for managing chat functionality with orama.
  *
@@ -30,6 +25,9 @@ function useChat() {
     try {
       const answerStream = session?.answerStream({
         query: userPrompt,
+      });
+      dispatch({
+        type: "CLEAR_USER_PROMPT",
       });
       
       const processAsyncGenerator = async () => {
@@ -75,10 +73,8 @@ function useChat() {
           events: {
             onStateChange: (state) => {
               const normalizedState = state.filter((stateItem) => !!stateItem.query)
-              console.log("State change detected:", normalizedState);
 
               if (normalizedState.length > 0) {
-                console.log("Normalized state:", normalizedState);
                 const updatedInteractions = [
                   ...(interactions ?? []),
                   ...normalizedState,
@@ -91,7 +87,6 @@ function useChat() {
             }
           },
         });
-        console.log("Created answer session:", session);
         dispatch({
           type: "SET_ANSWER_SESSION",
           payload: { answerSession: session },
