@@ -1,8 +1,10 @@
-import {
-  type SearchParams,
-} from "@orama/core";
+import { type SearchParams } from "@orama/core";
 import { useState } from "react";
-import { initialSearchState, useSearchContext, useSearchDispatch } from "../context/SearchContext";
+import {
+  initialSearchState,
+  useSearchContext,
+  useSearchDispatch,
+} from "../context/SearchContext";
 import { GroupsCount } from "../types";
 /**
  * A custom hook for managing search functionality with orama.
@@ -26,12 +28,12 @@ function useSearch() {
     if (!client) {
       setError(new Error("Client is not initialized"));
       setLoading(false);
-      return
+      return;
     }
-    
+
     dispatch({
-      type: 'SET_SEARCH_TERM',
-      payload: { searchTerm: options.term || initialSearchState.searchTerm }
+      type: "SET_SEARCH_TERM",
+      payload: { searchTerm: options.term || initialSearchState.searchTerm },
     });
     setLoading(true);
     setError(null);
@@ -52,7 +54,7 @@ function useSearch() {
                     if (entry) {
                       const [key, value] = entry;
                       dispatch({
-                        type: 'SET_SELECTED_FACET',
+                        type: "SET_SELECTED_FACET",
                         payload: { selectedFacet: key },
                       });
                       if (value === "All") {
@@ -69,12 +71,12 @@ function useSearch() {
         })
         .then((res) => {
           dispatch({
-            type: 'SET_RESULTS',
-            payload: { results: res.hits || [] }
+            type: "SET_RESULTS",
+            payload: { results: res.hits || [] },
           });
           dispatch({
-            type: 'SET_COUNT',
-            payload: { count: res.count || 0 }
+            type: "SET_COUNT",
+            payload: { count: res.count || 0 },
           });
 
           if (
@@ -83,7 +85,7 @@ function useSearch() {
             res.facets[groupBy] &&
             res.hits?.length > 0
           ) {
-            const grouped: GroupsCount= Object.entries(
+            const grouped: GroupsCount = Object.entries(
               (res.facets[groupBy] as { values: Record<string, number> })
                 .values,
             ).map(([name, count]) => ({
@@ -95,19 +97,21 @@ function useSearch() {
               count: res.count || 0,
             });
             dispatch({
-              type: 'SET_GROUPS_COUNT',
-              payload: { groupsCount: grouped }
+              type: "SET_GROUPS_COUNT",
+              payload: { groupsCount: grouped },
             });
           } else {
             const grouped = res.hits?.length
-              ? [{
-                  name: "All",
-                  count: res.count || 0,
-                }]
+              ? [
+                  {
+                    name: "All",
+                    count: res.count || 0,
+                  },
+                ]
               : null;
             dispatch({
-              type: 'SET_GROUPES_COUNT',
-              payload: { groupsCount: grouped }
+              type: "SET_GROUPES_COUNT",
+              payload: { groupsCount: grouped },
             });
           }
         });
@@ -116,30 +120,30 @@ function useSearch() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const onReset = () => {
     dispatch({
-      type: 'SET_SEARCH_TERM',
-      payload: { searchTerm: '' }
+      type: "SET_SEARCH_TERM",
+      payload: { searchTerm: "" },
     });
     dispatch({
-      type: 'SET_RESULTS',
-      payload: { results: [] }
+      type: "SET_RESULTS",
+      payload: { results: [] },
     });
     dispatch({
-      type: 'SET_GROUPS_COUNT',
-      payload: { groupsCount: null }
+      type: "SET_GROUPS_COUNT",
+      payload: { groupsCount: null },
     });
     dispatch({
-      type: 'SET_SELECTED_FACET',
-      payload: { selectedFacet: null }
+      type: "SET_SELECTED_FACET",
+      payload: { selectedFacet: null },
     });
     dispatch({
-      type: 'SET_COUNT',
-      payload: { count: 0 }
+      type: "SET_COUNT",
+      payload: { count: 0 },
     });
-  }
+  };
 
   return {
     onSearch,

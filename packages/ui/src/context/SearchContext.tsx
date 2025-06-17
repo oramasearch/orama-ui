@@ -4,13 +4,18 @@ import { GroupsCount } from "../types";
 
 export type SearchContextProps = {
   client: CollectionManager | null;
-  onSearch?: (params: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>;
+  onSearch?: (
+    params: SearchParams & {
+      groupBy?: string;
+      filterBy?: Record<string, string>[];
+    },
+  ) => Promise<void>;
   searchTerm?: string;
   results?: Hit[] | null;
   selectedFacet?: string | null;
   groupsCount?: GroupsCount | null;
   count?: number;
-}
+};
 
 export const initialSearchState: SearchContextProps = {
   client: null,
@@ -21,7 +26,8 @@ export const initialSearchState: SearchContextProps = {
   count: 0,
 };
 
-export const SearchContext = createContext<SearchContextProps>(initialSearchState);
+export const SearchContext =
+  createContext<SearchContextProps>(initialSearchState);
 export const SearchDispatchContext = createContext<React.Dispatch<{
   type: string;
   payload?: Partial<SearchContextProps>;
@@ -38,12 +44,17 @@ export const useSearchContext = () => {
 export const useSearchDispatch = () => {
   const dispatch = useContext(SearchDispatchContext);
   if (!dispatch) {
-    throw new Error("useSearchDispatch must be used within a SearchDispatchContext Provider");
+    throw new Error(
+      "useSearchDispatch must be used within a SearchDispatchContext Provider",
+    );
   }
   return dispatch;
 };
 
-export const searchReducer = (state: SearchContextProps, action: { type: string; payload?: Partial<SearchContextProps> }) => {
+export const searchReducer = (
+  state: SearchContextProps,
+  action: { type: string; payload?: Partial<SearchContextProps> },
+) => {
   switch (action.type) {
     case "SET_CLIENT":
       return { ...state, client: action.payload?.client || null };

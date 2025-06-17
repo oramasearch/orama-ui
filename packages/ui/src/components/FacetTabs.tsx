@@ -1,9 +1,8 @@
-
-import React, { ReactNode } from 'react';
-import { GroupCount } from '@/types';
-import { SearchParams } from '@orama/core';
-import { useSearchContext, useSearchDispatch } from '../context/SearchContext';
-import useSearch from '../hooks/useSearch';
+import React, { ReactNode } from "react";
+import { GroupCount } from "@/types";
+import { SearchParams } from "@orama/core";
+import { useSearchContext, useSearchDispatch } from "../context/SearchContext";
+import useSearch from "../hooks/useSearch";
 
 interface WrapperProps {
   children: ReactNode;
@@ -20,7 +19,7 @@ interface ItemProps {
   children: ReactNode;
   isSelected?: boolean;
   onClick?: () => void;
-  searchParams?: SearchParams
+  searchParams?: SearchParams;
   className?: string;
   disabled?: boolean;
   group: GroupCount;
@@ -31,19 +30,15 @@ interface GroupedResult {
   count: number;
 }
 
-const Wrapper: React.FC<WrapperProps> = ({ children, className = '' }) => {
-  return (
-    <div className={className}>
-      {children}
-    </div>
-  );
+const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
+  return <div className={className}>{children}</div>;
 };
 
 const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
   const { groupsCount } = useSearchContext();
 
   if (!groupsCount || groupsCount.length === 0) {
-    return null; 
+    return null;
   }
 
   return (
@@ -57,13 +52,13 @@ const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
   );
 };
 
-const Item: React.FC<ItemProps> = ({ 
-  children, 
+const Item: React.FC<ItemProps> = ({
+  children,
   group,
   isSelected = false,
   searchParams,
-  onClick, 
-  className = '',
+  onClick,
+  className = "",
   disabled = false,
   ...props
 }) => {
@@ -75,13 +70,13 @@ const Item: React.FC<ItemProps> = ({
     if (!disabled) {
       onSearch({
         ...(searchParams ? { ...searchParams } : {}),
-        term: searchParams?.term || searchTerm || '',
+        term: searchParams?.term || searchTerm || "",
         limit: searchParams?.limit || 10,
         filterBy: [{ category: group.name }],
       });
 
       dispatch({
-        type: 'SET_SELECTED_FACET',
+        type: "SET_SELECTED_FACET",
         payload: { selectedFacet: group.name },
       });
 
@@ -109,7 +104,7 @@ const Item: React.FC<ItemProps> = ({
 const FacetTabs = {
   Wrapper,
   List,
-  Item
+  Item,
 };
 
 export default FacetTabs;

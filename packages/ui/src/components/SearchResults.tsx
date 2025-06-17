@@ -6,8 +6,8 @@ import { GroupedResult } from "@/types";
 export interface SearchResultsWrapperProps {
   children: React.ReactNode;
   /**
- * Optional class name for custom styling.
- */
+   * Optional class name for custom styling.
+   */
   className?: string;
 }
 
@@ -15,24 +15,17 @@ export const SearchResultsWrapper: React.FC<SearchResultsWrapperProps> = ({
   children,
   className = "",
 }) => {
-
-  return (
-    <div className={className}>
-      {children}
-    </div>
-  );
-}
+  return <div className={className}>{children}</div>;
+};
 
 export interface SearchResultsGroupedWrapperProps {
   children: (groupedResult: GroupedResult) => React.ReactNode;
   groupBy: string;
   className?: string;
 }
-export const SearchResultsGroupedWrapper: React.FC<SearchResultsGroupedWrapperProps> = ({
-  children,
-  groupBy,
-  className = "",
-}) => {
+export const SearchResultsGroupedWrapper: React.FC<
+  SearchResultsGroupedWrapperProps
+> = ({ children, groupBy, className = "" }) => {
   const { results } = useSearchContext();
 
   const groupedResults = useMemo(() => {
@@ -43,13 +36,16 @@ export const SearchResultsGroupedWrapper: React.FC<SearchResultsGroupedWrapperPr
 
     results.forEach((result) => {
       const groupValue = result.document?.[groupBy];
-      
-      if (!groupValue || (typeof groupValue !== "string" && typeof groupValue !== "number")) {
+
+      if (
+        !groupValue ||
+        (typeof groupValue !== "string" && typeof groupValue !== "number")
+      ) {
         return;
       }
 
       const groupKey = String(groupValue);
-      
+
       if (groupsMap.has(groupKey)) {
         const existingGroup = groupsMap.get(groupKey)!;
         existingGroup.hits.push(result);
@@ -64,7 +60,7 @@ export const SearchResultsGroupedWrapper: React.FC<SearchResultsGroupedWrapperPr
     });
 
     const groupsArray = Array.from(groupsMap.values());
-    
+
     return groupsArray;
   }, [results, groupBy]);
 
@@ -73,15 +69,17 @@ export const SearchResultsGroupedWrapper: React.FC<SearchResultsGroupedWrapperPr
   }
 
   return (
-    <div className={className} role="region" aria-label="Grouped search results">
+    <div
+      className={className}
+      role="region"
+      aria-label="Grouped search results"
+    >
       {groupedResults.map((group) => (
-        <React.Fragment key={group.name}>
-          {children(group)}
-        </React.Fragment>
+        <React.Fragment key={group.name}>{children(group)}</React.Fragment>
       ))}
     </div>
   );
-}
+};
 
 export interface SearchResultsNoResultsProps {
   children: (searchTerm: string) => React.ReactNode;
@@ -94,7 +92,7 @@ export const SearchResultsNoResults: React.FC<SearchResultsNoResultsProps> = ({
   const { searchTerm, results } = useSearchContext();
 
   if (results && results.length > 0) {
-    return null
+    return null;
   }
 
   return (
@@ -102,7 +100,7 @@ export const SearchResultsNoResults: React.FC<SearchResultsNoResultsProps> = ({
       {children(searchTerm || "")}
     </div>
   );
-}
+};
 
 export interface SearchResultsListProps {
   children: (result: Hit, index: number) => React.ReactNode;
@@ -111,17 +109,16 @@ export interface SearchResultsListProps {
   emptyMessage?: string;
 }
 
-
 const SearchResultsList: React.FC<SearchResultsListProps> = ({
   children,
   className = "",
   itemClassName,
   ...props
 }) => {
-  const { results } = useSearchContext()
-  
+  const { results } = useSearchContext();
+
   if (!results || results.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -134,20 +131,15 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 const SearchResultsGroupList: React.FC<{
   children: (result: Hit, index: number) => React.ReactNode;
   group: GroupedResult;
   className?: string;
   itemClassName?: string;
-}> = ({
-  children,
-  group,
-  className = "",
-  itemClassName = "",
-}) => {
+}> = ({ children, group, className = "", itemClassName = "" }) => {
   return (
     <ul className={className}>
       {group.hits.map((hit, index) => (
@@ -157,7 +149,7 @@ const SearchResultsGroupList: React.FC<{
       ))}
     </ul>
   );
-}
+};
 
 interface SearchResultsItemProps<T extends React.ElementType = "div"> {
   as?: T;
@@ -200,6 +192,6 @@ const SearchResults = {
   GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
   NoResults: SearchResultsNoResults,
-}
+};
 
-export default SearchResults
+export default SearchResults;

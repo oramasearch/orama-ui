@@ -1,6 +1,6 @@
-import { useChatContext, useChatDispatch } from '../context/ChatContext';
-import useChat from '../hooks/useChat';
-import React, { useEffect } from 'react';
+import { useChatContext, useChatDispatch } from "../context/ChatContext";
+import useChat from "../hooks/useChat";
+import React, { useEffect } from "react";
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -8,10 +8,10 @@ interface PromptTextAreaWrapperProps {
 
 export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
   children,
-  className = '',
+  className = "",
 }) => {
   const focusTextArea = () => {
-    const textArea = document.querySelector('textarea');
+    const textArea = document.querySelector("textarea");
     if (textArea instanceof HTMLTextAreaElement) {
       textArea.focus();
     }
@@ -23,7 +23,8 @@ export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
   );
 };
 
-interface PromptTextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface PromptTextAreaFieldProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   disabled?: boolean;
@@ -31,16 +32,17 @@ interface PromptTextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLText
   rows?: number;
   className?: string;
   buttonText?: string;
-  'aria-label'?: string;
-  'aria-describedby'?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
 }
 
-interface PromptTextAreaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface PromptTextAreaButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onAsk?: (prompt: string) => void;
   disabled?: boolean;
   isLoading?: boolean;
   buttonText?: string;
-  'aria-label'?: string;
+  "aria-label"?: string;
 }
 
 export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
@@ -49,8 +51,8 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   disabled = false,
   maxLength,
   rows = 4,
-  'aria-label': ariaLabel = "Prompt input",
-  'aria-describedby': ariaDescribedBy,
+  "aria-label": ariaLabel = "Prompt input",
+  "aria-describedby": ariaDescribedBy,
   ...props
 }) => {
   const { onAsk } = useChat();
@@ -59,16 +61,16 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const userPrompt = e.currentTarget.value.trim();
       if (userPrompt) {
-        dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } });
+        dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
         if (onAsk) {
           onAsk({ userPrompt });
         }
-        e.currentTarget.value = '';
-        dispatch({ type: 'CLEAR_USER_PROMPT' });
+        e.currentTarget.value = "";
+        dispatch({ type: "CLEAR_USER_PROMPT" });
       }
     }
   };
@@ -76,13 +78,13 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e);
     const userPrompt = e.target.value.trim();
-    dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } });
+    dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
   };
 
   useEffect(() => {
     if (!userPrompt && textAreaRef.current) {
-      console.log('Clearing text area');
-      textAreaRef.current.value = '';
+      console.log("Clearing text area");
+      textAreaRef.current.value = "";
     }
   }, [userPrompt]);
 
@@ -96,7 +98,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
       rows={rows}
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
-      style={{ resize: 'none' }}
+      style={{ resize: "none" }}
       ref={textAreaRef}
       {...props}
     />
@@ -112,23 +114,23 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
 }) => {
   const [loading, setLoading] = React.useState(false);
   const { userPrompt } = useChatContext();
-  const { onAsk } = useChat()
+  const { onAsk } = useChat();
 
   const handleAsk = async () => {
     if (!userPrompt) return;
 
-    setLoading(true)
+    setLoading(true);
     try {
       await onAsk({
-        userPrompt
+        userPrompt,
       });
       onButtonAsk?.(userPrompt);
     } catch (error) {
-      console.error('Error in ask method:', error);
+      console.error("Error in ask method:", error);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <button
@@ -146,6 +148,6 @@ const PromptTextArea = {
   Field: PromptTextAreaField,
   Button: PromptTextAreaButton,
   Wrapper: PromptTextAreaWrapper,
-}
+};
 
 export default PromptTextArea;

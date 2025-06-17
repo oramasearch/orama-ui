@@ -1,4 +1,4 @@
-/** 
+/**
  * Example interface:
  * <Suggestions.List>
  *  {suggestion => (
@@ -9,33 +9,32 @@
  * </Suggestions.List>
  */
 
-import useChat from '../hooks/useChat';
-import React from 'react';
+import useChat from "../hooks/useChat";
+import React from "react";
 
 interface SuggestionsWrapper {
   className?: string;
   children: React.ReactNode;
 }
 
-const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({ className = '', children }) => {
+const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
+  className = "",
+  children,
+}) => {
   return <div className={className}>{children}</div>;
 };
 
 interface SuggestionsListProps {
   children: React.ReactNode;
   className?: string;
-  'aria-label'?: string;
+  "aria-label"?: string;
 }
 
-const SuggestionsList: React.FC<SuggestionsListProps> = ({ 
-  children, 
-  className = '',
+const SuggestionsList: React.FC<SuggestionsListProps> = ({
+  children,
+  className = "",
 }) => {
-  return (
-    <ul className={className}>
-      {children}
-    </ul>
-  );
+  return <ul className={className}>{children}</ul>;
 };
 
 interface SuggestionsItemProps {
@@ -45,11 +44,11 @@ interface SuggestionsItemProps {
   itemClassName?: string;
 }
 
-const SuggestionsItem: React.FC<SuggestionsItemProps> = ({ 
-  onClick, 
-  children, 
-  className = '',
-  itemClassName = '',
+const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
+  onClick,
+  children,
+  className = "",
+  itemClassName = "",
 }) => {
   const { onAsk } = useChat();
 
@@ -60,7 +59,7 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
       onClick(event);
     }
     onAsk({
-      userPrompt: event.currentTarget.textContent || '',
+      userPrompt: event.currentTarget.textContent || "",
     });
   };
   return (

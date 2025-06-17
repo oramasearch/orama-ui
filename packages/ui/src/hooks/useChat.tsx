@@ -14,9 +14,12 @@ function useChat() {
   const dispatch = useChatDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [copied, setCopied] = useState('');
+  const [copied, setCopied] = useState("");
 
-  async function streamAnswer(session: AnswerSession | null, userPrompt: string) {
+  async function streamAnswer(
+    session: AnswerSession | null,
+    userPrompt: string,
+  ) {
     if (!session) {
       throw new Error("Answer session is not initialized");
     }
@@ -30,7 +33,7 @@ function useChat() {
       // dispatch({
       //   type: "CLEAR_USER_PROMPT",
       // });
-      
+
       const processAsyncGenerator = async () => {
         if (!answerStream) {
           throw new Error("Answer stream is not initialized");
@@ -48,11 +51,7 @@ function useChat() {
     }
   }
 
-  const onAsk = async ({
-    userPrompt
-  }: {
-    userPrompt: string;
-  }) => {
+  const onAsk = async ({ userPrompt }: { userPrompt: string }) => {
     setLoading(true);
     setError(null);
 
@@ -73,7 +72,9 @@ function useChat() {
         const session = client.createAnswerSession({
           events: {
             onStateChange: (state) => {
-              const normalizedState = state.filter((stateItem) => !!stateItem.query)
+              const normalizedState = state.filter(
+                (stateItem) => !!stateItem.query,
+              );
 
               if (normalizedState.length > 0) {
                 const updatedInteractions = [
@@ -85,7 +86,7 @@ function useChat() {
                   payload: { interactions: updatedInteractions },
                 });
               }
-            }
+            },
           },
         });
         dispatch({
@@ -110,7 +111,7 @@ function useChat() {
     }
 
     answerSession.abort();
-  }
+  };
 
   const regenerateLatest = async () => {
     if (!answerSession) {
@@ -118,46 +119,50 @@ function useChat() {
     }
 
     answerSession.regenerateLast({ stream: false });
-  }
+  };
 
   const reset = async () => {
     if (!answerSession) {
-      throw new Error('Answer session is not initialized');
+      throw new Error("Answer session is not initialized");
     }
 
     if (interactions && interactions.length < 1) {
-      return
+      return;
     }
 
     // TODO: SDK should abort any streaming before cleaning the sessions. It is not doing that today
-    const lastInteraction = interactions && interactions.length > 0 ? interactions[interactions.length - 1] : undefined;
-    if (
-      lastInteraction && lastInteraction.loading
-    ) {
-      abortAnswer()
+    const lastInteraction =
+      interactions && interactions.length > 0
+        ? interactions[interactions.length - 1]
+        : undefined;
+    if (lastInteraction && lastInteraction.loading) {
+      abortAnswer();
     }
 
-    answerSession.clearSession()
-  
-    dispatch({ type: 'CLEAR_INTERACTIONS' });
-    dispatch({ type: 'CLEAR_USER_PROMPT' });
-    dispatch({ type: 'CLEAR_INITIAL_USER_PROMPT' });
-  }
+    answerSession.clearSession();
+
+    dispatch({ type: "CLEAR_INTERACTIONS" });
+    dispatch({ type: "CLEAR_USER_PROMPT" });
+    dispatch({ type: "CLEAR_INITIAL_USER_PROMPT" });
+  };
 
   const copyToClipboard = (message: string) => {
     setError(null);
-    setCopied('');
+    setCopied("");
     if (!navigator.clipboard) {
       console.error("Clipboard API not supported");
       return;
     }
-    navigator.clipboard.writeText(message).then(() => {
-      console.log("Message copied to clipboard");
-      setCopied(message);
-    }).catch((err) => {
-      console.error("Failed to copy message to clipboard", err);
-      setError(new Error("Failed to copy message to clipboard"));
-    });
+    navigator.clipboard
+      .writeText(message)
+      .then(() => {
+        console.log("Message copied to clipboard");
+        setCopied(message);
+      })
+      .catch((err) => {
+        console.error("Failed to copy message to clipboard", err);
+        setError(new Error("Failed to copy message to clipboard"));
+      });
   };
 
   return {
