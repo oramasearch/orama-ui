@@ -44,6 +44,19 @@ interface SuggestionsItemProps {
   itemClassName?: string;
 }
 
+/**
+ * Renders a single suggestion item as a list element containing a button.
+ * 
+ * @param {SuggestionsItemProps} props - The props for the SuggestionsItem component.
+ * @param {(event: React.MouseEvent<HTMLButtonElement>) => void} [props.onClick] - Optional click handler for the suggestion button.
+ * @param {React.ReactNode} props.children - The content to display inside the suggestion button.
+ * @param {string} [props.className] - Optional class name for the list item element.
+ * @param {string} [props.itemClassName] - Optional class name for the button element.
+ * 
+ * @remarks
+ * When the button is clicked, it triggers the `onClick` handler if provided,
+ * and then calls the `onAsk` function from the `useChat` hook with the button's text content as the user prompt.
+ */
 const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
   children,

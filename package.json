@@ -1,12 +1,11 @@
 {
-  "name": "with-tailwind",
+  "name": "orama-ui-kit",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
-    "publish:packages": "node scripts/release.mjs",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
