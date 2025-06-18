@@ -1,7 +1,11 @@
 import useChat from "../hooks/useChat";
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import { AnyObject, Interaction } from "@orama/core";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { PropsWithChildren, ReactNode, useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import Highlight, { defaultProps } from "prism-react-renderer";
+import theme from "prism-react-renderer/themes/vsDark"; // You can change this theme
 
 export interface ChatInteractionsWrapperProps {
   children: (
@@ -21,11 +25,9 @@ export interface UserPromptProps {
   "aria-label"?: string;
 }
 
-export interface AssistantMessageProps {
-  children?: ReactNode;
+export interface AssistantMessageProps extends PropsWithChildren<{
   className?: string;
-  "aria-label"?: string;
-}
+}>
 
 export interface UserActionsProps {
   children: ReactNode;
@@ -58,113 +60,113 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // TODO: Review scroll behavior and options
-  useEffect(() => {
-    // HANDLE SCROLL TO LAST INTERACTION TRIGGERED BY USER, IF VIA BUTTON OR AUTOMATICALLY
-    if (scrollToLastInteraction && wrapperRef.current) {
-      const lastInteraction = wrapperRef.current.lastElementChild;
-      if (lastInteraction) {
-        // lastInteraction.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
-        // scroll exactely to the bottom of the wrapper
-        wrapperRef.current.scrollTop =
-          wrapperRef.current.scrollHeight - wrapperRef.current.clientHeight;
+  // useEffect(() => {
+  //   // HANDLE SCROLL TO LAST INTERACTION TRIGGERED BY USER, IF VIA BUTTON OR AUTOMATICALLY
+  //   if (scrollToLastInteraction && wrapperRef.current) {
+  //     const lastInteraction = wrapperRef.current.lastElementChild;
+  //     if (lastInteraction) {
+  //       // lastInteraction.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
+  //       // scroll exactely to the bottom of the wrapper
+  //       wrapperRef.current.scrollTop =
+  //         wrapperRef.current.scrollHeight - wrapperRef.current.clientHeight;
 
-        // check if it's loading the response
-        if (interactions && interactions.length > 0) {
-          const lastInteraction = interactions[interactions.length - 1];
-          if (
-            lastInteraction &&
-            lastInteraction.response &&
-            lastInteraction.loading
-          ) {
-            // // if the last interaction is loading, we don't set the visibility to true
-            // dispatch({
-            //   type: 'SET_LAST_INTERACTION_VISIBLE',
-            //   payload: { lastInteractionVisible: false }
-            // });
-            return;
-          }
-        } else {
-          dispatch({
-            type: "SET_LAST_INTERACTION_VISIBLE",
-            payload: { lastInteractionVisible: true },
-          });
-          dispatch({
-            type: "SET_SCROLL_TO_LAST_INTERACTION",
-            payload: { scrollToLastInteraction: false },
-          });
-        }
-      }
-    }
-  }, [interactions, scrollToLastInteraction, dispatch]);
+  //       // check if it's loading the response
+  //       if (interactions && interactions.length > 0) {
+  //         const lastInteraction = interactions[interactions.length - 1];
+  //         if (
+  //           lastInteraction &&
+  //           lastInteraction.response &&
+  //           lastInteraction.loading
+  //         ) {
+  //           // // if the last interaction is loading, we don't set the visibility to true
+  //           // dispatch({
+  //           //   type: 'SET_LAST_INTERACTION_VISIBLE',
+  //           //   payload: { lastInteractionVisible: false }
+  //           // });
+  //           return;
+  //         }
+  //       } else {
+  //         dispatch({
+  //           type: "SET_LAST_INTERACTION_VISIBLE",
+  //           payload: { lastInteractionVisible: true },
+  //         });
+  //         dispatch({
+  //           type: "SET_SCROLL_TO_LAST_INTERACTION",
+  //           payload: { scrollToLastInteraction: false },
+  //         });
+  //       }
+  //     }
+  //   }
+  // }, [interactions, scrollToLastInteraction, dispatch]);
 
-  useEffect(() => {
-    // HANDLE VISIBILITY OF LAST INTERACTION ON SCROLL
-    const handleScroll = () => {
-      if (isIntersecting) return;
-      console.log("Scroll event detected");
+  // useEffect(() => {
+  //   // HANDLE VISIBILITY OF LAST INTERACTION ON SCROLL
+  //   const handleScroll = () => {
+  //     if (isIntersecting) return;
+  //     console.log("Scroll event detected");
 
-      if (wrapperRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = wrapperRef.current;
-        const isAtBottom = scrollHeight - scrollTop <= clientHeight + 1;
+  //     if (wrapperRef.current) {
+  //       const { scrollTop, scrollHeight, clientHeight } = wrapperRef.current;
+  //       const isAtBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
-        dispatch({
-          type: "SET_LAST_INTERACTION_VISIBLE",
-          payload: { lastInteractionVisible: isAtBottom },
-        });
-        dispatch({
-          type: "SET_SCROLL_TO_LAST_INTERACTION",
-          payload: { scrollToLastInteraction: false },
-        });
-      }
-    };
+  //       dispatch({
+  //         type: "SET_LAST_INTERACTION_VISIBLE",
+  //         payload: { lastInteractionVisible: isAtBottom },
+  //       });
+  //       dispatch({
+  //         type: "SET_SCROLL_TO_LAST_INTERACTION",
+  //         payload: { scrollToLastInteraction: false },
+  //       });
+  //     }
+  //   };
 
-    const currentWrapper = wrapperRef.current;
-    currentWrapper?.addEventListener("scroll", handleScroll);
+  //   const currentWrapper = wrapperRef.current;
+  //   currentWrapper?.addEventListener("scroll", handleScroll);
 
-    return () => {
-      currentWrapper?.removeEventListener("scroll", handleScroll);
-    };
-  }, [wrapperRef, dispatch, isIntersecting]);
+  //   return () => {
+  //     currentWrapper?.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [wrapperRef, dispatch, isIntersecting]);
 
-  useEffect(() => {
-    // SCROLL TO LAST INTERACTION ON MOUNT
-    if (wrapperRef.current) {
-      const lastInteraction = wrapperRef.current.lastElementChild;
+  // useEffect(() => {
+  //   // SCROLL TO LAST INTERACTION ON MOUNT
+  //   if (wrapperRef.current) {
+  //     const lastInteraction = wrapperRef.current.lastElementChild;
 
-      if (lastInteraction) {
-        lastInteraction.scrollIntoView({ behavior: "auto", block: "start" });
+  //     if (lastInteraction) {
+  //       lastInteraction.scrollIntoView({ behavior: "auto", block: "start" });
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting && !isIntersecting) {
-                console.log("Last interaction is not visible");
-                setIsIntersecting(true);
-              }
-              dispatch({
-                type: "SET_LAST_INTERACTION_VISIBLE",
-                payload: { lastInteractionVisible: entry.isIntersecting },
-              });
-              // console.log('Last interaction visibility changed:', entry.isIntersecting);
+  //       const observer = new IntersectionObserver(
+  //         (entries) => {
+  //           entries.forEach((entry) => {
+  //             if (!entry.isIntersecting && !isIntersecting) {
+  //               console.log("Last interaction is not visible");
+  //               setIsIntersecting(true);
+  //             }
+  //             dispatch({
+  //               type: "SET_LAST_INTERACTION_VISIBLE",
+  //               payload: { lastInteractionVisible: entry.isIntersecting },
+  //             });
+  //             // console.log('Last interaction visibility changed:', entry.isIntersecting);
 
-              // dispatch({
-              //   type: 'SET_SCROLL_TO_LAST_INTERACTION',
-              //   payload: { scrollToLastInteraction: entry.isIntersecting }
-              // });
-            });
-          },
-          {
-            root: wrapperRef.current,
-            threshold: 1.0,
-          },
-        );
-        observer.observe(lastInteraction);
-        return () => {
-          observer.disconnect();
-        };
-      }
-    }
-  }, [interactions, dispatch, isIntersecting]);
+  //             // dispatch({
+  //             //   type: 'SET_SCROLL_TO_LAST_INTERACTION',
+  //             //   payload: { scrollToLastInteraction: entry.isIntersecting }
+  //             // });
+  //           });
+  //         },
+  //         {
+  //           root: wrapperRef.current,
+  //           threshold: 1.0,
+  //         },
+  //       );
+  //       observer.observe(lastInteraction);
+  //       return () => {
+  //         observer.disconnect();
+  //       };
+  //     }
+  //   }
+  // }, [interactions, dispatch, isIntersecting]);
 
   if (!interactions || interactions.length === 0) {
     return null;
@@ -197,11 +199,72 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
   children,
   className = "",
 }) => {
+  console.log("AssistantMessage rendered", theme);
+
   if (!children) {
     return null;
   }
 
-  return <div className={className}>{children}</div>;
+  return (
+    <div className={className}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ node, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || "");
+            console.log("Code component rendered", {
+              node,
+              className,
+              children,
+              props,
+              match,
+            });
+
+            if (!match) {
+              return (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            }
+
+            const language = match[1];
+
+            return (
+              <div className="rounded-md overflow-x-auto py-3 px-2 mb-4 text-xs whitespace-pre" style={{ backgroundColor:  theme.plain.backgroundColor }}>
+                <Highlight
+                  {...defaultProps}
+                  code={String(children).trim()}
+                  language={language as any}
+                  theme={theme}
+                >
+                  {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                    <pre className={className} style={style}>
+                      {tokens.map((line, i) => (
+                        <div key={i} {...getLineProps({ line, key: i })}>
+                          {line.map((token, key) => (
+                            <span key={key} {...getTokenProps({ token, key })} />
+                          ))}
+                        </div>
+                      ))}
+                    </pre>
+                  )}
+                </Highlight>
+              </div>
+            );
+          },
+          h3: ({ node, ...props }) => (
+            <h3 className="text-md font-semibold my-2" {...props} />
+          ),
+          pre: ({ node, ...props }) => (
+            <pre className="text-xs my-2" {...props} />
+          ),
+        }}
+      >
+        {typeof children === "string" ? children : String(children)}
+      </ReactMarkdown>
+    </div>
+  );
 };
 
 const UserActions: React.FC<UserActionsProps> = ({
