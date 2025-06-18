@@ -1,6 +1,6 @@
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import useChat from "../hooks/useChat";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -42,6 +42,7 @@ interface PromptTextAreaButtonProps
   disabled?: boolean;
   isLoading?: boolean;
   buttonText?: string;
+  abortContent?: React.ReactNode;
   "aria-label"?: string;
 }
 
@@ -108,38 +109,54 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
 export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   onAsk: onButtonAsk,
   disabled = false,
-  // isLoading = false,
+  abortContent,
+  onClick,
   children,
   ...props
 }) => {
-  const [loading, setLoading] = React.useState(false);
   const { userPrompt } = useChatContext();
-  const { onAsk } = useChat();
+  const { onAsk, abortAnswer } = useChat();
+  const { interactions } = useChatContext();
 
-  const handleAsk = async () => {
+  const isStreaming = interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading;
+  const disabledButton = !userPrompt && !isStreaming || !userPrompt && !abortContent;
+
+  const handleAsk = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!userPrompt) return;
 
-    setLoading(true);
     try {
       await onAsk({
         userPrompt,
       });
       onButtonAsk?.(userPrompt);
+      if (onClick) {
+        onClick(e);
+      }
     } catch (error) {
       console.error("Error in ask method:", error);
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleAbort = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    abortAnswer();
+    if (onClick) {
+      onClick(e);
     }
   };
 
   return (
     <button
       type="button"
-      onClick={handleAsk}
-      disabled={disabled || loading || !userPrompt}
+      onClick={isStreaming ? handleAbort : handleAsk}
+      disabled={disabled || disabledButton}
       {...props}
     >
-      {children}
+      {isStreaming && abortContent ? (
+        <span>{abortContent}</span>
+      ) : (
+        children
+      )}
     </button>
   );
 };
@@ -147,7 +164,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
 const PromptTextArea = {
   Field: PromptTextAreaField,
   Button: PromptTextAreaButton,
-  Wrapper: PromptTextAreaWrapper,
+  Wrapper: PromptTextAreaWrapper
 };
 
 export default PromptTextArea;

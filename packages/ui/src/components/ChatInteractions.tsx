@@ -1,11 +1,11 @@
 import useChat from "../hooks/useChat";
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import { AnyObject, Interaction } from "@orama/core";
-import React, { PropsWithChildren, ReactNode, useEffect, useRef, useState } from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Highlight, { defaultProps } from "prism-react-renderer";
-import theme from "prism-react-renderer/themes/vsDark"; // You can change this theme
+import Highlight, { defaultProps, PrismTheme } from "prism-react-renderer";
+import theme from "prism-react-renderer/themes/vsDark";
 
 export interface ChatInteractionsWrapperProps {
   children: (
@@ -27,6 +27,10 @@ export interface UserPromptProps {
 
 export interface AssistantMessageProps extends PropsWithChildren<{
   className?: string;
+  theme?: PrismTheme;
+  markdownClassnames?: {
+    [key: string]: string;
+  }
 }>
 
 export interface UserActionsProps {
@@ -54,133 +58,68 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   children,
   className = "",
 }) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const { interactions, scrollToLastInteraction } = useChatContext();
-  const dispatch = useChatDispatch();
+  const { interactions } = useChatContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const promptRef = useRef<HTMLDivElement>(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
-  // TODO: Review scroll behavior and options
-  // useEffect(() => {
-  //   // HANDLE SCROLL TO LAST INTERACTION TRIGGERED BY USER, IF VIA BUTTON OR AUTOMATICALLY
-  //   if (scrollToLastInteraction && wrapperRef.current) {
-  //     const lastInteraction = wrapperRef.current.lastElementChild;
-  //     if (lastInteraction) {
-  //       // lastInteraction.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' });
-  //       // scroll exactely to the bottom of the wrapper
-  //       wrapperRef.current.scrollTop =
-  //         wrapperRef.current.scrollHeight - wrapperRef.current.clientHeight;
+  // const isStreaming = interactions?.some(
+  //   (interaction) => interaction?.loading && !interaction?.response
+  // );
 
-  //       // check if it's loading the response
-  //       if (interactions && interactions.length > 0) {
-  //         const lastInteraction = interactions[interactions.length - 1];
-  //         if (
-  //           lastInteraction &&
-  //           lastInteraction.response &&
-  //           lastInteraction.loading
-  //         ) {
-  //           // // if the last interaction is loading, we don't set the visibility to true
-  //           // dispatch({
-  //           //   type: 'SET_LAST_INTERACTION_VISIBLE',
-  //           //   payload: { lastInteractionVisible: false }
-  //           // });
-  //           return;
-  //         }
-  //       } else {
-  //         dispatch({
-  //           type: "SET_LAST_INTERACTION_VISIBLE",
-  //           payload: { lastInteractionVisible: true },
-  //         });
-  //         dispatch({
-  //           type: "SET_SCROLL_TO_LAST_INTERACTION",
-  //           payload: { scrollToLastInteraction: false },
-  //         });
-  //       }
-  //     }
+  // const startedInteraction = interactions?.find(
+  //   (interaction) => interaction?.query && interaction?.loading
+  // );
+
+  // const scrollPromptToTop = useCallback(() => {
+  //   if (promptRef.current && wrapperRef.current) {
+  //     promptRef.current.scrollIntoView({ block: "start", behavior: "smooth" });
   //   }
-  // }, [interactions, scrollToLastInteraction, dispatch]);
+  // }, []);
+
+  // const scrollToBottom = () => {
+  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  //   setShowScrollToBottom(false);
+  // };
 
   // useEffect(() => {
-  //   // HANDLE VISIBILITY OF LAST INTERACTION ON SCROLL
-  //   const handleScroll = () => {
-  //     if (isIntersecting) return;
-  //     console.log("Scroll event detected");
+  //   if (!wrapperRef.current || !bottomRef.current) return;
 
-  //     if (wrapperRef.current) {
-  //       const { scrollTop, scrollHeight, clientHeight } = wrapperRef.current;
-  //       const isAtBottom = scrollHeight - scrollTop <= clientHeight + 1;
+  //   const container = wrapperRef.current;
 
-  //       dispatch({
-  //         type: "SET_LAST_INTERACTION_VISIBLE",
-  //         payload: { lastInteractionVisible: isAtBottom },
-  //       });
-  //       dispatch({
-  //         type: "SET_SCROLL_TO_LAST_INTERACTION",
-  //         payload: { scrollToLastInteraction: false },
-  //       });
-  //     }
-  //   };
-
-  //   const currentWrapper = wrapperRef.current;
-  //   currentWrapper?.addEventListener("scroll", handleScroll);
-
-  //   return () => {
-  //     currentWrapper?.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [wrapperRef, dispatch, isIntersecting]);
-
-  // useEffect(() => {
-  //   // SCROLL TO LAST INTERACTION ON MOUNT
-  //   if (wrapperRef.current) {
-  //     const lastInteraction = wrapperRef.current.lastElementChild;
-
-  //     if (lastInteraction) {
-  //       lastInteraction.scrollIntoView({ behavior: "auto", block: "start" });
-
-  //       const observer = new IntersectionObserver(
-  //         (entries) => {
-  //           entries.forEach((entry) => {
-  //             if (!entry.isIntersecting && !isIntersecting) {
-  //               console.log("Last interaction is not visible");
-  //               setIsIntersecting(true);
-  //             }
-  //             dispatch({
-  //               type: "SET_LAST_INTERACTION_VISIBLE",
-  //               payload: { lastInteractionVisible: entry.isIntersecting },
-  //             });
-  //             // console.log('Last interaction visibility changed:', entry.isIntersecting);
-
-  //             // dispatch({
-  //             //   type: 'SET_SCROLL_TO_LAST_INTERACTION',
-  //             //   payload: { scrollToLastInteraction: entry.isIntersecting }
-  //             // });
-  //           });
-  //         },
-  //         {
-  //           root: wrapperRef.current,
-  //           threshold: 1.0,
-  //         },
-  //       );
-  //       observer.observe(lastInteraction);
-  //       return () => {
-  //         observer.disconnect();
-  //       };
-  //     }
+  //   if (startedInteraction) {
+  //     scrollPromptToTop();
   //   }
-  // }, [interactions, dispatch, isIntersecting]);
 
-  if (!interactions || interactions.length === 0) {
-    return null;
-  }
+  //   const isOverflowing = container.scrollHeight > container.clientHeight;
+    
+  //   if (isOverflowing) {
+  //     setShowScrollToBottom(true);
+  //   } else {
+  //     setShowScrollToBottom(false);
+  //   }
+  // }, [isStreaming, interactions]);
+
+  if (!interactions || interactions.length === 0) return null;
+
+  const lastIndex = interactions.length - 1;
+  const lastUserIndex = interactions
+    .map((i, idx) => (i?.query ? idx : -1))
+    .filter(idx => idx !== -1)
+    .pop();
 
   return (
     <div className={className} ref={wrapperRef}>
-      {interactions.map((interaction, index) =>
-        interaction ? (
-          <div key={index}>
-            {children(interaction, index, interactions.length - 1)}
+      {interactions.map((interaction, index) => {
+        const isPrompt = index === lastUserIndex;
+        if (!interaction) return null;
+        return (
+          <div key={interaction.id} ref={isPrompt ? promptRef : null}>
+            {children(interaction, index, lastIndex)}
           </div>
-        ) : null,
-      )}
+        );
+      })}
     </div>
   );
 };
@@ -197,13 +136,14 @@ const UserPrompt: React.FC<UserPromptProps> = ({
 
 const AssistantMessage: React.FC<AssistantMessageProps> = ({
   children,
+  theme: customTheme,
   className = "",
 }) => {
-  console.log("AssistantMessage rendered", theme);
-
   if (!children) {
     return null;
   }
+
+  const currentTheme = customTheme || theme;
 
   return (
     <div className={className}>
@@ -212,17 +152,10 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
         components={{
           code({ node, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
-            console.log("Code component rendered", {
-              node,
-              className,
-              children,
-              props,
-              match,
-            });
 
             if (!match) {
               return (
-                <code className={className} {...props}>
+                <code className={`${className || ""} rounded-md px-1 py-0.5 bg-gray-200 dark:bg-gray-700 orama-inline-code`} {...props}>
                   {children}
                 </code>
               );
@@ -231,7 +164,7 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
             const language = match[1];
 
             return (
-              <div className="rounded-md overflow-x-auto py-3 px-2 mb-4 text-xs whitespace-pre" style={{ backgroundColor:  theme.plain.backgroundColor }}>
+              <div className="rounded-md overflow-x-auto py-3 px-2 mb-4 text-xs whitespace-pre" style={{ backgroundColor:  currentTheme.plain.backgroundColor }}>
                 <Highlight
                   {...defaultProps}
                   code={String(children).trim()}
@@ -240,13 +173,21 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
                 >
                   {({ className, style, tokens, getLineProps, getTokenProps }) => (
                     <pre className={className} style={style}>
-                      {tokens.map((line, i) => (
-                        <div key={i} {...getLineProps({ line, key: i })}>
-                          {line.map((token, key) => (
-                            <span key={key} {...getTokenProps({ token, key })} />
-                          ))}
-                        </div>
-                      ))}
+                      {tokens.map((line, i) => {
+                        const lineProps = getLineProps({ line });
+                        const { key, ...restLineProps } = lineProps;
+                        return (
+                          <div key={i} {...restLineProps}>
+                            {line.map((token, j) => {
+                              const tokenProps = getTokenProps({ token });
+                              const { key, ...restTokenProps } = tokenProps;
+                              return (
+                                <span key={j} {...restTokenProps} />
+                              );
+                            })}
+                          </div>
+                        )
+                      })}
                     </pre>
                   )}
                 </Highlight>
@@ -272,7 +213,6 @@ const UserActions: React.FC<UserActionsProps> = ({
   className = "",
 }) => (
   <div className={className}>
-    {/* this should contain user action buttons */}
     {children}
   </div>
 );
@@ -287,16 +227,21 @@ const Sources: React.FC<SourcesProps> = ({
     return null;
   }
 
+  const hasDocument = sources.some(source => source && source.document);
+  if (!hasDocument) {
+    return null;
+  }
+
   return (
     <ul className={className}>
       {sources.map((source, index) => (
-        <>
-          {source && source.document && (
+        <React.Fragment key={index}>
+          {source && source.document ? (
             <li key={index} className={itemClassName}>
               {children(source.document as AnyObject, index)}
             </li>
-          )}
-        </>
+          ) : null}
+        </React.Fragment>
       ))}
     </ul>
   );
@@ -307,12 +252,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
   onClick,
   children,
 }) => {
-  const { lastInteractionVisible } = useChatContext();
   const dispatch = useChatDispatch();
-
-  if (lastInteractionVisible) {
-    return null;
-  }
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

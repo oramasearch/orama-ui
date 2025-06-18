@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Star, ArrowLeft, ArrowUp, ArrowDown } from "lucide-react";
+import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause } from "lucide-react";
 import { CollectionManager } from "@orama/core";
 import SearchInput from "@orama/ui/components/SearchInput";
 import SearchRoot from "@orama/ui/components/SearchRoot";
@@ -25,9 +25,9 @@ export const InnerSearchBox = () => {
 
   return (
     <>
-      <div className="w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white h-140 flex flex-col">
+      <div className="w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
         {!displayChat && (
-          <>
+          <div className="h-140">
             <SearchInput.Wrapper className="relative mb-1">
               {/* OPTIONAL LABEL */}
               {/* <SearchInput.Label
@@ -202,20 +202,22 @@ export const InnerSearchBox = () => {
                 )}
               </SearchResults.List>
             </SearchResults.Wrapper> */}
-          </>
+          </div>
         )}
 
         {displayChat && (
-          <div className="flex flex-col justify-between h-full gap-1">
-            <button
-              className="mb-1 flex items-center text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
-              onClick={() => setDisplayChat(false)}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to search
-            </button>
-            <div className="flex flex-col gap-2 relative h-full">
-              <ChatInteractions.Wrapper className="max-h-96 overflow-y-auto grow flex-1 items-start relative">
+          <div className="flex flex-col justify-between h-140 gap-2">
+            <div className="flex-shrink-0">
+              <button
+                className="flex items-center text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                onClick={() => setDisplayChat(false)}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to search
+              </button>
+            </div>
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+              <ChatInteractions.Wrapper className="items-start relative overflow-y-auto">
                 {(interaction, index, totalInteractions) => (
                   <>
                     <ChatInteractions.UserPrompt
@@ -318,31 +320,36 @@ export const InnerSearchBox = () => {
                 <ArrowDown className="w-4 h-4" />
               </ChatInteractions.ScrollToBottomButton>
             </div>
-            <PromptTextArea.Wrapper className="flex flex-col gap-3.5 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-200 p-2 border-1 border-gray-300 rounded-lg bg-white dark:bg-gray-800 cursor-text">
-              <PromptTextArea.Field
-                placeholder="Type your question here..."
-                rows={1}
-                maxLength={500}
-                onChange={(e) => {
-                  const userPrompt = e.target.value.trim();
-                  console.log("User prompt changed:", userPrompt);
-                }}
-                className="w-full border-0 focus:outline-none"
-                autoFocus
-              />
-              {/* on click focus on the text area */}
-              <div className="flex justify-end items-center gap-2">
-                <PromptTextArea.Button
-                  onAsk={(prompt) => {
-                    console.log("Asking with prompt:", prompt);
+            <div className="flex-shrink-0">
+              <PromptTextArea.Wrapper className="flex flex-col gap-3.5 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-200 p-2 border-1 border-gray-300 rounded-lg bg-white dark:bg-gray-800 cursor-text">
+                <PromptTextArea.Field
+                  placeholder="Type your question here..."
+                  rows={1}
+                  maxLength={500}
+                  onChange={(e) => {
+                    // const userPrompt = e.target.value.trim();
+                    // console.log("User prompt changed:", userPrompt);
                   }}
-                  className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="Ask AI"
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </PromptTextArea.Button>
-              </div>
-            </PromptTextArea.Wrapper>
+                  className="w-full border-0 focus:outline-none"
+                  autoFocus
+                />
+                {/* on click focus on the text area */}
+                <div className="flex justify-end items-center gap-2">
+                  <PromptTextArea.Button
+                    onAsk={(prompt) => {
+                      console.log("Asking with prompt:", prompt);
+                    }}
+                    className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    aria-label="Ask AI"
+                    abortContent={
+                      <Pause className="w-4 h-4" />
+                    }
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </PromptTextArea.Button>
+                </div>
+              </PromptTextArea.Wrapper>
+            </div>
           </div>
         )}
       </div>

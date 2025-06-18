@@ -30,16 +30,16 @@ function useChat() {
       const answerStream = session?.answerStream({
         query: userPrompt,
       });
-      // dispatch({
-      //   type: "CLEAR_USER_PROMPT",
-      // });
+      dispatch({
+        type: "CLEAR_USER_PROMPT",
+      });
 
       const processAsyncGenerator = async () => {
         if (!answerStream) {
           throw new Error("Answer stream is not initialized");
         }
         for await (const answer of answerStream) {
-          console.log("Received answer chunk:", answer);
+          // console.log("Received answer chunk:", answer);
           // Here you can handle the answer chunk, e.g., update state or UI
         }
       };
@@ -110,7 +110,12 @@ function useChat() {
       throw new Error("Answer session is not initialized");
     }
 
-    answerSession.abort();
+    try {
+      answerSession.abort();
+      console.log("Aborting answer");
+    } catch (error) {
+      console.error("Error aborting answer:", error);
+    }
   };
 
   const regenerateLatest = async () => {

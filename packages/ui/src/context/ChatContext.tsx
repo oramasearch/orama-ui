@@ -6,9 +6,9 @@ export type ChatContextProps = {
   initialUserPrompt?: string;
   userPrompt?: string;
   interactions?: (Interaction | undefined)[];
-  lastInteractionVisible?: boolean;
-  scrollToLastInteraction?: boolean;
   answerSession: AnswerSession | null;
+  scrollToLastInteraction?: boolean;
+  isStreaming?: boolean;
 };
 
 export const initialChatState: ChatContextProps = {
@@ -16,9 +16,9 @@ export const initialChatState: ChatContextProps = {
   initialUserPrompt: "",
   interactions: [],
   userPrompt: "",
-  lastInteractionVisible: false,
-  scrollToLastInteraction: false,
   answerSession: null,
+  scrollToLastInteraction: false,
+  isStreaming: false,
 };
 
 export const ChatContext = createContext<ChatContextProps>(initialChatState);
@@ -91,11 +91,6 @@ export const chatReducer = (
       return {
         ...state,
         initialUserPrompt: "",
-      };
-    case "SET_LAST_INTERACTION_VISIBLE":
-      return {
-        ...state,
-        lastInteractionVisible: action.payload?.lastInteractionVisible,
       };
     case "SET_SCROLL_TO_LAST_INTERACTION":
       return {
