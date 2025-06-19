@@ -6,6 +6,36 @@ interface UseArrowKeysNavigationOptions {
   disabled?: boolean
 }
 
+/**
+ * A custom React hook that enables keyboard navigation using arrow keys within a container element.
+ * 
+ * This hook provides a `ref` to attach to a container and two handlers for keyboard events:
+ * - `onKeyDown`: Handles vertical navigation (ArrowUp/ArrowDown) among focusable elements.
+ * - `onArrowLeftRight`: Handles horizontal navigation (ArrowLeft/ArrowRight) among focusable elements.
+ * 
+ * @param options - Configuration options for the hook.
+ * @param options.selector - CSS selector string to identify vertically navigable focusable elements. Defaults to `[data-focus-on-arrow-nav]`.
+ * @param options.selectorLeftRight - CSS selector string to identify horizontally navigable focusable elements. Defaults to `[data-focus-on-arrow-nav-left-right]`.
+ * @param options.disabled - If true, disables all keyboard navigation. Defaults to `false`.
+ * 
+ * @returns An object containing:
+ * - `ref`: React ref to attach to the container element.
+ * - `onKeyDown`: Keyboard event handler for ArrowUp/ArrowDown navigation.
+ * - `onArrowLeftRight`: Keyboard event handler for ArrowLeft/ArrowRight navigation.
+ * 
+ * @example
+ * ```tsx
+ * const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation();
+ * 
+ * return (
+ *   <div ref={ref} onKeyDown={onKeyDown}>
+ *     <button data-focus-on-arrow-nav>Item 1</button>
+ *     <button data-focus-on-arrow-nav>Item 2</button>
+ *     <button data-focus-on-arrow-nav>Item 3</button>
+ *   </div>
+ * );
+ * ```
+ */
 export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = {}) {
   const { selector = '[data-focus-on-arrow-nav]', selectorLeftRight = '[data-focus-on-arrow-nav-left-right]', disabled = false } = options
   const ref = useRef<HTMLElement>(null)

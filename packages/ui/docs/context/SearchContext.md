@@ -47,7 +47,7 @@ type SearchContextProps = {
 ### With Custom Provider
 
 ```tsx
-import { SearchContext, SearchDispatchContext, useSearchContext, useSearchDispatch, searchReducer, initialSearchState } from "@orama/ui/context/SearchContext";
+import { SearchContext, SearchDispatchContext, useSearchContext, useSearchDispatch, searchReducer, initialSearchState } from "@orama/ui/context";
 import { CollectionManager } from "@orama/core";
 
 const collectionManager = new CollectionManager({ /* ...config... */ });
@@ -71,7 +71,7 @@ function SearchProvider({ children }) {
 ### Accessing State and Dispatch
 
 ```tsx
-import { useSearchContext, useSearchDispatch } from './SearchContext';
+import { useSearchContext, useSearchDispatch } from '@orama/ui/context';
 
 function MyComponent() {
   const searchState = searchState();

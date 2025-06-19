@@ -1,4 +1,4 @@
-# `SearchInput` Component
+# `SearchInput`
 
 The `SearchInput` suite provides a flexible, accessible, and composable set of components for building search input UIs. It includes a wrapper, label, and input field, all customizable and ready for integration with Orama search.
 

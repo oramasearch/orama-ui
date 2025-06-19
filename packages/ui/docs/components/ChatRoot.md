@@ -1,4 +1,4 @@
-# `ChatRoot` Component
+# `ChatRoot`
 
 The `ChatRoot` component provides the context and state management for Orama chat operations in your React application. It uses a reducer to manage chat-related state and provides both the state and dispatch function to its descendants via context.
 

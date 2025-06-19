@@ -1,4 +1,4 @@
-# `SearchRoot` Component
+# `SearchRoot`
 
 The `SearchRoot` component provides the context and state management for Orama search operations in your React application. It should wrap all search-related UI components to ensure they have access to the search state and dispatch functions.
 
