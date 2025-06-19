@@ -1,13 +1,17 @@
 {
   "name": "@orama/ui",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "sideEffects": [
     "**/*.css"
   ],
   "files": [
-    "dist",
-    "docs"
+    "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oramasearch/orama-ui.git",
+    "directory": "packages/ui"
+  },
   "exports": {
     "./styles.css": "./dist/index.css",
     "./*": "./dist/*.js"
