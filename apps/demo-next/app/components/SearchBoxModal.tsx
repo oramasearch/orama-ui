@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause } from "lucide-react";
+import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause, X } from "lucide-react";
 import { CollectionManager } from "@orama/core";
 import SearchInput from "@orama/ui/components/SearchInput";
 import SearchRoot from "@orama/ui/components/SearchRoot";
@@ -26,7 +26,7 @@ export const InnerSearchBox = () => {
 
   return (
     <>
-      <div className="w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
+      <div className="w-full mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
         {!displayChat && (
           <div className="h-140">
             <SearchInput.Wrapper className="relative mb-1">
@@ -133,9 +133,9 @@ export const InnerSearchBox = () => {
                   <SearchResults.GroupList group={group}>
                     {(hit) => (
                       <SearchResults.Item
-                        onClick={() =>
-                          console.log(`Clicked on ${hit.document?.title}`)
-                        }
+                        as='a'
+                        href={typeof hit.document?.url === "string" ? hit.document.url : "#"}
+                        className="block p-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 duration-200 cursor-pointer border-b-1 border-gray-200 dark:border-gray-600 last:border-b-0"
                       >
                         {/* CUSTOM ITEM CONTENT */}
                         {typeof hit.document?.title === "string" && (
@@ -373,24 +373,29 @@ export const SearchBoxModal = () => {
         <Star className="inline-block mr-2 w-4 h-4 animate-pulse" />
         Ask anything
       </button>
-      <Modal
-        closeOnEscape={true}
-        closeOnOutsideClick={true}
-        onModalClosed={() => {
-          setOpenModal(false);
-        }}
+      <Modal.Wrapper
         open={openModal}
+        onModalClosed={() => setOpenModal(false)}
+        closeOnOutsideClick={true}
+        closeOnEscape={true}
       >
-        <h1 className="text-2xl font-bold mb-4">Orama Searchbox</h1>
-        <p className="text-sm text-slate-500 mb-4">
-          Ask anything about Orama and get instant answers.
-        </p>
-        <SearchRoot client={collectionManager}>
-          <ChatRoot client={collectionManager}>
-            <InnerSearchBox />
-          </ChatRoot>
-        </SearchRoot>
-      </Modal>
+        <Modal.Inner className="flex flex-col items-center">
+          <Modal.Close className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-pointer">
+            <X className="w-4 h-4" />
+          </Modal.Close>
+          <Modal.Content>
+            <h1 className="text-2xl font-bold mb-4">Orama Searchbox</h1>
+            <p className="text-sm text-slate-500 mb-4">
+              Ask anything about Orama and get instant answers.
+            </p>
+            <SearchRoot client={collectionManager}>
+              <ChatRoot client={collectionManager}>
+                <InnerSearchBox />
+              </ChatRoot>
+            </SearchRoot>
+          </Modal.Content>
+        </Modal.Inner>
+      </Modal.Wrapper>
     </>
   );
 };

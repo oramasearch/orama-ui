@@ -1,24 +1,45 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, createContext, useContext } from 'react';
 
 export interface ModalStatus {
   open: boolean;
   id: HTMLElement;
 }
 
-interface OramaModalProps {
-  closeOnEscape?: boolean;
-  closeOnOutsideClick?: boolean;
-  mainTitle?: string;
+interface ModalContextType {
+  modalRef: React.RefObject<HTMLDialogElement | null>;
+  innerModalRef: React.RefObject<HTMLDivElement | null>;
   onModalClosed: () => void;
-  open?: boolean;
-  children?: React.ReactNode;
+  closeOnEscape: boolean;
+  closeOnOutsideClick: boolean;
+  trapFocus: (event: KeyboardEvent) => void;
+  handleFocus: () => void;
 }
 
-const Modal: React.FC<OramaModalProps> = ({
+const ModalContext = createContext<ModalContextType | null>(null);
+
+const useModalContext = () => {
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error('Modal components must be used within Modal.Wrapper');
+  }
+  return context;
+};
+
+interface ModalWrapperProps {
+  closeOnEscape?: boolean;
+  closeOnOutsideClick?: boolean;
+  onModalClosed: () => void;
+  open?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const ModalWrapper: React.FC<ModalWrapperProps> = ({
   closeOnEscape = true,
   closeOnOutsideClick = true,
   onModalClosed,
   children,
+  className,
   open = false,
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -92,23 +113,20 @@ const Modal: React.FC<OramaModalProps> = ({
     }
   }, [closeOnOutsideClick, onModalClosed]);
 
-  const handleCloseClick = useCallback(() => {
-    onModalClosed();
-  }, [onModalClosed]);
-
-  // Effect to handle component mount/unmount (equivalent to connectedCallback/disconnectedCallback)
+  // Effect to handle component mount/unmount
   useEffect(() => {
+    if (!open) return;
+
     // Store original body overflow state
     originalBodyOverflowRef.current = document.body.style.overflow;
-    
+
     // Store currently active element
     activeElementRef.current = document.activeElement as HTMLElement;
-    
     // Set body overflow to hidden and focus first element
     document.body.style.overflow = 'hidden';
     handleFocus();
 
-    // Cleanup function (equivalent to disconnectedCallback)
+    // Cleanup function
     return () => {
       document.body.style.overflow = originalBodyOverflowRef.current;
       
@@ -117,77 +135,115 @@ const Modal: React.FC<OramaModalProps> = ({
         activeElementRef.current.focus();
       }
     };
-  }, [handleFocus]);
+  }, [open, handleFocus]);
 
   // Effect to handle focus when component updates
   useEffect(() => {
-    handleFocus();
-  });
+    if (open) {
+      handleFocus();
+    }
+  }, [open, handleFocus]);
 
   if (!open) {
-    return null; // Do not render the modal if not open
+    return null;
+  }
+
+  const contextValue: ModalContextType = {
+    modalRef,
+    innerModalRef,
+    onModalClosed,
+    closeOnEscape,
+    closeOnOutsideClick,
+    trapFocus,
+    handleFocus,
+  };
+
+  if (!open) {
+    return null;
   }
 
   return (
-    <dialog
-      ref={modalRef}
-      className="modal open"
-      aria-modal="true"
-      aria-labelledby="modalTitle"
-      aria-describedby="modalContent"
-      onKeyDown={handleKeyDown}
-      onClick={handleClick}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        border: 'none',
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000
-      }}
-    >
-      <div 
-        ref={innerModalRef}
-        className="modal-inner"
-        style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '24px',
-          maxWidth: '90vw',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          position: 'relative'
-        }}
+    <ModalContext.Provider value={contextValue}>
+      <dialog
+        ref={modalRef}
+        aria-modal="true"
+        aria-describedby="modalContent"
+        onKeyDown={handleKeyDown}
+        onClick={handleClick}
+        className={`fixed left-0 right-0 bg-gray-500 bg-opacity-50 w-full h-full inset-0 border-none m-0 p-0 flex z-50 ${className || ''}`}
       >
-        <div id="modalContent" className="modal-content" style={{ marginBottom: '16px' }}>
-          {children}
-        </div>
-        <button 
-          onClick={handleCloseClick} 
-          type="button" 
-          className="modal-close"
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            border: 'none',
-            background: 'transparent',
-            fontSize: '18px',
-            cursor: 'pointer',
-            padding: '4px 8px'
-          }}
-        >
-          Close
-        </button>
-      </div>
-    </dialog>
+        {children}
+      </dialog>
+    </ModalContext.Provider>
   );
+};
+
+interface ModalInnerProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const ModalInner: React.FC<ModalInnerProps> = ({ className = '', children }) => {
+  const { innerModalRef } = useModalContext();
+
+  return (
+    <div 
+      ref={innerModalRef}
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg m-auto p-6 max-w-3xl w-full relative ${className}`}
+      role="dialog"
+      aria-modal="true"
+    >
+      {children}
+    </div>
+  );
+};
+
+interface ModalContentProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const ModalContent: React.FC<ModalContentProps> = ({ className = '', children }) => {
+  return (
+    <div id="modalContent" className={`w-full h-full ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+interface ModalCloseProps {
+  className?: string;
+  children?: React.ReactNode;
+  asChild?: boolean;
+}
+
+const ModalClose: React.FC<ModalCloseProps> = ({ 
+  className = '', 
+  children = '×',
+}) => {
+  const { onModalClosed } = useModalContext();
+
+  const handleClick = useCallback(() => {
+    onModalClosed();
+  }, [onModalClosed]);
+
+  return (
+    <button 
+      onClick={handleClick} 
+      type="button" 
+      className={className}
+      aria-label="Close modal"
+    >
+      {children}
+    </button>
+  );
+};
+
+const Modal = {
+  Wrapper: ModalWrapper,
+  Inner: ModalInner,
+  Content: ModalContent,
+  Close: ModalClose,
 };
 
 export default Modal;
