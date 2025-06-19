@@ -33,6 +33,10 @@ interface GroupedResult {
 
 const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
   const { ref, onArrowLeftRight } = useArrowKeysNavigation();
+  const { results } = useSearchContext();
+  if (!results || results.length === 0) {
+    return null;
+  }
 
   return (
     <section

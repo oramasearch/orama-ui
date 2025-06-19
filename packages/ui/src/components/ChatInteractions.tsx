@@ -318,9 +318,11 @@ const RegenerateLatest: React.FC<ActionButtonProps> = ({
 const CopyMessage: React.FC<
   ActionButtonProps & {
     interaction: Interaction;
+    copiedContent?: React.ReactNode;
   }
-> = ({ onClick, interaction, children, ...rest }) => {
-  const { copyToClipboard } = useChat();
+> = ({ onClick, interaction, children, copiedContent, ...rest }) => {
+  const { copyToClipboard, copiedMessage } = useChat();
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
     copyToClipboard(interaction.response || "");
@@ -329,9 +331,26 @@ const CopyMessage: React.FC<
     }
   };
 
+  useEffect(() => {
+    if (copiedMessage === interaction.response) {
+      setCopied(true);
+      const timer = setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedMessage, interaction.response]);
+
   return (
     <button onClick={handleCopy} {...rest}>
-      {children}
+      {copied ? (
+        <>
+          {copiedContent || <span>Copied!</span>}
+          <span className="sr-only">Copied message to clipboard</span>
+        </>
+      ) : (
+        children || <span>Copy</span>
+      )}
     </button>
   );
 };

@@ -24,6 +24,8 @@ export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = 
 
       if (focusableArray.length === 0) return
 
+      console.log('Focusable elements:', focusableArray)
+
       const firstFocusableElement = focusableArray[0]
       const lastFocusableElement = focusableArray[focusableArray.length - 1]
       const focusedElement = ref.current.querySelector(':focus') as HTMLElement

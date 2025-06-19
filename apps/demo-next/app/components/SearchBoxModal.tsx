@@ -9,10 +9,9 @@ import ChatInteractions from "@orama/ui/components/ChatInteractions";
 import SearchResults from "@orama/ui/components/SearchResults";
 import Suggestions from "@orama/ui/components/Suggestions";
 import FacetTabs from "@orama/ui/components/FacetTabs";
-import { useSearchContext } from "@orama/ui/context/SearchContext";
+import Modal from "@orama/ui/components/Modal";
 import { cn } from "@/lib/utils";
 import PromptTextArea from "@orama/ui/components/PromptTextArea";
-import Modal from "./Modal";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
@@ -21,7 +20,6 @@ const collectionManager = new CollectionManager({
 });
 
 export const InnerSearchBox = () => {
-  const { selectedFacet } = useSearchContext();
   const [displayChat, setDisplayChat] = useState(false);
 
   return (
