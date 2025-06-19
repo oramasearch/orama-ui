@@ -228,6 +228,19 @@ export const InnerSearchBox = () => {
                     >
                       {interaction.query}
                     </ChatInteractions.UserPrompt>
+                    
+                    {interaction.loading &&
+                      !interaction.response && ( // use your custom skeleton loader here
+                        <div className="animate-pulse mb-2">
+                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                        </div>
+                      )}
+                    {interaction.error && ( // use your custom error message component here
+                      <div className="p-4 bg-red-100 dark:bg-red-700 rounded-lg max-w-80% mx-auto text-sm text-red-800 dark:text-red-200">
+                        <p>Error: {interaction.error}</p>
+                      </div>
+                    )}
                     <ChatInteractions.Sources
                       sources={
                         Array.isArray(interaction.sources)
@@ -257,18 +270,6 @@ export const InnerSearchBox = () => {
                         </div>
                       )}
                     </ChatInteractions.Sources>
-                    {interaction.loading &&
-                      !interaction.response && ( // use your custom skeleton loader here
-                        <div className="animate-pulse mb-2">
-                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
-                          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
-                        </div>
-                      )}
-                    {interaction.error && ( // use your custom error message component here
-                      <div className="p-4 bg-red-100 dark:bg-red-700 rounded-lg max-w-80% mx-auto text-sm text-red-800 dark:text-red-200">
-                        <p>Error: {interaction.error}</p>
-                      </div>
-                    )}
                     <ChatInteractions.AssistantMessage className="mb-2 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-80% mx-auto text-sm">
                       {interaction.response}
                     </ChatInteractions.AssistantMessage>

@@ -41,34 +41,34 @@ Orama UI is a composable, unstyled React component library designed to provide f
 
 ## Components
 
-- [`SearchRoot`](docs/components/SearchRoot.md)
-- [`ChatRoot`](docs/components/ChatRoot.md)
-- [`SearchInput`](docs/components/SearchInput.md)
-- [`ChatInteractions`](docs/components/ChatInteractions.md)
-- [`FacetTabs`](docs/components/FacetTabs.md)
-- [`PromptTextArea`](docs/components/PromptTextArea.md)
-- [`SearchResults`](docs/components/SearchResults.md)
-- [`Suggestions`](docs/components/Suggestions.md)
+- [`SearchRoot`](./docs/components/SearchRoot.md)
+- [`ChatRoot`](./docs/components/ChatRoot.md)
+- [`SearchInput`](./docs/components/SearchInput.md)
+- [`ChatInteractions`](./docs/components/ChatInteractions.md)
+- [`FacetTabs`](./docs/components/FacetTabs.md)
+- [`PromptTextArea`](./docs/components/PromptTextArea.md)
+- [`SearchResults`](./docs/components/SearchResults.md)
+- [`Suggestions`](./docs/components/Suggestions.md)
 
 ---
 
 ## Hooks
 
-- [`useChat`](docs/hooks/useChat.md)
-- [`useSearch`](docs/hooks/useSearch.md)
+- [`useChat`](./docs/hooks/useChat.md)
+- [`useSearch`](./docs/hooks/useSearch.md)
 
 ---
 
 ## Context
 
-- [`ChatContext`](docs/context/ChatContext.md)
-- [`SearchContext`](docs/context/SearchContext.md)
+- [`ChatContext`](./docs/context/ChatContext.md)
+- [`SearchContext`](./docs/context/SearchContext.md)
 
 ---
 
 ## Types
 
-- [`types`](docs/types.md)
+- [`types`](./docs/types.md)
 
 ---
 

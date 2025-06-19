@@ -13,6 +13,7 @@ import ChatRoot from "@orama/ui/components/ChatRoot";
 import PromptTextArea from "@orama/ui/components/PromptTextArea";
 import ChatInteractions from "@orama/ui/components/ChatInteractions";
 import Suggestions from "@orama/ui/components/Suggestions";
+import { sources } from "next/dist/compiled/webpack/webpack";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
@@ -138,7 +139,14 @@ const getThemeClasses = (theme: string) => {
           suggestionTitle: "text-lg font-medium text-gray-900",
           suggestionItem: "group p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer",
           suggestionText: "text-sm text-gray-700 group-hover:text-purple-700"
-        }
+        },
+        sources: {
+          container: "flex flex-row gap-2 mb-2 mt-3 overflow-x-auto",
+          item: "group inline-flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 hover:shadow-md hover:bg-gray-50 transition-all duration-200 cursor-pointer flex-shrink-0",
+          dot: "w-2 h-2 bg-purple-500 rounded-full flex-shrink-0 group-hover:bg-purple-600 transition-colors",
+          title: "text-xs font-semibold text-gray-900 truncate",
+          content: "text-xs text-gray-500 truncate"
+        },
       };
     case "dark":
       return {
@@ -169,7 +177,14 @@ const getThemeClasses = (theme: string) => {
           suggestionTitle: "text-lg font-medium text-gray-100",
           suggestionItem: "group p-3 rounded-lg border border-gray-700 bg-gray-800/50 hover:bg-cyan-900/20 hover:border-cyan-700 transition-all duration-200 cursor-pointer",
           suggestionText: "text-sm text-gray-300 group-hover:text-cyan-300"
-        }
+        },
+        sources: {
+          container: "flex flex-row gap-2 mb-2 mt-3 overflow-x-auto",
+          item: "group inline-flex items-center bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 hover:shadow-lg hover:bg-gray-700 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex-shrink-0",
+          dot: "w-2 h-2 bg-cyan-500 rounded-full flex-shrink-0 group-hover:bg-cyan-400 transition-colors",
+          title: "text-xs font-semibold text-gray-100 truncate",
+          content: "text-xs text-gray-400 truncate"
+        },
       };
     case "playful":
       return {
@@ -185,8 +200,8 @@ const getThemeClasses = (theme: string) => {
         resultTitle: "text-gray-800 group-hover:text-pink-700 group-focus:text-pink-700",
         resultContent: "text-gray-600",
         chatActions: {
-          resetButton: "px-3 py-1 bg-red-100 hover:bg-red-200 border-2 border-red-300 rounded-full text-sm text-red-700 transition-all duration-200 hover:scale-105 cursor-pointer shadow-sm",
-          actionButton: "px-3 py-1 bg-white/80 hover:bg-white border-2 border-pink-200 rounded-full text-sm text-gray-700 transition-all duration-200 hover:scale-105 cursor-pointer shadow-sm",
+          resetButton: "px-3 py-1 bg-red-100 hover:bg-red-200 border-2 border-red-300 rounded-full text-sm text-red-700 transition-all duration-200 cursor-pointer shadow-sm",
+          actionButton: "px-3 py-1 bg-white/80 hover:bg-white border-2 border-pink-200 rounded-full text-sm text-gray-700 transition-all duration-200 cursor-pointer shadow-sm",
           container: "flex space-x-3 my-4 justify-between"
         },
         noResults: {
@@ -198,9 +213,16 @@ const getThemeClasses = (theme: string) => {
           suggestionContainer: "w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-2",
           suggestionIcon: "w-5 h-5 text-pink-600",
           suggestionTitle: "text-lg font-medium text-gray-800",
-          suggestionItem: "group p-3 rounded-2xl border-2 border-pink-200 bg-white/80 hover:bg-white hover:border-pink-300 hover:scale-105 transition-all duration-200 cursor-pointer shadow-sm",
+          suggestionItem: "group p-3 rounded-2xl border-2 border-pink-200 bg-white/80 hover:bg-white hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm",
           suggestionText: "text-sm text-gray-700 group-hover:text-pink-700"
-        }
+        },
+        sources: {
+          container: "flex flex-row gap-3 mb-2 mt-4 overflow-x-auto",
+          item: "group inline-flex items-center bg-white/90 border-2 border-orange-200 rounded-2xl px-4 py-3 hover:shadow-lg hover:bg-white hover:border-orange-300 transition-all duration-200 cursor-pointer flex-shrink-0",
+          dot: "w-3 h-3 bg-orange-400 rounded-full flex-shrink-0 group-hover:bg-orange-500 transition-colors",
+          title: "text-xs font-bold text-gray-800 truncate",
+          content: "text-xs text-gray-600 truncate"
+        },
       };
     default:
       return {
@@ -231,6 +253,13 @@ const getThemeClasses = (theme: string) => {
           suggestionTitle: "text-lg font-medium text-gray-900",
           suggestionItem: "group p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer",
           suggestionText: "text-sm text-gray-700 group-hover:text-purple-700"
+        },
+        sources: {
+          container: "flex flex-row gap-2 mb-2 mt-3 overflow-x-auto",
+          item: "group inline-flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 hover:shadow-md hover:bg-gray-50 transition-all duration-200 cursor-pointer flex-shrink-0",
+          dot: "w-2 h-2 bg-purple-500 rounded-full flex-shrink-0 group-hover:bg-purple-600 transition-colors",
+          title: "text-xs font-semibold text-gray-900 truncate",
+          content: "text-xs text-gray-500 truncate"
         }
       };
   }
@@ -391,7 +420,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
               <div className="flex-shrink-0">
                 <button
                   onClick={() => setIsChat(false)}
-                  className={`flex items-center text-sm ${themeClasses.text} opacity-70 hover:opacity-100 transition-opacity`}
+                  className={`flex items-center text-sm ${themeClasses.text} opacity-70 hover:opacity-100 transition-opacity cursor-pointer`}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to search
@@ -413,12 +442,42 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                           <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
                         </div>
                       )}
+                      <ChatInteractions.Sources
+                        sources={
+                          Array.isArray(interaction.sources)
+                            ? interaction.sources
+                            : []
+                        }
+                        className={`flex flex-row gap-1 mb-1 mt-2 overflow-x-auto ${themeClasses.sources.container}`}
+                        itemClassName={themeClasses.sources.item}
+                      >
+                        {(document, index: number) => (
+                          <div
+                            className="flex items-center gap-2 max-w-xs"
+                            key={index}
+                          >
+                            <div className="flex flex-col min-w-0">
+                              <span className={`text-xs font-semibold ${themeClasses.sources.title}`}>
+                                {document?.title as string}
+                              </span>
+                              <span className={`text-xs ${themeClasses.sources.content}`}>
+                                {typeof document?.content === "string"
+                                  ? document.content.substring(0, 40)
+                                  : ""}
+                                ...
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </ChatInteractions.Sources>
+                      
                       <ChatInteractions.AssistantMessage className={`p-3 bg-gray-100 text-sm ${theme === 'dark' ? 'bg-gray-800' : ''} ${themeClasses.text} rounded-lg my-3`}>
                         {interaction.response}
                       </ChatInteractions.AssistantMessage>
-                      {/* add container with user actions such as thumbs up/down */}
+
+
                       {interaction.response && !interaction.loading && (
-                        <div className={themeClasses.chatActions.container}>
+                        <div className={themeClasses.chatActions.container + `${index !== totalInteractions ? ' justify-end' : ''}`}>
                           <React.Fragment>
                             {index === totalInteractions && (
                               <div>
