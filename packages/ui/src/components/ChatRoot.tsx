@@ -7,12 +7,17 @@ import {
 } from "../context/ChatContext";
 import { CollectionManager } from "@orama/core";
 
+/* ChatRoot component provides a context for managing chat state and actions.
+ * It uses a reducer to manage the state and provides the context to its children.
+ * The `client` prop allows passing a custom CollectionManager instance.
+ * 
+ * Usage:
+ * <ChatRoot client={myCollectionManager}>
+ *   <ChatComponent />
+ * </ChatRoot>
+ */
 export interface ChatRootProps extends React.PropsWithChildren {
-  /**
-   * The Orama client instance to be used for search operations.
-   * If not provided, it will use the client from the SearchContext.
-   */
-  client?: CollectionManager;
+  client: CollectionManager;
 }
 
 const ChatRoot = ({ client, children }: ChatRootProps) => {

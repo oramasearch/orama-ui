@@ -51,6 +51,16 @@ export const useSearchDispatch = () => {
   return dispatch;
 };
 
+/**
+ * Reducer function for managing the state of the search context.
+ *
+ * Handles various actions to update the search context state, such as setting the client,
+ * search term, results, groups count, selected facet, and count.
+ *
+ * @param state - The current state of the search context.
+ * @param action - An object containing the action type and optional payload to update the state.
+ * @returns The updated state after applying the specified action.
+ */
 export const searchReducer = (
   state: SearchContextProps,
   action: { type: string; payload?: Partial<SearchContextProps> },
