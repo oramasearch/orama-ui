@@ -12,7 +12,6 @@ export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = 
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      console.log('useArrowKeysNavigation', event.key)
       if (disabled || !ref.current) return
       if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
 
@@ -24,8 +23,6 @@ export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = 
       focusableArray = focusableArray.filter((element) => element.tabIndex !== -1)
 
       if (focusableArray.length === 0) return
-
-      console.log('Focusable elements:', focusableArray)
 
       const firstFocusableElement = focusableArray[0]
       const lastFocusableElement = focusableArray[focusableArray.length - 1]
@@ -50,11 +47,10 @@ export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = 
 
   const handleArrowLeftRight = useCallback(
     (event: KeyboardEvent) => {
-      console.log('useArrowKeysNavigation', event.key)
-
+      
       if (disabled || !ref.current) return
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
-      
+
       event.stopPropagation()
       event.preventDefault()
       const focusableElements = ref.current.querySelectorAll(selectorLeftRight)
@@ -63,7 +59,6 @@ export function useArrowKeysNavigation(options: UseArrowKeysNavigationOptions = 
 
       if (focusableArray.length === 0) return
 
-      console.log('Focusable elements:', focusableArray)
       const focusedElement = ref.current.querySelector(':focus') as HTMLElement
       const focusedIndex = focusableArray.indexOf(focusedElement)
       let nextFocusableElement: HTMLElement | undefined

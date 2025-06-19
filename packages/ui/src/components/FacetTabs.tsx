@@ -3,6 +3,7 @@ import { GroupCount } from "@/types";
 import { SearchParams } from "@orama/core";
 import { useSearchContext, useSearchDispatch } from "../context/SearchContext";
 import useSearch from "../hooks/useSearch";
+import { useArrowKeysNavigation } from "../hooks/useArrowKeyNavigation";
 
 interface WrapperProps {
   children: ReactNode;
@@ -31,7 +32,17 @@ interface GroupedResult {
 }
 
 const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
-  return <div className={className}>{children}</div>;
+  const { ref, onArrowLeftRight } = useArrowKeysNavigation();
+
+  return (
+    <section
+      className={className}
+      ref={ref}
+      onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => onArrowLeftRight(e.nativeEvent)}
+    >
+      {children}
+    </section>
+  );
 };
 
 const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
