@@ -31,7 +31,18 @@ import { AnswerSession } from "@orama/core";
  *   error,
  * } = useChat();
  */
-function useChat() {
+export interface useChatProps {
+  onAsk: (args: { userPrompt: string }) => Promise<void>;
+  abortAnswer: () => void;
+  regenerateLatest: () => void;
+  copyToClipboard: (message: string) => void;
+  copiedMessage: string;
+  reset: () => void;
+  loading: boolean;
+  error: Error | null;
+};
+
+function useChat(): useChatProps {
   const { client, interactions, answerSession } = useChatContext();
   const dispatch = useChatDispatch();
   const [loading, setLoading] = useState(false);

@@ -1,47 +1,72 @@
 import { type SearchParams } from "@orama/core";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   initialSearchState,
   useSearchContext,
   useSearchDispatch,
 } from "../context/SearchContext";
 import { GroupsCount } from "../types";
+
 /**
- * A custom hook for managing search functionality with orama.
+ * Custom React hook for managing search functionality within the application.
+ *
+ * This hook provides methods to perform a search (`onSearch`), reset the search state (`onReset`),
+ * and exposes loading and error states for UI feedback.
+ *
+ * @returns {Object} An object containing:
+ * - `onSearch`: A callback function to execute a search with specified parameters.
+ * - `onReset`: A callback function to reset the search state to its initial values.
+ * - `loading`: A boolean indicating if a search operation is in progress.
+ * - `error`: An `Error` object or `null` representing the current error state.
  *
  * @example
- * const { onSearch, loading, error } = useSearch();
+ * const { onSearch, onReset, loading, error } = useSearch();
+ * onSearch({ term: "example", groupBy: "category" });
+ *
+ * @remarks
+ * - Relies on `useSearchContext` and `useSearchDispatch` for context and state management.
+ * - Handles grouping and filtering of search results.
+ * - Ensures state updates only occur while the component is mounted.
  */
+export interface useSearchReturn {
+  onSearch: (options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>;
+  onReset: () => void;
+  loading: boolean;
+  error: Error | null;
+}
 
-function useSearch() {
+function useSearch(): useSearchReturn {
   const { client } = useSearchContext();
   const dispatch = useSearchDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const isMounted = useRef(true);
 
-  const onSearch = async (
-    options: SearchParams & {
-      groupBy?: string;
-      filterBy?: Record<string, string>[];
-    },
-  ) => {
-    if (!client) {
-      setError(new Error("Client is not initialized"));
-      setLoading(false);
-      return;
-    }
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
-    dispatch({
-      type: "SET_SEARCH_TERM",
-      payload: { searchTerm: options.term || initialSearchState.searchTerm },
-    });
-    setLoading(true);
-    setError(null);
-    const groupBy = options.groupBy || null;
+  const onSearch = useCallback(
+    async (options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => {
+      if (!client) {
+        setError(new Error("Client is not initialized"));
+        setLoading(false);
+        return;
+      }
 
-    try {
-      await client
-        ?.search({
+      dispatch({
+        type: "SET_SEARCH_TERM",
+        payload: { searchTerm: options.term || initialSearchState.searchTerm },
+      });
+      setLoading(true);
+      setError(null);
+      const groupBy = options.groupBy || null;
+
+      try {
+        const res = await client.search({
           ...options,
           term: options.term,
           limit: options.limit || 10,
@@ -68,61 +93,67 @@ function useSearch() {
                 ),
               }
             : {}),
-        })
-        .then((res) => {
-          dispatch({
-            type: "SET_RESULTS",
-            payload: { results: res.hits || [] },
-          });
-          dispatch({
-            type: "SET_COUNT",
-            payload: { count: res.count || 0 },
-          });
-
-          if (
-            groupBy &&
-            res.facets &&
-            res.facets[groupBy] &&
-            res.hits?.length > 0
-          ) {
-            const grouped: GroupsCount = Object.entries(
-              (res.facets[groupBy] as { values: Record<string, number> })
-                .values,
-            ).map(([name, count]) => ({
-              name,
-              count: count,
-            }));
-            grouped.unshift({
-              name: "All",
-              count: res.count || 0,
-            });
-            dispatch({
-              type: "SET_GROUPS_COUNT",
-              payload: { groupsCount: grouped },
-            });
-          } else {
-            const grouped = res.hits?.length
-              ? [
-                  {
-                    name: "All",
-                    count: res.count || 0,
-                  },
-                ]
-              : null;
-            dispatch({
-              type: "SET_GROUPES_COUNT",
-              payload: { groupsCount: grouped },
-            });
-          }
         });
-    } catch (e) {
-      setError(e as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const onReset = () => {
+        if (!isMounted.current) return;
+
+        dispatch({
+          type: "SET_RESULTS",
+          payload: { results: res.hits || [] },
+        });
+        dispatch({
+          type: "SET_COUNT",
+          payload: { count: res.count || 0 },
+        });
+
+        if (
+          groupBy &&
+          res.facets &&
+          res.facets[groupBy] &&
+          res.hits?.length > 0
+        ) {
+          const grouped: GroupsCount = Object.entries(
+            (res.facets[groupBy] as { values: Record<string, number> }).values,
+          ).map(([name, count]) => ({
+            name,
+            count,
+          }));
+          grouped.unshift({
+            name: "All",
+            count: res.count || 0,
+          });
+          dispatch({
+            type: "SET_GROUPS_COUNT",
+            payload: { groupsCount: grouped },
+          });
+        } else {
+          const grouped = res.hits?.length
+            ? [
+                {
+                  name: "All",
+                  count: res.count || 0,
+                },
+              ]
+            : null;
+          dispatch({
+            type: "SET_GROUPES_COUNT",
+            payload: { groupsCount: grouped },
+          });
+        }
+      } catch (e) {
+        if (isMounted.current) {
+          setError(e as Error);
+        }
+      } finally {
+        if (isMounted.current) {
+          setLoading(false);
+        }
+      }
+    },
+    [client, dispatch],
+  );
+
+  const onReset = useCallback(() => {
     dispatch({
       type: "SET_SEARCH_TERM",
       payload: { searchTerm: "" },
@@ -143,7 +174,8 @@ function useSearch() {
       type: "SET_COUNT",
       payload: { count: 0 },
     });
-  };
+    setError(null);
+  }, [dispatch]);
 
   return {
     onSearch,
