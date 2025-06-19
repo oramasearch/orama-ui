@@ -298,7 +298,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                 Ask AI for help
               </button>
 
-              <FacetTabs.Wrapper className="my-4">
+              <FacetTabs.Wrapper>
                 <FacetTabs.List className="space-x-2 flex gap-1">
                   {(
                     group, isSelected
