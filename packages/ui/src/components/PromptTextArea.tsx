@@ -1,6 +1,6 @@
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import useChat from "../hooks/useChat";
-import React, { use, useEffect } from "react";
+import React, { use, useCallback, useEffect, useMemo } from "react";
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -84,7 +84,6 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
 
   useEffect(() => {
     if (!userPrompt && textAreaRef.current) {
-      console.log("Clearing text area");
       textAreaRef.current.value = "";
     }
   }, [userPrompt]);
@@ -118,45 +117,50 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   const { onAsk, abortAnswer } = useChat();
   const { interactions } = useChatContext();
 
-  const isStreaming = interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading;
-  const disabledButton = !userPrompt && !isStreaming || !userPrompt && !abortContent;
+  const isStreaming = useMemo(
+    () => interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading,
+    [interactions]
+  );
+  
+  const disabledButton = useMemo(() => {
+    if (disabled) return true;
+    if (isStreaming) return false;
+    if (!userPrompt) return true;
+    return false;
+  }, [disabled, isStreaming, userPrompt]);
 
-  const handleAsk = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!userPrompt) return;
-
-    try {
-      await onAsk({
-        userPrompt,
-      });
-      onButtonAsk?.(userPrompt);
-      if (onClick) {
-        onClick(e);
+  const handleAsk = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userPrompt) return;
+      try {
+        await onAsk({ userPrompt });
+        onButtonAsk?.(userPrompt);
+        onClick?.(e);
+      } catch (error) {
+        console.error("Error in ask method:", error);
       }
-    } catch (error) {
-      console.error("Error in ask method:", error);
-    }
-  };
+    },
+    [userPrompt, onAsk, onButtonAsk, onClick]
+  );
 
-  const handleAbort = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    abortAnswer();
-    if (onClick) {
-      onClick(e);
-    }
-  };
+  const handleAbort = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      abortAnswer();
+      onClick?.(e);
+    },
+    [abortAnswer, onClick]
+  );
 
   return (
     <button
       type="button"
       onClick={isStreaming ? handleAbort : handleAsk}
-      disabled={disabled || disabledButton}
+      disabled={disabledButton}
+      aria-live={isStreaming ? "polite" : undefined}
       {...props}
     >
-      {isStreaming && abortContent ? (
-        <span>{abortContent}</span>
-      ) : (
-        children
-      )}
+      {isStreaming && abortContent ? abortContent : children}
     </button>
   );
 };

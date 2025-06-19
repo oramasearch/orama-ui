@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import SearchRoot from "@orama/ui/components/SearchRoot";
 import SearchInput from "@orama/ui/components/SearchInput";
-import { Star, ArrowLeft, ArrowUp, Repeat, Clipboard, RotateCcw, Copy, ClipboardCheck, SearchX, Lightbulb } from "lucide-react";
+import { Star, ArrowLeft, ArrowUp, Repeat, Clipboard, RotateCcw, Copy, ClipboardCheck, SearchX, Lightbulb, PauseCircle } from "lucide-react";
 import { CollectionManager } from "@orama/core";
 import FacetTabs from "@orama/ui/components/FacetTabs";
 import { useArrowKeysNavigation } from "@orama/ui/hooks/useArrowKeyNavigation";
@@ -524,7 +524,11 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                     autoFocus
                     className={`flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors placeholder:text-muted-foreground ${themeClasses.input}`}
                   />
-                  <PromptTextArea.Button className={`p-2 text-white rounded-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${themeClasses.promptButton}`}>
+                  <PromptTextArea.Button
+                    abortContent={
+                      <PauseCircle className="w-4 h-4" />
+                    }
+                    className={`p-2 text-white rounded-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${themeClasses.promptButton}`}>
                     <ArrowUp className="w-4 h-4" />
                   </PromptTextArea.Button>
                 </PromptTextArea.Wrapper>
