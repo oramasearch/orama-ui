@@ -10,7 +10,7 @@ interface WrapperProps {
 }
 
 interface ListProps {
-  children: (group: GroupedResult) => ReactNode;
+  children: (group: GroupedResult, isSelected: boolean) => ReactNode;
   className?: string;
   itemClassName?: string;
 }
@@ -35,7 +35,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
 };
 
 const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
-  const { groupsCount } = useSearchContext();
+  const { groupsCount, selectedFacet } = useSearchContext();
 
   if (!groupsCount || groupsCount.length === 0) {
     return null;
@@ -45,7 +45,7 @@ const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
     <ul className={className}>
       {groupsCount.map((group: GroupedResult) => (
         <li key={group.name} className={itemClassName}>
-          {children(group)}
+          {children(group, group.name === selectedFacet)}
         </li>
       ))}
     </ul>
@@ -94,6 +94,9 @@ const Item: React.FC<ItemProps> = ({
       type="button"
       data-selected={isSelected}
       data-disabled={disabled}
+      data-focus-on-arrow-nav={isSelected ? "true" : undefined}
+      data-focus-on-arrow-nav-left-right
+
       {...props}
     >
       {children}

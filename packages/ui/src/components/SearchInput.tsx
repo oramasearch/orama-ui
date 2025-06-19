@@ -134,6 +134,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
       placeholder={placeholder}
       aria-label={ariaLabel}
       className={className}
+      data-focus-on-arrow-nav
       {...rest}
     />
   );

@@ -178,6 +178,7 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
       role={needsKeyboardHandling ? "button" : undefined}
       tabIndex={needsKeyboardHandling ? 0 : undefined}
       aria-label={isInteractive ? "Search result" : undefined}
+      data-focus-on-arrow-nav
       {...props}
     >
       {children}

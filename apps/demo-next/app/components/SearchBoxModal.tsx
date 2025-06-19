@@ -28,8 +28,8 @@ export const InnerSearchBox = () => {
     <>
       <div className="w-full mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
         {!displayChat && (
-          <div className="h-140">
-            <SearchInput.Wrapper className="relative mb-1">
+          <div className="flex flex-col justify-between h-140 gap-2">
+            <SearchInput.Wrapper className="relative mb-1 flex-shrink-0">
               {/* OPTIONAL LABEL */}
               {/* <SearchInput.Label
                 htmlFor='product-search'
@@ -47,12 +47,13 @@ export const InnerSearchBox = () => {
                 }}
               />
             </SearchInput.Wrapper>
-
+            
             <button
-              className="mt-3 w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200"
+              className="mt-3 w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
               onClick={() => {
                 setDisplayChat(true);
               }}
+              data-focus-on-arrow-nav
             >
               {/* add ai start icon with some animation */}
               <Star className="inline-block mr-2 w-4 h-4 animate-pulse" />
@@ -62,14 +63,14 @@ export const InnerSearchBox = () => {
             <FacetTabs.Wrapper>
               <FacetTabs.List className="space-x-2 mt-4 flex gap-1">
                 {(
-                  group, // TODO: consider to pass isSelected as second boolean argument
+                  group, isSelected
                 ) => (
                   <FacetTabs.Item
-                    isSelected={group.name === selectedFacet}
+                    isSelected={isSelected}
                     group={group}
                     className={cn(
                       "px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
-                      group.name === selectedFacet
+                      isSelected
                         ? "bg-pink-100 text-pink-800 dark:bg-pink-700 dark:text-pink-200"
                         : "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
                     )}
@@ -120,41 +121,43 @@ export const InnerSearchBox = () => {
                 </>
               )}
             </SearchResults.NoResults>
-
-            <SearchResults.GroupsWrapper
-              className="mt-4 overflow-y-auto"
-              groupBy="category"
-            >
-              {(group) => (
-                <div key={group.name} className="mb-4">
-                  <h2 className="text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3">
-                    {group.name}
-                  </h2>
-                  <SearchResults.GroupList group={group}>
-                    {(hit) => (
-                      <SearchResults.Item
-                        as='a'
-                        href={typeof hit.document?.url === "string" ? hit.document.url : "#"}
-                        className="block p-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 duration-200 cursor-pointer border-b-1 border-gray-200 dark:border-gray-600 last:border-b-0"
-                      >
-                        {/* CUSTOM ITEM CONTENT */}
-                        {typeof hit.document?.title === "string" && (
-                          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                            {hit.document?.title}
-                          </h3>
-                        )}
-                        {typeof hit.document?.content === "string" && (
-                          <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
-                            {hit.document?.content.substring(0, 100)}
-                            ...
-                          </p>
-                        )}
-                      </SearchResults.Item>
-                    )}
-                  </SearchResults.GroupList>
-                </div>
-              )}
-            </SearchResults.GroupsWrapper>
+            
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+              <SearchResults.GroupsWrapper
+                className="items-start relative overflow-y-auto"
+                groupBy="category"
+              >
+                {(group) => (
+                  <div key={group.name} className="mb-4">
+                    <h2 className="text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3">
+                      {group.name}
+                    </h2>
+                    <SearchResults.GroupList group={group}>
+                      {(hit) => (
+                        <SearchResults.Item
+                          as='a'
+                          href={typeof hit.document?.url === "string" ? hit.document.url : "#"}
+                          className="block py-4 px-3 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 duration-200 cursor-pointer border-b-1 border-gray-200 dark:border-gray-600 focus:outline-none focus:bg-gray-100 dark:focus:hover:bg-gray-700"
+                        >
+                          {/* CUSTOM ITEM CONTENT */}
+                          {typeof hit.document?.title === "string" && (
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                              {hit.document?.title}
+                            </h3>
+                          )}
+                          {typeof hit.document?.content === "string" && (
+                            <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
+                              {hit.document?.content.substring(0, 100)}
+                              ...
+                            </p>
+                          )}
+                        </SearchResults.Item>
+                      )}
+                    </SearchResults.GroupList>
+                  </div>
+                )}
+              </SearchResults.GroupsWrapper>
+            </div>
 
             {/* <SearchResults.Wrapper className='mt-4 overflow-y-auto'>
               <SearchResults.NoResults>
@@ -365,10 +368,11 @@ export const SearchBoxModal = () => {
     <>
       {/* render a button that opens a modal */}
       <button
-        className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 cursor-pointer"
+        className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-800 cursor-pointer"
         onClick={() => {
           setOpenModal(true);
         }}
+        data-focus-on-arrow-nav
       >
         <Star className="inline-block mr-2 w-4 h-4 animate-pulse" />
         Ask anything

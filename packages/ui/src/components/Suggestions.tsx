@@ -77,7 +77,7 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   };
   return (
     <li className={className}>
-      <button type="button" className={itemClassName} onClick={handleClick}>
+      <button type="button" className={itemClassName} onClick={handleClick} data-focus-on-arrow-nav>
         {children}
       </button>
     </li>

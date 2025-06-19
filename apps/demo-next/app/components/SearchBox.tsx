@@ -27,8 +27,8 @@ export const InnerSearchBox = () => {
     <>
       <div className="w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
         {!displayChat && (
-          <div className="h-140">
-            <SearchInput.Wrapper className="relative mb-1">
+          <div className="flex flex-col justify-between h-140 gap-2">
+            <SearchInput.Wrapper className="relative mb-1 flex-shrink-0">
               {/* OPTIONAL LABEL */}
               {/* <SearchInput.Label
                 htmlFor='product-search'
@@ -61,7 +61,7 @@ export const InnerSearchBox = () => {
             <FacetTabs.Wrapper>
               <FacetTabs.List className="space-x-2 mt-4 flex gap-1">
                 {(
-                  group, // TODO: consider to pass isSelected as second boolean argument
+                  group, index// TODO: consider to pass isSelected as second boolean argument
                 ) => (
                   <FacetTabs.Item
                     isSelected={group.name === selectedFacet}
@@ -72,6 +72,7 @@ export const InnerSearchBox = () => {
                         ? "bg-pink-100 text-pink-800 dark:bg-pink-700 dark:text-pink-200"
                         : "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
                     )}
+                    data-focus-on-arrow-nav={index === 0}
                   >
                     {group.name} ({group.count})
                   </FacetTabs.Item>
@@ -119,41 +120,42 @@ export const InnerSearchBox = () => {
                 </>
               )}
             </SearchResults.NoResults>
-
-            <SearchResults.GroupsWrapper
-              className="mt-4 overflow-y-auto"
-              groupBy="category"
-            >
-              {(group) => (
-                <div key={group.name} className="mb-4">
-                  <h2 className="text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3">
-                    {group.name}
-                  </h2>
-                  <SearchResults.GroupList group={group}>
-                    {(hit) => (
-                      <SearchResults.Item
-                        onClick={() =>
-                          console.log(`Clicked on ${hit.document?.title}`)
-                        }
-                      >
-                        {/* CUSTOM ITEM CONTENT */}
-                        {typeof hit.document?.title === "string" && (
-                          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                            {hit.document?.title}
-                          </h3>
-                        )}
-                        {typeof hit.document?.content === "string" && (
-                          <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
-                            {hit.document?.content.substring(0, 100)}
-                            ...
-                          </p>
-                        )}
-                      </SearchResults.Item>
-                    )}
-                  </SearchResults.GroupList>
-                </div>
-              )}
-            </SearchResults.GroupsWrapper>
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+              <SearchResults.GroupsWrapper
+                className="mt-4 overflow-y-auto"
+                groupBy="category"
+              >
+                {(group) => (
+                  <div key={group.name} className="mb-4">
+                    <h2 className="text-md uppercase font-semibold text-gray-400 dark:text-slate-200 mt-3 mb-3">
+                      {group.name}
+                    </h2>
+                    <SearchResults.GroupList group={group}>
+                      {(hit) => (
+                        <SearchResults.Item
+                          onClick={() =>
+                            console.log(`Clicked on ${hit.document?.title}`)
+                          }
+                        >
+                          {/* CUSTOM ITEM CONTENT */}
+                          {typeof hit.document?.title === "string" && (
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                              {hit.document?.title}
+                            </h3>
+                          )}
+                          {typeof hit.document?.content === "string" && (
+                            <p className="text-sm text-slate-600 dark:text-slate-400 text-ellipsis overflow-hidden">
+                              {hit.document?.content.substring(0, 100)}
+                              ...
+                            </p>
+                          )}
+                        </SearchResults.Item>
+                      )}
+                    </SearchResults.GroupList>
+                  </div>
+                )}
+              </SearchResults.GroupsWrapper>
+            </div>
 
             {/* <SearchResults.Wrapper className='mt-4 overflow-y-auto'>
               <SearchResults.NoResults>

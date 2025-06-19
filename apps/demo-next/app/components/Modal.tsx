@@ -1,3 +1,4 @@
+import { useArrowKeysNavigation } from '@orama/ui/hooks/useArrowKeyNavigation';
 import React, { useRef, useEffect, useCallback, createContext, useContext } from 'react';
 
 export interface ModalStatus {
@@ -185,15 +186,23 @@ interface ModalInnerProps {
 
 const ModalInner: React.FC<ModalInnerProps> = ({ className = '', children }) => {
   const { innerModalRef } = useModalContext();
+  const { ref, onKeyDown } = useArrowKeysNavigation();
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    onKeyDown(event.nativeEvent);
+  };
 
   return (
     <div 
       ref={innerModalRef}
+      onKeyDown={handleKeyDown}
       className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg m-auto p-6 max-w-3xl w-full relative ${className}`}
       role="dialog"
       aria-modal="true"
     >
-      {children}
+      <section ref={ref} className='w-full relative'>
+        {children}
+      </section>
     </div>
   );
 };
