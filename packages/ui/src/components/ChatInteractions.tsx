@@ -25,13 +25,13 @@ export interface UserPromptProps {
   "aria-label"?: string;
 }
 
-export interface AssistantMessageProps extends PropsWithChildren<{
+export interface AssistantMessageProps extends PropsWithChildren {
   className?: string;
-  theme?: PrismTheme;
   markdownClassnames?: {
     [key: string]: string;
-  }
-}>
+  },
+  theme?: PrismTheme;
+}
 
 export interface UserActionsProps {
   children: ReactNode;
