@@ -120,7 +120,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
               key={interaction.id}
               style={{
                 minHeight:
-                  isLast && interactions.length > 1 ? `${minHeight}px` : 0
+                  isLast ? `${minHeight}px` : 0
               }}
             >
               {children(interaction, index, lastInteraction)}

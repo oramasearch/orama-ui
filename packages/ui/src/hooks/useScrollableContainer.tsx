@@ -21,6 +21,7 @@ export function useScrollableContainer({
   const calculateIsScrollOnBottom = useCallback(() => {
     const el = containerElement
     if (!el) return false
+    if (!el.scrollTop) return false
     const scrollableHeight = el.scrollHeight - el.clientHeight
     return el.scrollTop + BOTTOM_THRESHOLD >= scrollableHeight
   }, [containerElement])
@@ -50,7 +51,6 @@ export function useScrollableContainer({
       onScrollDone,
     }: { animated?: boolean; onScrollDone?: () => void } = {}) => {
       const el = containerElement
-      console.log('***** Scrolling to bottom with animation', el)
 
       if (!el) return
 

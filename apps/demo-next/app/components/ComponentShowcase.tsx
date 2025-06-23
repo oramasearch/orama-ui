@@ -530,7 +530,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                   onScroll={recalculateGoToBottomButton}
                   onStreaming={recalculateGoToBottomButton}
                   onNewInteraction={() => scrollToBottom({ animated: true })}
-                  className='items-start relative overflow-y-auto'
+                  className='items-start relative overflow-y-auto h-full'
                 >
                   {(interaction, index, totalInteractions) => (
                     <>
@@ -645,6 +645,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                 {showGoToBottomButton && (
                   <button
                     onClick={() => scrollToBottom({ animated: true })}
+                    // display after a few seconds of scrolling
                     className='absolute left-1/2 -top-10 -translate-x-1/2 bg-purple-500 text-white rounded-full p-2 shadow-lg hover:bg-purple-600 transition-colors cursor-pointer'
                     aria-label='Scroll to bottom'
                   >
