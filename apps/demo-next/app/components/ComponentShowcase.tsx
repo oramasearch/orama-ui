@@ -24,6 +24,7 @@ import PromptTextArea from '@orama/ui/components/PromptTextArea'
 import ChatInteractions from '@orama/ui/components/ChatInteractions'
 import Suggestions from '@orama/ui/components/Suggestions'
 import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'
+import { SlidingPanel } from '@orama/ui/components/SlidingPanel'
 
 const collectionManager = new CollectionManager({
   url: 'https://collections.orama.com',
@@ -109,7 +110,7 @@ export const ComponentShowcase = () => {
             </button>
           </div>
 
-          <div className='relative'>
+          <div>
             <ComponentDemo theme={demos[activeDemo]?.theme ?? 'modern'} />
           </div>
         </div>
@@ -156,7 +157,7 @@ const getThemeClasses = (theme: string) => {
           suggestionIcon: 'w-5 h-5 text-purple-500',
           suggestionTitle: 'text-lg font-medium text-gray-900',
           suggestionItem:
-            'group p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer',
+            'group rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer',
           suggestionText: 'text-sm text-gray-700 group-hover:text-purple-700'
         },
         sources: {
@@ -204,7 +205,7 @@ const getThemeClasses = (theme: string) => {
           suggestionIcon: 'w-5 h-5 text-cyan-400',
           suggestionTitle: 'text-lg font-medium text-gray-100',
           suggestionItem:
-            'group p-3 rounded-lg border border-gray-700 bg-gray-800/50 hover:bg-cyan-900/20 hover:border-cyan-700 transition-all duration-200 cursor-pointer',
+            'group rounded-lg border border-gray-700 bg-gray-800/50 hover:bg-cyan-900/20 hover:border-cyan-700 transition-all duration-200 cursor-pointer',
           suggestionText: 'text-sm text-gray-300 group-hover:text-cyan-300'
         },
         sources: {
@@ -253,7 +254,7 @@ const getThemeClasses = (theme: string) => {
           suggestionIcon: 'w-5 h-5 text-pink-600',
           suggestionTitle: 'text-lg font-medium text-gray-800',
           suggestionItem:
-            'group p-3 rounded-2xl border-2 border-pink-200 bg-white/80 hover:bg-white hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm',
+            'group rounded-2xl border-2 border-pink-200 bg-white/80 hover:bg-white hover:border-pink-300 transition-all duration-200 cursor-pointer shadow-sm',
           suggestionText: 'text-sm text-gray-700 group-hover:text-pink-700'
         },
         sources: {
@@ -299,7 +300,7 @@ const getThemeClasses = (theme: string) => {
           suggestionIcon: 'w-5 h-5 text-purple-500',
           suggestionTitle: 'text-lg font-medium text-gray-900',
           suggestionItem:
-            'group p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer',
+            'group rounded-lg border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200 cursor-pointer',
           suggestionText: 'text-sm text-gray-700 group-hover:text-purple-700'
         },
         sources: {
@@ -334,193 +335,195 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
             onKeyDown(e.nativeEvent)
           }
         >
-          {!isChat ? (
-            <div className='h-120 flex flex-col gap-4'>
-              <SearchInput.Wrapper className='relative flex-shrink-0'>
-                <SearchInput.Input
-                  type='text'
-                  placeholder='Search for anything...'
-                  ariaLabel='Search for products'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${themeClasses.input}`}
-                  searchParams={{
-                    groupBy: 'category',
-                    limit: 10
-                  }}
-                />
-              </SearchInput.Wrapper>
+          <div className='h-120 flex flex-col gap-4'>
+            <SearchInput.Wrapper className='relative flex-shrink-0'>
+              <SearchInput.Input
+                type='text'
+                placeholder='Search for anything...'
+                ariaLabel='Search for products'
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${themeClasses.input}`}
+                searchParams={{
+                  groupBy: 'category',
+                  limit: 10
+                }}
+              />
+            </SearchInput.Wrapper>
 
-              <button
-                onClick={() => setIsChat(true)}
-                className={`w-full flex items-center justify-center px-4 py-3 text-white rounded-lg font-medium transition-all duration-300 cursor-pointer ${themeClasses.promptButton}`}
-                data-focus-on-arrow-nav
+            <button
+              onClick={() => setIsChat(true)}
+              className={`w-full flex items-center justify-center px-4 py-3 text-white rounded-lg font-medium transition-all duration-300 cursor-pointer ${themeClasses.promptButton}`}
+              data-focus-on-arrow-nav
+            >
+              <Star className='w-4 h-4 mr-2' />
+              Ask AI for help
+            </button>
+
+            <FacetTabs.Wrapper>
+              <FacetTabs.List className='space-x-2 flex gap-1'>
+                {(group, isSelected) => (
+                  <FacetTabs.Item
+                    isSelected={isSelected}
+                    group={group}
+                    className={cn(
+                      'p-3 rounded-lg text-sm cursor-pointer',
+                      isSelected
+                        ? themeClasses.categorySelected
+                        : themeClasses.category
+                    )}
+                  >
+                    {group.name} ({group.count})
+                  </FacetTabs.Item>
+                )}
+              </FacetTabs.List>
+            </FacetTabs.Wrapper>
+
+            <div className='flex-1 min-h-0 flex flex-col overflow-y-auto'>
+              <SearchResults.NoResults
+                className={`flex flex-col items-center justify-center h-full ${themeClasses.noResults.container}`}
               >
-                <Star className='w-4 h-4 mr-2' />
-                Ask AI for help
-              </button>
-
-              <FacetTabs.Wrapper>
-                <FacetTabs.List className='space-x-2 flex gap-1'>
-                  {(group, isSelected) => (
-                    <FacetTabs.Item
-                      isSelected={isSelected}
-                      group={group}
-                      className={cn(
-                        'p-3 rounded-lg text-sm cursor-pointer',
-                        isSelected
-                          ? themeClasses.categorySelected
-                          : themeClasses.category
-                      )}
-                    >
-                      {group.name} ({group.count})
-                    </FacetTabs.Item>
-                  )}
-                </FacetTabs.List>
-              </FacetTabs.Wrapper>
-
-              <div className='flex-1 min-h-0 flex flex-col overflow-y-auto'>
-                <SearchResults.NoResults
-                  className={`flex flex-col items-center justify-center h-full ${themeClasses.noResults.container}`}
-                >
-                  {(searchTerm) => (
-                    <>
-                      {searchTerm ? (
-                        <>
-                          <div className={themeClasses.noResults.iconContainer}>
-                            <SearchX className={themeClasses.noResults.icon} />
-                          </div>
-                          <div className='space-y-1 mb-6'>
-                            <p className={themeClasses.noResults.title}>
-                              No results found for{' '}
-                              <span>&quot;{searchTerm}&quot;</span>
-                            </p>
-                            <p className={themeClasses.noResults.description}>
-                              Try adjusting your search terms or check spelling
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <Suggestions.Wrapper className='flex flex-col justify-center gap-4'>
-                          <div className='flex flex-col items-center'>
-                            <div
+                {(searchTerm) => (
+                  <>
+                    {searchTerm ? (
+                      <>
+                        <div className={themeClasses.noResults.iconContainer}>
+                          <SearchX className={themeClasses.noResults.icon} />
+                        </div>
+                        <div className='space-y-1 mb-6'>
+                          <p className={themeClasses.noResults.title}>
+                            No results found for{' '}
+                            <span>&quot;{searchTerm}&quot;</span>
+                          </p>
+                          <p className={themeClasses.noResults.description}>
+                            Try adjusting your search terms or check spelling
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <Suggestions.Wrapper className='flex flex-col justify-center gap-4'>
+                        <div className='flex flex-col items-center'>
+                          <div
+                            className={
+                              themeClasses.noResults.suggestionContainer
+                            }
+                          >
+                            <Lightbulb
                               className={
-                                themeClasses.noResults.suggestionContainer
+                                themeClasses.noResults.suggestionIcon
+                              }
+                            />
+                          </div>
+                          <p
+                            className={themeClasses.noResults.suggestionTitle}
+                          >
+                            Try these suggestions
+                          </p>
+                        </div>
+                        <Suggestions.List className='space-y-2 max-w-sm mx-auto'>
+                          <Suggestions.Item
+                            onClick={() => setIsChat(true)}
+                            className={themeClasses.noResults.suggestionItem}
+                            itemClassName='cursor-pointer p-3 w-full'
+                          >
+                            <span
+                              className={
+                                themeClasses.noResults.suggestionText
                               }
                             >
-                              <Lightbulb
-                                className={
-                                  themeClasses.noResults.suggestionIcon
-                                }
-                              />
-                            </div>
-                            <p
-                              className={themeClasses.noResults.suggestionTitle}
-                            >
-                              Try these suggestions
-                            </p>
-                          </div>
-                          <Suggestions.List className='space-y-2 max-w-sm mx-auto'>
-                            <Suggestions.Item
-                              onClick={() => setIsChat(true)}
-                              className={themeClasses.noResults.suggestionItem}
-                              itemClassName='cursor-pointer'
-                            >
-                              <span
-                                className={
-                                  themeClasses.noResults.suggestionText
-                                }
-                              >
-                                What is Orama?
-                              </span>
-                            </Suggestions.Item>
-                            <Suggestions.Item
-                              onClick={() => setIsChat(true)}
-                              className={themeClasses.noResults.suggestionItem}
-                              itemClassName='cursor-pointer'
-                            >
-                              <span
-                                className={
-                                  themeClasses.noResults.suggestionText
-                                }
-                              >
-                                How to use Orama?
-                              </span>
-                            </Suggestions.Item>
-                            <Suggestions.Item
-                              onClick={() => setIsChat(true)}
-                              className={themeClasses.noResults.suggestionItem}
-                              itemClassName='cursor-pointer'
-                            >
-                              <span
-                                className={
-                                  themeClasses.noResults.suggestionText
-                                }
-                              >
-                                What are the features of Orama?
-                              </span>
-                            </Suggestions.Item>
-                          </Suggestions.List>
-                        </Suggestions.Wrapper>
-                      )}
-                    </>
-                  )}
-                </SearchResults.NoResults>
-                <SearchResults.GroupsWrapper
-                  className={`items-start relative overflow-y-auto p-3 ${themeClasses.resultsContainer} ${theme === 'playful' ? 'rounded-2xl' : 'rounded-lg'}`}
-                  groupBy='category'
-                >
-                  {(group) => (
-                    <div key={group.name} className='mb-6'>
-                      <h2
-                        className={`text-sm uppercase font-bold tracking-wider pb-2 mb-4 ${themeClasses.groupHeader}`}
-                      >
-                        {group.name}
-                      </h2>
-                      <SearchResults.GroupList
-                        group={group}
-                        className='flex flex-col gap-2'
-                      >
-                        {(hit) => (
-                          <SearchResults.Item
-                            as='a'
-                            href={
-                              typeof hit.document?.url === 'string'
-                                ? hit.document.url
-                                : '#'
-                            }
-                            className={`group p-4 cursor-pointer transition-all duration-200 block ${themeClasses.resultItem} ${theme === 'playful' ? 'rounded-2xl' : 'rounded-lg'}`}
+                              What is Orama?
+                            </span>
+                          </Suggestions.Item>
+                          <Suggestions.Item
+                            onClick={() => setIsChat(true)}
+                            className={themeClasses.noResults.suggestionItem}
+                            itemClassName='cursor-pointer p-3 w-full'
                           >
-                            {/* CUSTOM ITEM CONTENT */}
-                            {typeof hit.document?.title === 'string' && (
-                              <h3
-                                className={`text-base font-semibold mb-2 transition-colors ${themeClasses.resultTitle}`}
-                              >
-                                {hit.document?.title}
-                              </h3>
-                            )}
-                            {typeof hit.document?.content === 'string' && (
-                              <p
-                                className={`text-sm line-clamp-2 transition-colors ${themeClasses.resultContent}`}
-                              >
-                                {hit.document?.content.substring(0, 100)}
-                              </p>
-                            )}
-                          </SearchResults.Item>
-                        )}
-                      </SearchResults.GroupList>
-                    </div>
-                  )}
-                </SearchResults.GroupsWrapper>
-              </div>
+                            <span
+                              className={
+                                themeClasses.noResults.suggestionText
+                              }
+                            >
+                              How to use Orama?
+                            </span>
+                          </Suggestions.Item>
+                          <Suggestions.Item
+                            onClick={() => setIsChat(true)}
+                            className={themeClasses.noResults.suggestionItem}
+                            itemClassName='cursor-pointer p-3 w-full'
+                          >
+                            <span
+                              className={
+                                themeClasses.noResults.suggestionText
+                              }
+                            >
+                              What are the features of Orama?
+                            </span>
+                          </Suggestions.Item>
+                        </Suggestions.List>
+                      </Suggestions.Wrapper>
+                    )}
+                  </>
+                )}
+              </SearchResults.NoResults>
+              <SearchResults.GroupsWrapper
+                className={`items-start relative overflow-y-auto p-3 ${themeClasses.resultsContainer} ${theme === 'playful' ? 'rounded-2xl' : 'rounded-lg'}`}
+                groupBy='category'
+              >
+                {(group) => (
+                  <div key={group.name} className='mb-6'>
+                    <h2
+                      className={`text-sm uppercase font-bold tracking-wider pb-2 mb-4 ${themeClasses.groupHeader}`}
+                    >
+                      {group.name}
+                    </h2>
+                    <SearchResults.GroupList
+                      group={group}
+                      className='flex flex-col gap-2'
+                    >
+                      {(hit) => (
+                        <SearchResults.Item
+                          as='a'
+                          href={
+                            typeof hit.document?.url === 'string'
+                              ? hit.document.url
+                              : '#'
+                          }
+                          className={`group p-4 cursor-pointer transition-all duration-200 block ${themeClasses.resultItem} ${theme === 'playful' ? 'rounded-2xl' : 'rounded-lg'}`}
+                        >
+                          {/* CUSTOM ITEM CONTENT */}
+                          {typeof hit.document?.title === 'string' && (
+                            <h3
+                              className={`text-base font-semibold mb-2 transition-colors ${themeClasses.resultTitle}`}
+                            >
+                              {hit.document?.title}
+                            </h3>
+                          )}
+                          {typeof hit.document?.content === 'string' && (
+                            <p
+                              className={`text-sm line-clamp-2 transition-colors ${themeClasses.resultContent}`}
+                            >
+                              {hit.document?.content.substring(0, 100)}
+                            </p>
+                          )}
+                        </SearchResults.Item>
+                      )}
+                    </SearchResults.GroupList>
+                  </div>
+                )}
+              </SearchResults.GroupsWrapper>
             </div>
-          ) : (
-            <div className='flex flex-col justify-between h-120 gap-2'>
+          </div>
+        </section>
+        <SlidingPanel.Wrapper open={isChat} onClose={() => setIsChat(false)}>
+          <SlidingPanel.Backdrop className='bg-black/50' />
+          <SlidingPanel.Content className={`${themeClasses.container} rounded-xl shadow-lg overflow-hidden`}>
+            <div className='flex flex-col justify-between h-full gap-2 mx-auto max-w-3xl'>
               <div className='flex-shrink-0'>
                 <button
                   onClick={() => setIsChat(false)}
                   className={`flex items-center text-sm ${themeClasses.text} opacity-70 hover:opacity-100 transition-opacity cursor-pointer`}
                 >
                   <ArrowLeft className='w-4 h-4 mr-2' />
-                  Back to search
+                  Back
                 </button>
               </div>
 
@@ -669,8 +672,8 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                 </PromptTextArea.Wrapper>
               </div>
             </div>
-          )}
-        </section>
+          </SlidingPanel.Content>
+        </SlidingPanel.Wrapper>
       </ChatRoot>
     </SearchRoot>
   )

@@ -61,6 +61,7 @@ function useChat(): useChatProps {
         if (!answerStream) throw new Error("Answer stream is not initialized");
         for await (const _ of answerStream) {
           // Handle streamed answer chunk if needed
+          console.log("Received answer chunk", _);
         }
       } catch (err) {
         setError(err as Error);
@@ -98,6 +99,7 @@ function useChat(): useChatProps {
                     ...(interactions ?? []),
                     ...normalizedState,
                   ];
+                  console.log("**** Updated interactions:", updatedInteractions);
                   dispatch({
                     type: "SET_INTERACTIONS",
                     payload: { interactions: updatedInteractions },
