@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { ComponentPropsWithRef, useMemo } from "react";
 import { Hit } from "@orama/core";
 import { useSearchContext } from "../context/SearchContext";
 import { GroupedResult } from "@/types";
@@ -18,14 +18,14 @@ export const SearchResultsWrapper: React.FC<SearchResultsWrapperProps> = ({
   return <div className={className}>{children}</div>;
 };
 
-export interface SearchResultsGroupedWrapperProps {
+export interface SearchResultsGroupedWrapperProps extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
   children: (groupedResult: GroupedResult) => React.ReactNode;
   groupBy: string;
   className?: string;
 }
 export const SearchResultsGroupedWrapper: React.FC<
   SearchResultsGroupedWrapperProps
-> = ({ children, groupBy, className = "" }) => {
+> = ({ children, groupBy, className = "", ...rest }) => {
   const { results } = useSearchContext();
 
   const groupedResults = useMemo(() => {
@@ -73,6 +73,7 @@ export const SearchResultsGroupedWrapper: React.FC<
       className={className}
       role="region"
       aria-label="Grouped search results"
+      {...rest}
     >
       {groupedResults.map((group) => (
         <React.Fragment key={group.name}>{children(group)}</React.Fragment>

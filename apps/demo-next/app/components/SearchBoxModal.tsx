@@ -24,7 +24,7 @@ export const InnerSearchBox = () => {
 
   return (
     <>
-      <div className="w-full mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col">
+      <div className="w-full mx-auto border-gray-200 border-1 rounded-lg px-4 py-8 bg-white flex flex-col">
         {!displayChat && (
           <div className="flex flex-col justify-between h-140 gap-2">
             <SearchInput.Wrapper className="relative mb-1 flex-shrink-0">
@@ -47,7 +47,7 @@ export const InnerSearchBox = () => {
             </SearchInput.Wrapper>
             
             <button
-              className="mt-3 w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              className="w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
               onClick={() => {
                 setDisplayChat(true);
               }}
@@ -59,7 +59,7 @@ export const InnerSearchBox = () => {
             </button>
 
             <FacetTabs.Wrapper>
-              <FacetTabs.List className="space-x-2 mt-4 flex gap-1">
+              <FacetTabs.List className="space-x-2 flex gap-1">
                 {(
                   group, isSelected
                 ) => (
@@ -386,10 +386,6 @@ export const SearchBoxModal = () => {
             <X className="w-4 h-4" />
           </Modal.Close>
           <Modal.Content>
-            <h1 className="text-2xl font-bold mb-4">Orama Searchbox</h1>
-            <p className="text-sm text-slate-500 mb-4">
-              Ask anything about Orama and get instant answers.
-            </p>
             <SearchRoot client={collectionManager}>
               <ChatRoot client={collectionManager}>
                 <InnerSearchBox />

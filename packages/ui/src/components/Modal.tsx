@@ -196,7 +196,7 @@ const ModalInner: React.FC<ModalInnerProps> = ({ className = '', children }) => 
     <div 
       ref={innerModalRef}
       onKeyDown={handleKeyDown}
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg m-auto p-6 max-w-3xl w-full relative ${className}`}
+      className={`rounded-lg shadow-lg m-auto max-w-3xl w-full relative ${className}`}
       role="dialog"
       aria-modal="true"
     >
