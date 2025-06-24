@@ -6,10 +6,10 @@ This component is typically used to wrap parts of your UI that require access to
 
 ## Props
 
-| Name    | Type                        | Description                                                                                       |
-|---------|-----------------------------|---------------------------------------------------------------------------------------------------|
-| client  | `CollectionManager` (optional) | The Orama client instance to be used for chat operations. If not provided, uses context fallback. |
-| children| `React.ReactNode`           | The child components that will have access to the chat context.                                   |
+| Name     | Type                           | Description                                                                                       |
+| -------- | ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| client   | `CollectionManager` (optional) | The Orama client instance to be used for chat operations. If not provided, uses context fallback. |
+| children | `React.ReactNode`              | The child components that will have access to the chat context.                                   |
 
 ## Usage
 
@@ -17,7 +17,9 @@ This component is typically used to wrap parts of your UI that require access to
 import ChatRoot from "@orama/ui/components/ChatRoot";
 import { CollectionManager } from "@orama/core";
 
-const collectionManager = new CollectionManager({ /* ...config... */ });
+const collectionManager = new CollectionManager({
+  /* ...config... */
+});
 ```
 
 ```tsx

@@ -18,7 +18,8 @@ export const SearchResultsWrapper: React.FC<SearchResultsWrapperProps> = ({
   return <div className={className}>{children}</div>;
 };
 
-export interface SearchResultsGroupedWrapperProps extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
+export interface SearchResultsGroupedWrapperProps
+  extends Omit<ComponentPropsWithRef<"div">, "children"> {
   children: (groupedResult: GroupedResult) => React.ReactNode;
   groupBy: string;
   className?: string;

@@ -7,9 +7,9 @@ A custom React hook that enables keyboard navigation using arrow keys within a c
 ## Usage
 
 ```tsx
-import { useArrowKeysNavigation } from '@orama/ui/hooks'
+import { useArrowKeysNavigation } from "@orama/ui/hooks";
 
-const { ref, onArrowLeftRight } = useArrowKeysNavigation()
+const { ref, onArrowLeftRight } = useArrowKeysNavigation();
 
 return (
   <div ref={ref} onKeyDown={onArrowLeftRight}>
@@ -17,13 +17,13 @@ return (
     <button data-focus-on-arrow-nav-left-right>Tab 2</button>
     <button data-focus-on-arrow-nav-left-right>Tab 3</button>
   </div>
-)
+);
 ```
 
 ```tsx
-import { useArrowKeysNavigation } from '@orama/ui/hooks'
+import { useArrowKeysNavigation } from "@orama/ui/hooks";
 
-const { ref, useArrowKeysNavigation } = useArrowKeysNavigation()
+const { ref, useArrowKeysNavigation } = useArrowKeysNavigation();
 
 return (
   <ul ref={ref} onKeyDown={useArrowKeysNavigation}>
@@ -31,7 +31,7 @@ return (
     <button data-focus-on-arrow-nav>Tab 2</button>
     <button data-focus-on-arrow-nav>Tab 3</button>
   </ul>
-)
+);
 ```
 
 ---
@@ -57,6 +57,7 @@ return (
 #### Returns
 
 An object containing:
+
 - `ref`:  
   React ref to attach to the container element.
 - `onKeyDown`:  
@@ -88,6 +89,7 @@ An object containing:
 
 Some components already come with arrow key navigation implemented out of the box.  
 For example:
+
 - **FacetTabs**: supports left/right arrow navigation.
 - **Modal**: supports top/down arrow navigation.
 

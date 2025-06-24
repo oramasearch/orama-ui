@@ -40,7 +40,7 @@ export interface useChatProps {
   reset: () => void;
   loading: boolean;
   error: Error | null;
-};
+}
 
 function useChat(): useChatProps {
   const { client, interactions, answerSession } = useChatContext();
@@ -68,7 +68,7 @@ function useChat(): useChatProps {
         setLoading(false);
       }
     },
-    [dispatch]
+    [dispatch],
   );
 
   const onAsk = useCallback(
@@ -99,7 +99,10 @@ function useChat(): useChatProps {
                     ...(interactions ?? []),
                     ...normalizedState,
                   ];
-                  console.log("**** Updated interactions:", updatedInteractions);
+                  console.log(
+                    "**** Updated interactions:",
+                    updatedInteractions,
+                  );
                   dispatch({
                     type: "SET_INTERACTIONS",
                     payload: { interactions: updatedInteractions },
@@ -119,7 +122,7 @@ function useChat(): useChatProps {
         setLoading(false);
       }
     },
-    [client, answerSession, interactions, dispatch, streamAnswer]
+    [client, answerSession, interactions, dispatch, streamAnswer],
   );
 
   const abortAnswer = useCallback(() => {

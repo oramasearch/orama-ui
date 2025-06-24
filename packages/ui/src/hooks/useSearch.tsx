@@ -29,7 +29,12 @@ import { GroupsCount } from "../types";
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  onSearch: (options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>;
+  onSearch: (
+    options: SearchParams & {
+      groupBy?: string;
+      filterBy?: Record<string, string>[];
+    },
+  ) => Promise<void>;
   onReset: () => void;
   loading: boolean;
   error: Error | null;
@@ -50,7 +55,12 @@ function useSearch(): useSearchReturn {
   }, []);
 
   const onSearch = useCallback(
-    async (options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => {
+    async (
+      options: SearchParams & {
+        groupBy?: string;
+        filterBy?: Record<string, string>[];
+      },
+    ) => {
       if (!client) {
         setError(new Error("Client is not initialized"));
         setLoading(false);

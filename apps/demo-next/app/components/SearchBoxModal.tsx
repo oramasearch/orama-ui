@@ -45,7 +45,7 @@ export const InnerSearchBox = () => {
                 }}
               />
             </SearchInput.Wrapper>
-            
+
             <button
               className="w-full cursor-pointer flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-500"
               onClick={() => {
@@ -60,9 +60,7 @@ export const InnerSearchBox = () => {
 
             <FacetTabs.Wrapper>
               <FacetTabs.List className="space-x-2 flex gap-1">
-                {(
-                  group, isSelected
-                ) => (
+                {(group, isSelected) => (
                   <FacetTabs.Item
                     isSelected={isSelected}
                     group={group}
@@ -119,7 +117,7 @@ export const InnerSearchBox = () => {
                 </>
               )}
             </SearchResults.NoResults>
-            
+
             <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
               <SearchResults.GroupsWrapper
                 className="items-start relative overflow-y-auto"
@@ -133,8 +131,12 @@ export const InnerSearchBox = () => {
                     <SearchResults.GroupList group={group}>
                       {(hit) => (
                         <SearchResults.Item
-                          as='a'
-                          href={typeof hit.document?.url === "string" ? hit.document.url : "#"}
+                          as="a"
+                          href={
+                            typeof hit.document?.url === "string"
+                              ? hit.document.url
+                              : "#"
+                          }
                           className="block py-4 px-3 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 duration-200 cursor-pointer border-b-1 border-gray-200 dark:border-gray-600 focus:outline-none focus:bg-gray-100 dark:focus:hover:bg-gray-700"
                         >
                           {/* CUSTOM ITEM CONTENT */}
@@ -343,9 +345,7 @@ export const InnerSearchBox = () => {
                     }}
                     className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     aria-label="Ask AI"
-                    abortContent={
-                      <Pause className="w-4 h-4" />
-                    }
+                    abortContent={<Pause className="w-4 h-4" />}
                   >
                     <ArrowUp className="w-4 h-4" />
                   </PromptTextArea.Button>

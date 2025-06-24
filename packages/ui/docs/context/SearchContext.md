@@ -37,7 +37,7 @@ type SearchContextProps = {
   selectedFacet?: string | null;
   groupsCount?: GroupsCount | null;
   count?: number;
-}
+};
 ```
 
 ---
@@ -47,10 +47,19 @@ type SearchContextProps = {
 ### With Custom Provider
 
 ```tsx
-import { SearchContext, SearchDispatchContext, useSearchContext, useSearchDispatch, searchReducer, initialSearchState } from "@orama/ui/context";
+import {
+  SearchContext,
+  SearchDispatchContext,
+  useSearchContext,
+  useSearchDispatch,
+  searchReducer,
+  initialSearchState,
+} from "@orama/ui/context";
 import { CollectionManager } from "@orama/core";
 
-const collectionManager = new CollectionManager({ /* ...config... */ });
+const collectionManager = new CollectionManager({
+  /* ...config... */
+});
 
 function SearchProvider({ children }) {
   const [state, dispatch] = React.useReducer(searchReducer, {
@@ -60,9 +69,7 @@ function SearchProvider({ children }) {
 
   return (
     <SearchContext value={state}>
-      <SearchDispatchContext value={dispatch}>
-        {children}
-      </SearchDispatchContext>
+      <SearchDispatchContext value={dispatch}>{children}</SearchDispatchContext>
     </SearchContext>
   );
 }

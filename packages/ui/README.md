@@ -23,7 +23,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
 
    <SearchRoot client={clientInstance}>
      {/* Add Orama UI components and your own components here to compose your custom interface */}
-   </SearchRoot>
+   </SearchRoot>;
    ```
 
 3. **Style as you wish:**  
@@ -83,4 +83,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
 ## License
 
 MIT
+
+```
+
 ```

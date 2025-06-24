@@ -42,7 +42,9 @@ const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
     <section
       className={className}
       ref={ref}
-      onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => onArrowLeftRight(e.nativeEvent)}
+      onKeyDown={(e: React.KeyboardEvent<HTMLElement>) =>
+        onArrowLeftRight(e.nativeEvent)
+      }
     >
       {children}
     </section>
@@ -111,7 +113,6 @@ const Item: React.FC<ItemProps> = ({
       data-disabled={disabled}
       data-focus-on-arrow-nav={isSelected ? "true" : undefined}
       data-focus-on-arrow-nav-left-right
-
       {...props}
     >
       {children}

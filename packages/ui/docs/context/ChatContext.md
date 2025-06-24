@@ -47,16 +47,14 @@ import {
   ChatDispatchContext,
   chatReducer,
   initialChatState,
-} from '@orama/ui/context';
+} from "@orama/ui/context";
 
 function ChatProvider({ children }) {
   const [state, dispatch] = React.useReducer(chatReducer, initialChatState);
 
   return (
     <ChatContext value={state}>
-      <ChatDispatchContext value={dispatch}>
-        {children}
-      </ChatDispatchContext>
+      <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext>
   );
 }
@@ -65,14 +63,19 @@ function ChatProvider({ children }) {
 ### Accessing State and Dispatch
 
 ```tsx
-import { useChatContext, useChatDispatch } from '@orama/ui/context';
+import { useChatContext, useChatDispatch } from "@orama/ui/context";
 
 function MyComponent() {
   const chatState = useChatContext();
   const dispatch = useChatDispatch();
 
   // Example: Set a new user prompt
-  dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt: 'Give me a quick overview of key metrics for our Q2 review.' } });
+  dispatch({
+    type: "SET_USER_PROMPT",
+    payload: {
+      userPrompt: "Give me a quick overview of key metrics for our Q2 review.",
+    },
+  });
 
   return <div>{chatState.userPrompt}</div>;
 }

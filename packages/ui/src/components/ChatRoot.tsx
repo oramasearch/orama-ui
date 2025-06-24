@@ -10,7 +10,7 @@ import { CollectionManager } from "@orama/core";
 /* ChatRoot component provides a context for managing chat state and actions.
  * It uses a reducer to manage the state and provides the context to its children.
  * The `client` prop allows passing a custom CollectionManager instance.
- * 
+ *
  * Usage:
  * <ChatRoot client={myCollectionManager}>
  *   <ChatComponent />

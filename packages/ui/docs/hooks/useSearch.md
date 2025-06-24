@@ -13,7 +13,7 @@ The `useSearch` hook provides a simple interface for executing searches, managin
 ## Usage
 
 ```tsx
-import { useSearch } from '@orama/ui/hooks';
+import { useSearch } from "@orama/ui/hooks";
 
 const { onSearch, onReset, loading, error } = useSearch();
 
@@ -28,12 +28,12 @@ onSearch({ term: "example", groupBy: "category" });
 
 The hook returns an object with the following properties:
 
-| Name      | Type                                                                 | Description                                                        |
-|-----------|----------------------------------------------------------------------|--------------------------------------------------------------------|
-| onSearch  | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters.                   |
-| onReset   | `() => void`                                                         | Resets the search state to its initial values.                     |
-| loading   | `boolean`                                                            | Indicates if a search operation is in progress.                    |
-| error     | `Error \| null`                                                      | The current error state, if any.                                   |
+| Name     | Type                                                                                                   | Description                                      |
+| -------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| onSearch | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters. |
+| onReset  | `() => void`                                                                                           | Resets the search state to its initial values.   |
+| loading  | `boolean`                                                                                              | Indicates if a search operation is in progress.  |
+| error    | `Error \| null`                                                                                        | The current error state, if any.                 |
 
 ---
 
@@ -58,7 +58,7 @@ Executes a search with the provided options.
 onSearch({
   term: "react",
   groupBy: "category",
-  filterBy: [{ status: "active" }]
+  filterBy: [{ status: "active" }],
 });
 ```
 
@@ -102,10 +102,13 @@ const handleSearch = () => {
 
 return (
   <div>
-    <button onClick={handleSearch} disabled={loading}>Search</button>
+    <button onClick={handleSearch} disabled={loading}>
+      Search
+    </button>
     {error && <span>{error.message}</span>}
     <button onClick={onReset}>Reset</button>
   </div>
 );
 ```
+
 ---

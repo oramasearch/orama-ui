@@ -14,10 +14,10 @@ The `SearchRoot` component provides the context and state management for Orama s
 
 ## Props
 
-| Name      | Type                | Default | Description                                                                 |
-|-----------|---------------------|---------|-----------------------------------------------------------------------------|
-| `client`  | `CollectionManager` | —       | (Optional) Orama client instance for search operations.                     |
-| `children`| `React.ReactNode`   | —       | Components that will have access to the search context.                     |
+| Name       | Type                | Default | Description                                             |
+| ---------- | ------------------- | ------- | ------------------------------------------------------- |
+| `client`   | `CollectionManager` | —       | (Optional) Orama client instance for search operations. |
+| `children` | `React.ReactNode`   | —       | Components that will have access to the search context. |
 
 ---
 
@@ -30,17 +30,19 @@ import SearchRoot from "@orama/ui/components/SearchRoot";
 import SearchInput from "@orama/ui/components/components/SearchInput";
 import { CollectionManager } from "@orama/core";
 
-const collectionManager = new CollectionManager({ /* ...config... */ });
+const collectionManager = new CollectionManager({
+  /* ...config... */
+});
 ```
 
 ```tsx
-  <SearchRoot client={myOramaClient}>
-    <SearchInput.Wrapper>
-      <SearchInput.Label htmlFor="search">Search</SearchInput.Label>
-      <SearchInput.Input inputId="search" />
-    </SearchInput.Wrapper>
-    {/* Other search-related components */}
-  </SearchRoot>
+<SearchRoot client={myOramaClient}>
+  <SearchInput.Wrapper>
+    <SearchInput.Label htmlFor="search">Search</SearchInput.Label>
+    <SearchInput.Input inputId="search" />
+  </SearchInput.Wrapper>
+  {/* Other search-related components */}
+</SearchRoot>
 ```
 
 ---

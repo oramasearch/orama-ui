@@ -1,6 +1,6 @@
 import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import useChat from "../hooks/useChat";
-import React, { use, useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -118,10 +118,13 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   const { interactions } = useChatContext();
 
   const isStreaming = useMemo(
-    () => interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading,
-    [interactions]
+    () =>
+      interactions &&
+      interactions.length > 0 &&
+      interactions[interactions.length - 1]?.loading,
+    [interactions],
   );
-  
+
   const disabledButton = useMemo(() => {
     if (disabled) return true;
     if (isStreaming) return false;
@@ -140,7 +143,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
         console.error("Error in ask method:", error);
       }
     },
-    [userPrompt, onAsk, onButtonAsk, onClick]
+    [userPrompt, onAsk, onButtonAsk, onClick],
   );
 
   const handleAbort = useCallback(
@@ -149,7 +152,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
       abortAnswer();
       onClick?.(e);
     },
-    [abortAnswer, onClick]
+    [abortAnswer, onClick],
   );
 
   return (
@@ -168,7 +171,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
 const PromptTextArea = {
   Field: PromptTextAreaField,
   Button: PromptTextAreaButton,
-  Wrapper: PromptTextAreaWrapper
+  Wrapper: PromptTextAreaWrapper,
 };
 
 export default PromptTextArea;

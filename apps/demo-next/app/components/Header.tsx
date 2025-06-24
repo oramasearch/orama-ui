@@ -56,6 +56,6 @@ const Header: React.FC = () => {
       </Modal.Wrapper>
     </header>
   );
-}
+};
 
 export default Header;

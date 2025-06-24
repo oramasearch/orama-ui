@@ -61,7 +61,8 @@ export const InnerSearchBox = () => {
             <FacetTabs.Wrapper>
               <FacetTabs.List className="space-x-2 mt-4 flex gap-1">
                 {(
-                  group, index// TODO: consider to pass isSelected as second boolean argument
+                  group,
+                  index, // TODO: consider to pass isSelected as second boolean argument
                 ) => (
                   <FacetTabs.Item
                     isSelected={group.name === selectedFacet}
@@ -72,7 +73,6 @@ export const InnerSearchBox = () => {
                         ? "bg-pink-100 text-pink-800 dark:bg-pink-700 dark:text-pink-200"
                         : "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
                     )}
-                    data-focus-on-arrow-nav={index === 0}
                   >
                     {group.name} ({group.count})
                   </FacetTabs.Item>
@@ -228,7 +228,7 @@ export const InnerSearchBox = () => {
                     >
                       {interaction.query}
                     </ChatInteractions.UserPrompt>
-                    
+
                     {interaction.loading &&
                       !interaction.response && ( // use your custom skeleton loader here
                         <div className="animate-pulse mb-2">
@@ -344,9 +344,7 @@ export const InnerSearchBox = () => {
                     }}
                     className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     aria-label="Ask AI"
-                    abortContent={
-                      <Pause className="w-4 h-4" />
-                    }
+                    abortContent={<Pause className="w-4 h-4" />}
                   >
                     <ArrowUp className="w-4 h-4" />
                   </PromptTextArea.Button>
