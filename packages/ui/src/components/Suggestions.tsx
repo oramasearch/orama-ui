@@ -9,7 +9,7 @@
  * </Suggestions.List>
  */
 
-import useChat from "../hooks/useChat";
+import { useChat } from "../hooks";
 import React from "react";
 
 interface SuggestionsWrapper {
@@ -89,10 +89,8 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   );
 };
 
-const Suggestions = {
+export const Suggestions = {
   Wrapper: SuggestionsWrapper,
   List: SuggestionsList,
   Item: SuggestionsItem,
 };
-
-export default Suggestions;

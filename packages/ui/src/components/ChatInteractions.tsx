@@ -1,5 +1,3 @@
-import useChat from "../hooks/useChat";
-import { useChatContext, useChatDispatch } from "../context/ChatContext";
 import { AnyObject, Interaction } from "@orama/core";
 import React, {
   ComponentPropsWithRef,
@@ -12,7 +10,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Highlight, { defaultProps, PrismTheme } from "prism-react-renderer";
 import theme from "prism-react-renderer/themes/vsDark";
-import { useLastInteractionMinHeight } from "../hooks/useLastInteractionMinHeight";
+import { useChat, useLastInteractionMinHeight } from "../hooks";
+import { useChatContext, useChatDispatch } from "../contexts";
 
 export interface ChatInteractionsWrapperProps
   extends Omit<ComponentPropsWithRef<"div">, "children"> {
@@ -367,7 +366,7 @@ const CopyMessage: React.FC<
   );
 };
 
-const ChatInteractions = {
+export const ChatInteractions = {
   UserPrompt,
   AssistantMessage,
   Reset,
@@ -378,5 +377,3 @@ const ChatInteractions = {
   ScrollToBottomButton,
   Wrapper: ChatInteractionsWrapper,
 };
-
-export default ChatInteractions;

@@ -1,10 +1,8 @@
 "use client";
 import React from "react";
-import Modal from "@orama/ui/components/Modal";
-import SearchRoot from "@orama/ui/components/SearchRoot";
-import ChatRoot from "@orama/ui/components/ChatRoot";
 import { CollectionManager } from "@orama/core";
 import { InnerSearchBox } from "./SearchBoxModal";
+import {Modal, SearchRoot, ChatRoot} from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
