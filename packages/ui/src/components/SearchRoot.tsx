@@ -4,7 +4,7 @@ import {
   SearchDispatchContext,
   searchReducer,
   useSearchContext,
-} from "../context/SearchContext";
+} from "../contexts";
 import { CollectionManager } from "@orama/core";
 
 export interface SearchRootProps extends React.PropsWithChildren {
@@ -15,7 +15,7 @@ export interface SearchRootProps extends React.PropsWithChildren {
   client?: CollectionManager;
 }
 
-const SearchRoot = ({ client, children }: SearchRootProps) => {
+export const SearchRoot = ({ client, children }: SearchRootProps) => {
   const searchState = useSearchContext();
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
@@ -28,5 +28,3 @@ const SearchRoot = ({ client, children }: SearchRootProps) => {
     </SearchContext>
   );
 };
-
-export default SearchRoot;

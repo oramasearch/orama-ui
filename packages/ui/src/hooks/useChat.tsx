@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useChatContext, useChatDispatch } from "../context/ChatContext";
+import { useChatContext, useChatDispatch } from "../contexts";
 import { AnswerSession } from "@orama/core";
 
 /**
@@ -42,7 +42,7 @@ export interface useChatProps {
   error: Error | null;
 }
 
-function useChat(): useChatProps {
+export function useChat(): useChatProps {
   const { client, interactions, answerSession } = useChatContext();
   const dispatch = useChatDispatch();
   const [loading, setLoading] = useState(false);
@@ -180,5 +180,3 @@ function useChat(): useChatProps {
     error,
   };
 }
-
-export default useChat;

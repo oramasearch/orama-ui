@@ -1,6 +1,6 @@
 import React, { useRef, ChangeEvent, ElementType } from "react";
 import { PolymorphicComponentProps } from "@/types";
-import useSearch from "../hooks/useSearch";
+import { useSearch } from "../hooks";
 import { SearchParams } from "@orama/core";
 
 interface SearchInputWrapperOwnProps {
@@ -178,10 +178,8 @@ export const SearchInputLabel: React.FC<SearchInputLabelProps> = ({
   );
 };
 
-const SearchInput = {
+export const SearchInput = {
   Input: SearchInputField,
   Label: SearchInputLabel,
   Wrapper: SearchInputWrapper,
 };
-
-export default SearchInput;

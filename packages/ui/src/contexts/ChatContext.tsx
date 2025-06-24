@@ -46,14 +46,14 @@ export const useChatDispatch = () => {
 };
 
 /**
- * Reducer function for managing chat context state.
+ * Reducer function for managing chat contexts state.
  *
  * Handles various actions to update the chat state, such as setting the client,
  * managing user prompts, answer sessions, and interactions.
  *
- * @param state - The current state of the chat context.
+ * @param state - The current state of the chat contexts.
  * @param action - An object containing the action type and optional payload to update the state.
- * @returns The updated chat context state based on the action type.
+ * @returns The updated chat contexts state based on the action type.
  */
 export const chatReducer = (
   state: ChatContextProps,

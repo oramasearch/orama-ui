@@ -1,4 +1,3 @@
-import { useArrowKeysNavigation } from "../hooks/useArrowKeyNavigation";
 import React, {
   useRef,
   useEffect,
@@ -6,6 +5,7 @@ import React, {
   createContext,
   useContext,
 } from "react";
+import {useArrowKeysNavigation} from "../hooks";
 
 export interface ModalStatus {
   open: boolean;
@@ -279,11 +279,9 @@ const ModalClose: React.FC<ModalCloseProps> = ({
   );
 };
 
-const Modal = {
+export const Modal = {
   Wrapper: ModalWrapper,
   Inner: ModalInner,
   Content: ModalContent,
   Close: ModalClose,
 };
-
-export default Modal;

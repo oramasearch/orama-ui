@@ -1,6 +1,6 @@
 import React, { ComponentPropsWithRef, useMemo } from "react";
 import { Hit } from "@orama/core";
-import { useSearchContext } from "../context/SearchContext";
+import { useSearchContext } from "../contexts";
 import { GroupedResult } from "@/types";
 
 export interface SearchResultsWrapperProps {
@@ -188,7 +188,7 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
   );
 };
 
-const SearchResults = {
+export const SearchResults = {
   Wrapper: SearchResultsWrapper,
   List: SearchResultsList,
   GroupsWrapper: SearchResultsGroupedWrapper,
@@ -196,5 +196,3 @@ const SearchResults = {
   Item: SearchResultsItem,
   NoResults: SearchResultsNoResults,
 };
-
-export default SearchResults;

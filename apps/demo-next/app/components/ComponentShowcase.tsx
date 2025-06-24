@@ -1,7 +1,6 @@
+
 "use client";
 import React, { useState } from "react";
-import SearchRoot from "@orama/ui/components/SearchRoot";
-import SearchInput from "@orama/ui/components/SearchInput";
 import {
   Star,
   ArrowLeft,
@@ -15,21 +14,24 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { CollectionManager } from "@orama/core";
-import FacetTabs from "@orama/ui/components/FacetTabs";
-import { useArrowKeysNavigation } from "@orama/ui/hooks/useArrowKeyNavigation";
+import { useArrowKeysNavigation, useScrollableContainer } from "@orama/ui/hooks";
 import { cn } from "@/lib/utils";
-import SearchResults from "@orama/ui/components/SearchResults";
-import ChatRoot from "@orama/ui/components/ChatRoot";
-import PromptTextArea from "@orama/ui/components/PromptTextArea";
-import ChatInteractions from "@orama/ui/components/ChatInteractions";
-import Suggestions from "@orama/ui/components/Suggestions";
-import { useScrollableContainer } from "@orama/ui/hooks/useScrollableContainer";
-import { SlidingPanel } from "@orama/ui/components/SlidingPanel";
+import {
+  FacetTabs,
+  SearchRoot,
+  SearchInput,
+  SearchResults,
+  ChatRoot,
+  PromptTextArea,
+  ChatInteractions,
+  Suggestions,
+	SlidingPanel
+} from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
-  collectionID: "q126p2tuxl69ylzhx2twjobw",
-  readAPIKey: "uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y",
+  collectionID: "ooo4f22zau7q7ta4i1grlgji",
+  readAPIKey: "WvStWzar7tqdX3FOZbhCMDWSQsWAewUu",
 });
 
 export const ComponentShowcase = () => {
@@ -364,6 +366,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                   <FacetTabs.Item
                     isSelected={isSelected}
                     group={group}
+                    filterBy={"category"}
                     className={cn(
                       "p-3 rounded-lg text-sm cursor-pointer",
                       isSelected

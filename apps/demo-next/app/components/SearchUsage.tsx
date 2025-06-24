@@ -1,11 +1,13 @@
 "use client";
 import React from "react";
 import { CollectionManager } from "@orama/core";
-import SearchInput from "@orama/ui/components/SearchInput";
-import SearchRoot from "@orama/ui/components/SearchRoot";
-import SearchResults from "@orama/ui/components/SearchResults";
-import FacetTabs from "@orama/ui/components/FacetTabs";
-import { useSearchContext } from "@orama/ui/context/SearchContext";
+import {
+  FacetTabs,
+  SearchInput,
+  SearchRoot,
+  SearchResults
+} from "@orama/ui/components";
+import { useSearchContext } from "@orama/ui/contexts";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
@@ -36,6 +38,7 @@ export const InnerSearchBox = () => {
           ) => (
             <FacetTabs.Item
               isSelected={group.name === selectedFacet}
+              filterBy={"category"}
               group={group}
             >
               {group.name} ({group.count})

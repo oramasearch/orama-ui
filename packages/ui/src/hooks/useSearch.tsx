@@ -4,8 +4,8 @@ import {
   initialSearchState,
   useSearchContext,
   useSearchDispatch,
-} from "../context/SearchContext";
-import { GroupsCount } from "../types";
+} from "../contexts";
+import { GroupsCount } from "@/types";
 
 /**
  * Custom React hook for managing search functionality within the application.
@@ -24,7 +24,7 @@ import { GroupsCount } from "../types";
  * onSearch({ term: "example", groupBy: "category" });
  *
  * @remarks
- * - Relies on `useSearchContext` and `useSearchDispatch` for context and state management.
+ * - Relies on `useSearchContext` and `useSearchDispatch` for contexts and state management.
  * - Handles grouping and filtering of search results.
  * - Ensures state updates only occur while the component is mounted.
  */
@@ -40,7 +40,7 @@ export interface useSearchReturn {
   error: Error | null;
 }
 
-function useSearch(): useSearchReturn {
+export function useSearch(): useSearchReturn {
   const { client } = useSearchContext();
   const dispatch = useSearchDispatch();
   const [loading, setLoading] = useState(false);
@@ -194,5 +194,3 @@ function useSearch(): useSearchReturn {
     error,
   };
 }
-
-export default useSearch;

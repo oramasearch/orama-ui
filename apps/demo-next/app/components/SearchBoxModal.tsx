@@ -2,16 +2,18 @@
 import React, { useState } from "react";
 import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause, X } from "lucide-react";
 import { CollectionManager } from "@orama/core";
-import SearchInput from "@orama/ui/components/SearchInput";
-import SearchRoot from "@orama/ui/components/SearchRoot";
-import ChatRoot from "@orama/ui/components/ChatRoot";
-import ChatInteractions from "@orama/ui/components/ChatInteractions";
-import SearchResults from "@orama/ui/components/SearchResults";
-import Suggestions from "@orama/ui/components/Suggestions";
-import FacetTabs from "@orama/ui/components/FacetTabs";
-import Modal from "@orama/ui/components/Modal";
 import { cn } from "@/lib/utils";
-import PromptTextArea from "@orama/ui/components/PromptTextArea";
+import {
+  PromptTextArea,
+  SearchInput,
+  SearchRoot,
+  ChatRoot,
+  ChatInteractions,
+  SearchResults,
+  Suggestions,
+  FacetTabs,
+  Modal
+} from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
@@ -64,6 +66,7 @@ export const InnerSearchBox = () => {
                   <FacetTabs.Item
                     isSelected={isSelected}
                     group={group}
+                    filterBy={"category"}
                     className={cn(
                       "px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer",
                       isSelected

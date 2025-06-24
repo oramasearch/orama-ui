@@ -1,9 +1,8 @@
 import React, { ReactNode } from "react";
 import { GroupCount } from "@/types";
 import { SearchParams } from "@orama/core";
-import { useSearchContext, useSearchDispatch } from "../context/SearchContext";
-import useSearch from "../hooks/useSearch";
-import { useArrowKeysNavigation } from "../hooks/useArrowKeyNavigation";
+import { useSearchContext, useSearchDispatch } from "../contexts";
+import { useSearch, useArrowKeysNavigation } from "../hooks";
 
 interface WrapperProps {
   children: ReactNode;
@@ -21,6 +20,7 @@ interface ItemProps {
   isSelected?: boolean;
   onClick?: () => void;
   searchParams?: SearchParams;
+  filterBy: string;
   className?: string;
   disabled?: boolean;
   group: GroupCount;
@@ -74,6 +74,7 @@ const Item: React.FC<ItemProps> = ({
   group,
   isSelected = false,
   searchParams,
+  filterBy,
   onClick,
   className = "",
   disabled = false,
@@ -89,7 +90,7 @@ const Item: React.FC<ItemProps> = ({
         ...(searchParams ? { ...searchParams } : {}),
         term: searchParams?.term || searchTerm || "",
         limit: searchParams?.limit || 10,
-        filterBy: [{ category: group.name }],
+        filterBy: [{ [filterBy]: group.name }],
       });
 
       dispatch({
@@ -120,10 +121,8 @@ const Item: React.FC<ItemProps> = ({
   );
 };
 
-const FacetTabs = {
+export const FacetTabs = {
   Wrapper,
   List,
   Item,
 };
-
-export default FacetTabs;

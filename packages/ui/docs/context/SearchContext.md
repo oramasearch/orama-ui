@@ -54,7 +54,7 @@ import {
   useSearchDispatch,
   searchReducer,
   initialSearchState,
-} from "@orama/ui/context";
+} from "@orama/ui/contexts";
 import { CollectionManager } from "@orama/core";
 
 const collectionManager = new CollectionManager({
@@ -78,7 +78,7 @@ function SearchProvider({ children }) {
 ### Accessing State and Dispatch
 
 ```tsx
-import { useSearchContext, useSearchDispatch } from '@orama/ui/context';
+import { useSearchContext, useSearchDispatch } from '@orama/ui/contexts';
 
 function MyComponent() {
   const searchState = searchState();

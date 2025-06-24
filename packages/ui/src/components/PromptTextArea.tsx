@@ -1,5 +1,5 @@
-import { useChatContext, useChatDispatch } from "../context/ChatContext";
-import useChat from "../hooks/useChat";
+import { useChatContext, useChatDispatch } from "../contexts";
+import { useChat } from "../hooks";
 import React, { useCallback, useEffect, useMemo } from "react";
 interface PromptTextAreaWrapperProps {
   children: React.ReactNode;
@@ -118,11 +118,8 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   const { interactions } = useChatContext();
 
   const isStreaming = useMemo(
-    () =>
-      interactions &&
-      interactions.length > 0 &&
-      interactions[interactions.length - 1]?.loading,
-    [interactions],
+    () => interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading,
+    [interactions]
   );
 
   const disabledButton = useMemo(() => {
@@ -168,10 +165,8 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   );
 };
 
-const PromptTextArea = {
+export const PromptTextArea = {
   Field: PromptTextAreaField,
   Button: PromptTextAreaButton,
   Wrapper: PromptTextAreaWrapper,
 };
-
-export default PromptTextArea;

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { CollectionManager, SearchParams, Hit } from "@orama/core";
-import { GroupsCount } from "../types";
+import { GroupsCount } from "@/types";
 
 export type SearchContextProps = {
   client: CollectionManager | null;
@@ -52,12 +52,12 @@ export const useSearchDispatch = () => {
 };
 
 /**
- * Reducer function for managing the state of the search context.
+ * Reducer function for managing the state of the search contexts.
  *
- * Handles various actions to update the search context state, such as setting the client,
+ * Handles various actions to update the search contexts state, such as setting the client,
  * search term, results, groups count, selected facet, and count.
  *
- * @param state - The current state of the search context.
+ * @param state - The current state of the search contexts.
  * @param action - An object containing the action type and optional payload to update the state.
  * @returns The updated state after applying the specified action.
  */
