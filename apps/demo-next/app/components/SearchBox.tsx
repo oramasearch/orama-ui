@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause } from "lucide-react";
 import { CollectionManager } from "@orama/core";
 import {
-  FacetTabs, SearchInput,
+  FacetTabs,
+  SearchInput,
   SearchRoot,
   ChatRoot,
   ChatInteractions,
   SearchResults,
   Suggestions,
-  PromptTextArea
+  PromptTextArea,
 } from "@orama/ui/components";
-import {useSearchContext} from "@orama/ui/contexts";
+import { useSearchContext } from "@orama/ui/contexts";
 import { cn } from "@/lib/utils";
 
 const collectionManager = new CollectionManager({

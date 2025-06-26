@@ -5,7 +5,7 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import {useArrowKeysNavigation} from "../hooks";
+import { useArrowKeysNavigation } from "../hooks";
 
 export interface ModalStatus {
   open: boolean;

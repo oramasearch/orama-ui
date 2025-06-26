@@ -118,8 +118,11 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   const { interactions } = useChatContext();
 
   const isStreaming = useMemo(
-    () => interactions && interactions.length > 0 && interactions[interactions.length - 1]?.loading,
-    [interactions]
+    () =>
+      interactions &&
+      interactions.length > 0 &&
+      interactions[interactions.length - 1]?.loading,
+    [interactions],
   );
 
   const disabledButton = useMemo(() => {

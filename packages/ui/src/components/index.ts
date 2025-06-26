@@ -1,10 +1,10 @@
-export {ChatInteractions} from './ChatInteractions'
-export {ChatRoot} from './ChatRoot'
-export {FacetTabs} from './FacetTabs'
-export {Modal} from './Modal'
-export {PromptTextArea} from './PromptTextArea'
-export {SearchInput} from './SearchInput'
-export {SearchResults} from './SearchResults'
-export {SearchRoot} from './SearchRoot'
-export {Suggestions} from './Suggestions'
-export {SlidingPanel} from './SlidingPanel'
+export { ChatInteractions } from "./ChatInteractions";
+export { ChatRoot } from "./ChatRoot";
+export { FacetTabs } from "./FacetTabs";
+export { Modal } from "./Modal";
+export { PromptTextArea } from "./PromptTextArea";
+export { SearchInput } from "./SearchInput";
+export { SearchResults } from "./SearchResults";
+export { SearchRoot } from "./SearchRoot";
+export { Suggestions } from "./Suggestions";
+export { SlidingPanel } from "./SlidingPanel";

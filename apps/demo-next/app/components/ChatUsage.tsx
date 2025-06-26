@@ -2,7 +2,11 @@
 import React from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { CollectionManager } from "@orama/core";
-import {ChatRoot, ChatInteractions, PromptTextArea} from "@orama/ui/components";
+import {
+  ChatRoot,
+  ChatInteractions,
+  PromptTextArea,
+} from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",

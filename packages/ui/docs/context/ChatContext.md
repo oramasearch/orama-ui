@@ -47,7 +47,7 @@ import {
   ChatDispatchContext,
   chatReducer,
   initialChatState,
-} from '@orama/ui/contexts';
+} from "@orama/ui/contexts";
 
 function ChatProvider({ children }) {
   const [state, dispatch] = React.useReducer(chatReducer, initialChatState);
@@ -63,7 +63,7 @@ function ChatProvider({ children }) {
 ### Accessing State and Dispatch
 
 ```tsx
-import { useChatContext, useChatDispatch } from '@orama/ui/contexts';
+import { useChatContext, useChatDispatch } from "@orama/ui/contexts";
 
 function MyComponent() {
   const chatState = useChatContext();

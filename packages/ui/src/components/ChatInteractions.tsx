@@ -355,9 +355,7 @@ const CopyMessage: React.FC<
   return (
     <button onClick={handleCopy} {...rest}>
       {copied ? (
-        <>
-          {copiedContent || <span>Copied!</span>}
-        </>
+        <>{copiedContent || <span>Copied!</span>}</>
       ) : (
         children || <span>Copy</span>
       )}

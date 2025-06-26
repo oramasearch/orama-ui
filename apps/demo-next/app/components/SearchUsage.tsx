@@ -5,7 +5,7 @@ import {
   FacetTabs,
   SearchInput,
   SearchRoot,
-  SearchResults
+  SearchResults,
 } from "@orama/ui/components";
 import { useSearchContext } from "@orama/ui/contexts";
 

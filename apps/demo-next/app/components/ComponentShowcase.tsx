@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import {
@@ -14,7 +13,10 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { CollectionManager } from "@orama/core";
-import { useArrowKeysNavigation, useScrollableContainer } from "@orama/ui/hooks";
+import {
+  useArrowKeysNavigation,
+  useScrollableContainer,
+} from "@orama/ui/hooks";
 import { cn } from "@/lib/utils";
 import {
   FacetTabs,
@@ -25,7 +27,7 @@ import {
   PromptTextArea,
   ChatInteractions,
   Suggestions,
-	SlidingPanel
+  SlidingPanel,
 } from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({

@@ -12,7 +12,7 @@ import {
   SearchResults,
   Suggestions,
   FacetTabs,
-  Modal
+  Modal,
 } from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({

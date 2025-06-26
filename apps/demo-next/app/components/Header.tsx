@@ -2,7 +2,7 @@
 import React from "react";
 import { CollectionManager } from "@orama/core";
 import { InnerSearchBox } from "./SearchBoxModal";
-import {Modal, SearchRoot, ChatRoot} from "@orama/ui/components";
+import { Modal, SearchRoot, ChatRoot } from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
