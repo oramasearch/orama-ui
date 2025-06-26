@@ -18,3 +18,7 @@ input[type="search"]::-webkit-search-cancel-button {
   appearance: none;
   display: none;
 }
+
+button {
+  @apply cursor-pointer;
+}

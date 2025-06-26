@@ -60,8 +60,7 @@ export function useChat(): useChatProps {
 
         if (!answerStream) throw new Error("Answer stream is not initialized");
         for await (const _ of answerStream) {
-          // Handle streamed answer chunk if needed
-          console.log("Received answer chunk", _);
+          // console.log("Received answer chunk", _);
         }
       } catch (err) {
         setError(err as Error);
