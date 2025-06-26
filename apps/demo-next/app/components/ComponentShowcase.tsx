@@ -29,7 +29,7 @@ import {
 } from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
-  url: "https://collections.orama.com",
+  url: "https://atlantis.cluster.oramacore.com",
   collectionID: "ooo4f22zau7q7ta4i1grlgji",
   readAPIKey: "WvStWzar7tqdX3FOZbhCMDWSQsWAewUu",
 });

@@ -229,7 +229,6 @@ function Content({
 
   useEffect(() => {
     if (open) {
-      console.log("Opening sliding panel");
       setIsVisible(true);
       setTimeout(() => setIsAnimating(true), 10);
     } else {

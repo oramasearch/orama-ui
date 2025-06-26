@@ -357,7 +357,6 @@ const CopyMessage: React.FC<
       {copied ? (
         <>
           {copiedContent || <span>Copied!</span>}
-          <span className="sr-only">Copied message to clipboard</span>
         </>
       ) : (
         children || <span>Copy</span>

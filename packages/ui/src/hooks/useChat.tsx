@@ -99,10 +99,6 @@ export function useChat(): useChatProps {
                     ...(interactions ?? []),
                     ...normalizedState,
                   ];
-                  console.log(
-                    "**** Updated interactions:",
-                    updatedInteractions,
-                  );
                   dispatch({
                     type: "SET_INTERACTIONS",
                     payload: { interactions: updatedInteractions },
