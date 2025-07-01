@@ -7,6 +7,7 @@ Welcome to the **Orama UI Monorepo**, a unified codebase for building, sharing, 
 To set up the project locally, clone this repository and then:
 
 1. **Install dependencies:**
+
    ```sh
    pnpm install
    ```
@@ -44,6 +45,7 @@ pnpm build
 We welcome contributions! To get started:
 
 1. **Fork the repository** and create a new branch:
+
    ```sh
    git checkout -b feature/your-feature
    ```
@@ -54,6 +56,7 @@ We welcome contributions! To get started:
    - Add or update tests as needed.
 
 3. **Commit and push your changes:**
+
    ```sh
    git commit -m "feat: add your feature"
    git push origin feature/your-feature

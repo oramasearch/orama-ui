@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 
@@ -30,7 +29,7 @@ return (
     </SearchResults.Wrapper>
   </SearchRoot>
 );
-}`
+}`,
   },
   {
     title: "With Chat Integration",
@@ -63,7 +62,7 @@ return (
     </ChatRoot>
   </SearchRoot>
 );
-}`
+}`,
   },
   {
     title: "Custom Styling",
@@ -96,19 +95,22 @@ return (
     </SearchResults.List>
   </SearchRoot>
 );
-}`
-  }
+}`,
+  },
 ];
 
 export const CodeExamples = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const copyToClipboard = (code) => {
-    navigator.clipboard.writeText(code).then(() => {
-      console.log("Code copied to clipboard!");
-    }).catch((err) => {
-      console.error("Failed to copy code: ", err);
-    });
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        console.log("Code copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy code: ", err);
+      });
   };
 
   return (
@@ -129,8 +131,8 @@ export const CodeExamples = () => {
                 onClick={() => setActiveTab(index)}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === index
-                    ? 'bg-white shadow-md text-purple-700'
-                    : 'text-gray-600 hover:text-purple-700'
+                    ? "bg-white shadow-md text-purple-700"
+                    : "text-gray-600 hover:text-purple-700"
                 }`}
               >
                 {example.title}
@@ -153,20 +155,33 @@ export const CodeExamples = () => {
                   {examples?.[activeTab]?.title}
                 </span>
               </div>
-              <button className="text-gray-400 hover:text-white transition-colors" onClick={() => copyToClipboard(examples?.[activeTab]?.code)}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              <button
+                className="text-gray-400 hover:text-white transition-colors"
+                onClick={() => copyToClipboard(examples?.[activeTab]?.code)}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="mb-4">
                 <p className="text-gray-400 text-sm mb-2">
                   {examples?.[activeTab]?.description}
                 </p>
               </div>
-              
+
               <pre className="text-sm overflow-x-auto">
                 <code className="text-gray-300 whitespace-pre-wrap">
                   {examples?.[activeTab]?.code}

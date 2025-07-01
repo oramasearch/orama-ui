@@ -23,16 +23,16 @@ function MyChatComponent() {
 
 ### Returns
 
-| Name               | Type                                        | Description                                            |
-| ------------------ | ------------------------------------------- | ------------------------------------------------------ |
+| Name               | Type                                       | Description                                            |
+| ------------------ | ------------------------------------------ | ------------------------------------------------------ |
 | `onAsk`            | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
-| `abortAnswer`      | `() => void`                                | Aborts the current answer stream.                      |
-| `regenerateLatest` | `() => void`                                | Regenerates the latest answer.                         |
-| `copyToClipboard`  | `(message: string) => void`                 | Copies a message to the clipboard.                     |
-| `copiedMessage`    | `string`                                    | The last message successfully copied to the clipboard. |
-| `reset`            | `() => void`                                | Resets the chat session and clears interactions.       |
-| `loading`          | `boolean`                                   | Indicates if a request is in progress.                 |
-| `error`            | `Error \| null`                             | Error object if an error occurred, otherwise `null`.   |
+| `abortAnswer`      | `() => void`                               | Aborts the current answer stream.                      |
+| `regenerateLatest` | `() => void`                               | Regenerates the latest answer.                         |
+| `copyToClipboard`  | `(message: string) => void`                | Copies a message to the clipboard.                     |
+| `copiedMessage`    | `string`                                   | The last message successfully copied to the clipboard. |
+| `reset`            | `() => void`                               | Resets the chat session and clears interactions.       |
+| `loading`          | `boolean`                                  | Indicates if a request is in progress.                 |
+| `error`            | `Error \| null`                            | Error object if an error occurred, otherwise `null`.   |
 
 ---
 
