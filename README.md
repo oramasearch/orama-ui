@@ -1,58 +1,74 @@
-# Turborepo Tailwind CSS starter
+# Orama UI Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+Welcome to the **Orama UI Monorepo**, a unified codebase for building, sharing, and maintaining UI components and utilities, powered by [Turborepo](https://turbo.build/repo).
 
-## Using this example
+## 🚀 Get Started
 
-Run the following command:
+To set up the project locally, clone this repository and then:
+
+1. **Install dependencies:**
+   ```sh
+   pnpm install
+   ```
+
+2. **Run the development servers:**
+   ```sh
+   pnpm dev
+   ```
+   This will start all apps in the [`apps/`](apps/) directory.
+
+## 🗂️ Monorepo Structure
+
+- [`apps/web`](apps/web): Main Next.js web application with component showcases.
+- [`apps/demo-next`](apps/demo-next): Example Next.js app using Orama UI.
+- [`packages/ui`](packages/ui): Shared React component library.
+- [`packages/eslint-config`](packages/eslint-config): Shared ESLint configuration.
+- [`packages/typescript-config`](packages/typescript-config): Shared TypeScript configuration.
+- [`packages/tailwind-config`](packages/tailwind-config): Shared Tailwind CSS configuration.
+
+All packages and apps use [TypeScript](https://www.typescriptlang.org/) for type safety.
+
+## 🛠️ Building the UI Package
+
+The [`ui`](packages/ui) package compiles React components and utilities into the `dist` directory. Next.js apps in this monorepo consume these components to showcase use cases and custom themes.
+
+To build the UI package:
 
 ```sh
-npx create-turbo@latest -e with-tailwind
+cd packages/ui
+pnpm build
 ```
 
-## What's inside?
+## 🤝 Contributing
 
-This Turborepo includes the following packages/apps:
+We welcome contributions! To get started:
 
-### Apps and Packages
+1. **Fork the repository** and create a new branch:
+   ```sh
+   git checkout -b feature/your-feature
+   ```
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+2. **Make your changes** and ensure code quality:
+   - Run `pnpm lint` to check for lint errors.
+   - Run `pnpm format` to auto-format code.
+   - Add or update tests as needed.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+3. **Commit and push your changes:**
+   ```sh
+   git commit -m "feat: add your feature"
+   git push origin feature/your-feature
+   ```
 
-### Building packages/ui
+4. **Open a Pull Request** on GitHub and describe your changes.
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+## 🧰 Utilities
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework
+- [TypeScript](https://www.typescriptlang.org/) — Static type checking
+- [ESLint](https://eslint.org/) — Code linting
+- [Prettier](https://prettier.io) — Code formatting
+- [Turborepo](https://turbo.build/repo) — Monorepo tooling
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+---
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
-
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
-
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Feel free to open issues or discussions for questions, suggestions, or feedback!
