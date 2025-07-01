@@ -324,6 +324,14 @@ const getThemeClasses = (theme: string) => {
   }
 }
 
+const parseRelatedQueries = (relatedQueries: string) => {
+  try {
+    return JSON.parse(relatedQueries)
+  } catch (e: any) {
+    return []
+  }
+}
+
 const ComponentDemo = ({ theme }: { theme: string }) => {
   const [isChat, setIsChat] = useState(false)
   const themeClasses = getThemeClasses(theme)
@@ -595,6 +603,34 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                         {interaction.response}
                       </ChatInteractions.AssistantMessage>
 
+                      {interaction.related &&
+                        typeof interaction.related === 'string' && (
+                          <Suggestions.List className='flex flex-col gap-1 mb-4'>
+                            {(() => {
+                              const relatedQueries = parseRelatedQueries(
+                                interaction.related
+                              )
+                              if (relatedQueries.length === 0) return
+                              return relatedQueries.map(
+                                (item: string, idx: number) => (
+                                  <Suggestions.Item
+                                    key={idx}
+                                    itemClassName='cursor-pointer p-1 text-sm text-left p-2 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-200 transition-all duration-200'
+                                  >
+                                    <span
+                                      className={
+                                        themeClasses.noResults.suggestionText
+                                      }
+                                    >
+                                      {item}
+                                    </span>
+                                  </Suggestions.Item>
+                                )
+                              )
+                            })()}
+                          </Suggestions.List>
+                        )}
+
                       {interaction.response && !interaction.loading && (
                         <div
                           className={
@@ -665,10 +701,24 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                     maxLength={500}
                     autoFocus
                     className={`flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors placeholder:text-muted-foreground ${themeClasses.input}`}
+                    askOptions={{
+                      related: {
+                        enabled: true,
+                        size: 3,
+                        format: 'question'
+                      }
+                    }}
                   />
                   <PromptTextArea.Button
                     abortContent={<PauseCircle className='w-4 h-4' />}
                     className={`p-2 text-white rounded-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${themeClasses.promptButton}`}
+                    askOptions={{
+                      related: {
+                        enabled: true,
+                        size: 3,
+                        format: 'question'
+                      }
+                    }}
                   >
                     <ArrowUp className='w-4 h-4' />
                   </PromptTextArea.Button>

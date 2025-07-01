@@ -13,7 +13,7 @@ function MyChatComponent() {
   const { onAsk, loading, error } = useChat();
 
   // Example usage
-  // onAsk({ userPrompt: "Hello, Orama!" });
+  // onAsk({ query: "Hello, Orama!" });
 }
 ```
 
@@ -25,7 +25,7 @@ function MyChatComponent() {
 
 | Name               | Type                                        | Description                                            |
 | ------------------ | ------------------------------------------- | ------------------------------------------------------ |
-| `onAsk`            | `({ userPrompt: string }) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
+| `onAsk`            | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
 | `abortAnswer`      | `() => void`                                | Aborts the current answer stream.                      |
 | `regenerateLatest` | `() => void`                                | Regenerates the latest answer.                         |
 | `copyToClipboard`  | `(message: string) => void`                 | Copies a message to the clipboard.                     |

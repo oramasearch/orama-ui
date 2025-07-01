@@ -9,39 +9,41 @@
  * </Suggestions.List>
  */
 
-import { useChat } from "../hooks";
-import React from "react";
+import { AnswerConfig } from '@orama/core'
+import { useChat } from '../hooks'
+import React from 'react'
 
 interface SuggestionsWrapper {
-  className?: string;
-  children: React.ReactNode;
+  className?: string
+  children: React.ReactNode
 }
 
 const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
-  className = "",
-  children,
+  className = '',
+  children
 }) => {
-  return <div className={className}>{children}</div>;
-};
+  return <div className={className}>{children}</div>
+}
 
 interface SuggestionsListProps {
-  children: React.ReactNode;
-  className?: string;
-  "aria-label"?: string;
+  children: React.ReactNode
+  className?: string
+  'aria-label'?: string
 }
 
 const SuggestionsList: React.FC<SuggestionsListProps> = ({
   children,
-  className = "",
+  className = ''
 }) => {
-  return <ul className={className}>{children}</ul>;
-};
+  return <ul className={className}>{children}</ul>
+}
 
 interface SuggestionsItemProps {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
-  className?: string;
-  itemClassName?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  children: React.ReactNode
+  className?: string
+  itemClassName?: string
+  askOptions?: Omit<AnswerConfig, 'query'>
 }
 
 /**
@@ -60,25 +62,27 @@ interface SuggestionsItemProps {
 const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
   children,
-  className = "",
-  itemClassName = "",
+  className = '',
+  itemClassName = '',
+  askOptions = {}
 }) => {
-  const { onAsk } = useChat();
+  const { onAsk } = useChat()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+    event.stopPropagation()
+    event.preventDefault()
     if (onClick) {
-      onClick(event);
+      onClick(event)
     }
     onAsk({
-      userPrompt: event.currentTarget.textContent || "",
-    });
-  };
+      query: event.currentTarget.textContent || '',
+      ...askOptions
+    })
+  }
   return (
     <li className={className}>
       <button
-        type="button"
+        type='button'
         className={itemClassName}
         onClick={handleClick}
         data-focus-on-arrow-nav
@@ -86,11 +90,11 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
         {children}
       </button>
     </li>
-  );
-};
+  )
+}
 
 export const Suggestions = {
   Wrapper: SuggestionsWrapper,
   List: SuggestionsList,
-  Item: SuggestionsItem,
-};
+  Item: SuggestionsItem
+}
