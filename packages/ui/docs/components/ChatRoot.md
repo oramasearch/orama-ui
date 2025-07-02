@@ -14,7 +14,7 @@ This component is typically used to wrap parts of your UI that require access to
 ## Usage
 
 ```tsx
-import ChatRoot from "@orama/ui/components/ChatRoot";
+import { ChatRoot } from "@orama/ui/components";
 import { CollectionManager } from "@orama/core";
 
 const collectionManager = new CollectionManager({

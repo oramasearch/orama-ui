@@ -1,4 +1,4 @@
-# `SearchRoot`
+# `SearchRoot` component
 
 The `SearchRoot` component provides the context and state management for Orama search operations in your React application. It should wrap all search-related UI components to ensure they have access to the search state and dispatch functions.
 
@@ -26,8 +26,7 @@ The `SearchRoot` component provides the context and state management for Orama s
 Wrap your search UI with `SearchRoot` to provide context:
 
 ```tsx
-import SearchRoot from "@orama/ui/components/SearchRoot";
-import SearchInput from "@orama/ui/components/components/SearchInput";
+import { SearchRoot, SearchInput } from "@orama/ui/components";
 import { CollectionManager } from "@orama/core";
 
 const collectionManager = new CollectionManager({
@@ -62,6 +61,3 @@ const collectionManager = new CollectionManager({
 - All components that need to access or update the search state must be descendants of `SearchRoot`.
 - The Orama `client` is required for search operations; provide it via props or context.
 
----
-
-**See the source code for advanced usage and customization.**

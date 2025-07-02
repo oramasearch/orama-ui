@@ -1,41 +1,41 @@
-import React, { ReactNode } from "react";
-import { GroupCount } from "@/types";
-import { SearchParams } from "@orama/core";
-import { useSearchContext, useSearchDispatch } from "../contexts";
-import { useSearch, useArrowKeysNavigation } from "../hooks";
+import React, { ReactNode } from 'react'
+import { GroupCount } from '@/types'
+import { SearchParams } from '@orama/core'
+import { useSearchContext, useSearchDispatch } from '../contexts'
+import { useSearch, useArrowKeysNavigation } from '../hooks'
 
 interface WrapperProps {
-  children: ReactNode;
-  className?: string;
+  children: ReactNode
+  className?: string
 }
 
 interface ListProps {
-  children: (group: GroupedResult, isSelected: boolean) => ReactNode;
-  className?: string;
-  itemClassName?: string;
+  children: (group: GroupedResult, isSelected: boolean) => ReactNode
+  className?: string
+  itemClassName?: string
 }
 
 interface ItemProps {
-  children: ReactNode;
-  isSelected?: boolean;
-  onClick?: () => void;
-  searchParams?: SearchParams;
-  filterBy: string;
-  className?: string;
-  disabled?: boolean;
-  group: GroupCount;
+  children: ReactNode
+  isSelected?: boolean
+  onClick?: () => void
+  searchParams?: SearchParams
+  filterBy: string
+  className?: string
+  disabled?: boolean
+  group: GroupCount
 }
 
 interface GroupedResult {
-  name: string;
-  count: number;
+  name: string
+  count: number
 }
 
-const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
-  const { ref, onArrowLeftRight } = useArrowKeysNavigation();
-  const { results } = useSearchContext();
+const Wrapper: React.FC<WrapperProps> = ({ children, className = '' }) => {
+  const { ref, onArrowLeftRight } = useArrowKeysNavigation()
+  const { results } = useSearchContext()
   if (!results || results.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -48,14 +48,14 @@ const Wrapper: React.FC<WrapperProps> = ({ children, className = "" }) => {
     >
       {children}
     </section>
-  );
-};
+  )
+}
 
 const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
-  const { groupsCount, selectedFacet } = useSearchContext();
+  const { groupsCount, selectedFacet } = useSearchContext()
 
   if (!groupsCount || groupsCount.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -66,8 +66,8 @@ const List: React.FC<ListProps> = ({ children, className, itemClassName }) => {
         </li>
       ))}
     </ul>
-  );
-};
+  )
+}
 
 const Item: React.FC<ItemProps> = ({
   children,
@@ -76,53 +76,53 @@ const Item: React.FC<ItemProps> = ({
   searchParams,
   filterBy,
   onClick,
-  className = "",
+  className = '',
   disabled = false,
   ...props
 }) => {
-  const { onSearch } = useSearch();
-  const { searchTerm } = useSearchContext();
-  const dispatch = useSearchDispatch();
+  const { onSearch } = useSearch()
+  const { searchTerm } = useSearchContext()
+  const dispatch = useSearchDispatch()
 
   const handleClick = () => {
     if (!disabled) {
       onSearch({
         ...(searchParams ? { ...searchParams } : {}),
-        term: searchParams?.term || searchTerm || "",
+        term: searchParams?.term || searchTerm || '',
         limit: searchParams?.limit || 10,
-        filterBy: [{ [filterBy]: group.name }],
-      });
+        filterBy: [{ [filterBy]: group.name }]
+      })
 
       dispatch({
-        type: "SET_SELECTED_FACET",
-        payload: { selectedFacet: group.name },
-      });
+        type: 'SET_SELECTED_FACET',
+        payload: { selectedFacet: group.name }
+      })
 
       if (onClick) {
-        onClick();
+        onClick()
       }
     }
-  };
+  }
 
   return (
     <button
       className={className}
       onClick={handleClick}
       disabled={disabled}
-      type="button"
+      type='button'
       data-selected={isSelected}
       data-disabled={disabled}
-      data-focus-on-arrow-nav={isSelected ? "true" : undefined}
+      data-focus-on-arrow-nav={isSelected ? 'true' : undefined}
       data-focus-on-arrow-nav-left-right
       {...props}
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
 export const FacetTabs = {
   Wrapper,
   List,
-  Item,
-};
+  Item
+}
