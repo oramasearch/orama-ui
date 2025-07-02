@@ -1,6 +1,6 @@
 # `useChat` hook
 
-The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, copying messages to the clipboard, and resetting the chat session.
+The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, copying messages to the clipboard, resetting the chat session, and gives access to the chat context and dispatch function.
 
 ---
 
@@ -10,7 +10,7 @@ The `useChat` hook provides a set of utilities for managing chat interactions in
 import { useChat } from "@orama/ui/hooks";
 
 function MyChatComponent() {
-  const { onAsk, loading, error } = useChat();
+  const { onAsk, loading, error, context, dispatch } = useChat();
 
   // Example usage
   // onAsk({ query: "Hello, Orama!" });
@@ -31,6 +31,8 @@ function MyChatComponent() {
 | `copyToClipboard`  | `(message: string) => void`                | Copies a message to the clipboard.                     |
 | `copiedMessage`    | `string`                                   | The last message successfully copied to the clipboard. |
 | `reset`            | `() => void`                               | Resets the chat session and clears interactions.       |
+| `context`          | `ReturnType<typeof useChatContext>`        | The chat context containing client and session info.   |
+| `dispatch`         | `ReturnType<typeof useChatDispatch>`       | Function to dispatch actions to the chat state.        |
 | `loading`          | `boolean`                                  | Indicates if a request is in progress.                 |
 | `error`            | `Error \| null`                            | Error object if an error occurred, otherwise `null`.   |
 

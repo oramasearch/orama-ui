@@ -49,6 +49,8 @@ Orama UI is a composable, unstyled React component library designed to provide f
 - [`PromptTextArea`](./docs/components/PromptTextArea.md)
 - [`SearchResults`](./docs/components/SearchResults.md)
 - [`Suggestions`](./docs/components/Suggestions.md)
+- [`Modal`](./docs/components/Modal.md)
+- [`SlidingPanel`](./docs/components/SlidingPanel.md)
 
 ---
 
@@ -56,6 +58,9 @@ Orama UI is a composable, unstyled React component library designed to provide f
 
 - [`useChat`](./docs/hooks/useChat.md)
 - [`useSearch`](./docs/hooks/useSearch.md)
+- [`useArrowKeyNavigation`](./docs/hooks/useArrowKeyNavigation.md)
+- [`useScrollableContainer`](./docs/hooks/useScrollableContainer.md)
+- [`useLastInteractionMinHeight`](./docs/hooks/useLastInteractionMinHeight.md)
 
 ---
 
