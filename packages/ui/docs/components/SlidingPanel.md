@@ -7,7 +7,7 @@ The `SlidingPanel` is a composable, accessible sliding panel component, which pr
 ## Usage
 
 ```tsx
-import { SlidingPanel } from '@orama/ui/components';
+import { SlidingPanel } from "@orama/ui/components";
 
 function Example() {
   const [open, setOpen] = React.useState(false);
@@ -40,13 +40,13 @@ function Example() {
 
 **Props:**
 
-| Name        | Type                    | Required | Description                                 |
-|-------------|-------------------------|----------|---------------------------------------------|
-| `open`      | `boolean`               | Yes      | Whether the panel is open                   |
-| `onClose`   | `() => void`            | Yes      | Called when the panel should close          |
-| `backdrop`  | `boolean`               | No       | (Unused, see `<Backdrop />` below)          |
-| `children`  | `ReactNode`             | Yes      | Panel content (should include Content/Backdrop/Close) |
-| ...         | `HTMLDivElement` props  | No       | Any other div props                         |
+| Name       | Type                   | Required | Description                                           |
+| ---------- | ---------------------- | -------- | ----------------------------------------------------- |
+| `open`     | `boolean`              | Yes      | Whether the panel is open                             |
+| `onClose`  | `() => void`           | Yes      | Called when the panel should close                    |
+| `backdrop` | `boolean`              | No       | (Unused, see `<Backdrop />` below)                    |
+| `children` | `ReactNode`            | Yes      | Panel content (should include Content/Backdrop/Close) |
+| ...        | `HTMLDivElement` props | No       | Any other div props                                   |
 
 ---
 
@@ -56,10 +56,10 @@ Wraps the main content of the panel and handles animation.
 
 **Props:**
 
-| Name        | Type                    | Required | Description                                 |
-|-------------|-------------------------|----------|---------------------------------------------|
-| `children`  | `ReactNode`             | Yes      | Content inside the panel                    |
-| ...         | `HTMLDivElement` props  | No       | Any other div props                         |
+| Name       | Type                   | Required | Description              |
+| ---------- | ---------------------- | -------- | ------------------------ |
+| `children` | `ReactNode`            | Yes      | Content inside the panel |
+| ...        | `HTMLDivElement` props | No       | Any other div props      |
 
 ---
 
@@ -69,9 +69,9 @@ An overlay that closes the panel when clicked.
 
 **Props:**
 
-| Name        | Type                    | Required | Description                                 |
-|-------------|-------------------------|----------|---------------------------------------------|
-| ...         | `HTMLDivElement` props  | No       | Any other div props                         |
+| Name | Type                   | Required | Description         |
+| ---- | ---------------------- | -------- | ------------------- |
+| ...  | `HTMLDivElement` props | No       | Any other div props |
 
 ---
 
@@ -82,10 +82,10 @@ You can provide custom children (e.g., an icon), or it defaults to `×`.
 
 **Props:**
 
-| Name        | Type                    | Required | Description                                 |
-|-------------|-------------------------|----------|---------------------------------------------|
-| `children`  | `ReactNode`             | No       | Custom close content                        |
-| ...         | `HTMLButtonElement` props| No      | Any other button props                      |
+| Name       | Type                      | Required | Description            |
+| ---------- | ------------------------- | -------- | ---------------------- |
+| `children` | `ReactNode`               | No       | Custom close content   |
+| ...        | `HTMLButtonElement` props | No       | Any other button props |
 
 ---
 
@@ -95,4 +95,3 @@ You can provide custom children (e.g., an icon), or it defaults to `×`.
 - ESC closes the panel.
 - Backdrop click closes the panel.
 - ARIA roles and attributes are set for dialogs.
-

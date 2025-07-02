@@ -13,7 +13,7 @@
 ## Usage
 
 ```tsx
-import { FacetTabs } from '@orama-ui';
+import { FacetTabs } from "@orama-ui";
 
 function Example() {
   // Context providers and hooks are required for FacetTabs to work.
@@ -21,7 +21,10 @@ function Example() {
 
   return (
     <FacetTabs.Wrapper className="facet-tabs">
-      <FacetTabs.List className="facet-tabs-list" itemClassName="facet-tab-item">
+      <FacetTabs.List
+        className="facet-tabs-list"
+        itemClassName="facet-tab-item"
+      >
         {(group, isSelected) => (
           <FacetTabs.Item
             group={group}
@@ -42,36 +45,36 @@ function Example() {
 
 ### FacetTabs.Wrapper
 
-| Prop        | Type        | Description                                 |
-|-------------|-------------|---------------------------------------------|
-| `children`  | ReactNode   | The tab list and items.                     |
-| `className` | string      | (Optional) Additional CSS classes.          |
+| Prop        | Type      | Description                        |
+| ----------- | --------- | ---------------------------------- |
+| `children`  | ReactNode | The tab list and items.            |
+| `className` | string    | (Optional) Additional CSS classes. |
 
 - Handles keyboard navigation (left/right arrows).
 - Only renders if there are search results.
 
 ### FacetTabs.List
 
-| Prop           | Type                                              | Description                                      |
-|----------------|---------------------------------------------------|--------------------------------------------------|
-| `children`     | (group, isSelected) => ReactNode                  | Render function for each tab.                    |
-| `className`    | string                                            | (Optional) CSS class for the list.               |
-| `itemClassName`| string                                            | (Optional) CSS class for each list item.         |
+| Prop            | Type                             | Description                              |
+| --------------- | -------------------------------- | ---------------------------------------- |
+| `children`      | (group, isSelected) => ReactNode | Render function for each tab.            |
+| `className`     | string                           | (Optional) CSS class for the list.       |
+| `itemClassName` | string                           | (Optional) CSS class for each list item. |
 
 - Only renders if there are facet groups.
 
 ### FacetTabs.Item
 
-| Prop         | Type         | Description                                                  |
-|--------------|--------------|--------------------------------------------------------------|
-| `children`   | ReactNode    | Tab label/content.                                           |
-| `group`      | GroupCount   | The facet group object (`{ name: string, count: number }`).  |
-| `filterBy`   | string       | The field to filter by when this tab is selected.            |
-| `isSelected` | boolean      | (Optional) If the tab is currently selected.                 |
-| `onClick`    | function     | (Optional) Called when the tab is clicked.                   |
-| `className`  | string       | (Optional) Additional CSS classes.                           |
-| `disabled`   | boolean      | (Optional) If true, disables the tab.                        |
-| `searchParams`| SearchParams| (Optional) Additional search parameters.                     |
+| Prop           | Type         | Description                                                 |
+| -------------- | ------------ | ----------------------------------------------------------- |
+| `children`     | ReactNode    | Tab label/content.                                          |
+| `group`        | GroupCount   | The facet group object (`{ name: string, count: number }`). |
+| `filterBy`     | string       | The field to filter by when this tab is selected.           |
+| `isSelected`   | boolean      | (Optional) If the tab is currently selected.                |
+| `onClick`      | function     | (Optional) Called when the tab is clicked.                  |
+| `className`    | string       | (Optional) Additional CSS classes.                          |
+| `disabled`     | boolean      | (Optional) If true, disables the tab.                       |
+| `searchParams` | SearchParams | (Optional) Additional search parameters.                    |
 
 - Triggers a search and updates the selected facet on click.
 - Applies ARIA and data attributes for accessibility and navigation.
@@ -88,11 +91,7 @@ function Example() {
 <FacetTabs.Wrapper>
   <FacetTabs.List>
     {(group, isSelected) => (
-      <FacetTabs.Item
-        group={group}
-        filterBy="type"
-        isSelected={isSelected}
-      >
+      <FacetTabs.Item group={group} filterBy="type" isSelected={isSelected}>
         {group.name} ({group.count})
       </FacetTabs.Item>
     )}

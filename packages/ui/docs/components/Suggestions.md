@@ -9,7 +9,7 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 ```tsx
 <Suggestions.Wrapper className="suggestions-wrapper">
   <Suggestions.List className="suggestions-list" aria-label="Suggestions">
-    {suggestions.map(suggestion => (
+    {suggestions.map((suggestion) => (
       <Suggestions.Item
         key={suggestion.id}
         onClick={() => handleSuggestionClick(suggestion)}
@@ -30,10 +30,10 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 
 **Props:**
 
-| Name      | Type           | Default | Description                        |
-|-----------|----------------|---------|------------------------------------|
-| className | `string`       | `""`    | Optional CSS class for the wrapper |
-| children  | `ReactNode`    |         | Content to render inside           |
+| Name      | Type        | Default | Description                        |
+| --------- | ----------- | ------- | ---------------------------------- |
+| className | `string`    | `""`    | Optional CSS class for the wrapper |
+| children  | `ReactNode` |         | Content to render inside           |
 
 ---
 
@@ -41,11 +41,11 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 
 **Props:**
 
-| Name        | Type           | Default | Description                        |
-|-------------|----------------|---------|------------------------------------|
-| className   | `string`       | `""`    | Optional CSS class for the list    |
-| aria-label  | `string`       |         | Optional ARIA label for accessibility |
-| children    | `ReactNode`    |         | List items to render               |
+| Name       | Type        | Default | Description                           |
+| ---------- | ----------- | ------- | ------------------------------------- |
+| className  | `string`    | `""`    | Optional CSS class for the list       |
+| aria-label | `string`    |         | Optional ARIA label for accessibility |
+| children   | `ReactNode` |         | List items to render                  |
 
 ---
 
@@ -53,13 +53,13 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 
 **Props:**
 
-| Name         | Type                                             | Default | Description                                                                                  |
-|--------------|--------------------------------------------------|---------|----------------------------------------------------------------------------------------------|
-| onClick      | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                                              |
-| children     | `ReactNode`                                      |         | Content to display inside the suggestion button                                               |
-| className    | `string`                                         | `""`    | Optional CSS class for the `<li>` element                                                     |
-| itemClassName| `string`                                         | `""`    | Optional CSS class for the `<button>` element                                                 |
-| askOptions   | `Omit<AnswerConfig, "query">`                    | `{}`    | Additional options passed to the `onAsk` function from the `useChat` hook                     |
+| Name          | Type                                                   | Default | Description                                                               |
+| ------------- | ------------------------------------------------------ | ------- | ------------------------------------------------------------------------- |
+| onClick       | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                          |
+| children      | `ReactNode`                                            |         | Content to display inside the suggestion button                           |
+| className     | `string`                                               | `""`    | Optional CSS class for the `<li>` element                                 |
+| itemClassName | `string`                                               | `""`    | Optional CSS class for the `<button>` element                             |
+| askOptions    | `Omit<AnswerConfig, "query">`                          | `{}`    | Additional options passed to the `onAsk` function from the `useChat` hook |
 
 **Behavior:**
 

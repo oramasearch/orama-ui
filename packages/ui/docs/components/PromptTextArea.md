@@ -16,10 +16,8 @@ import { PromptTextArea } from "@orama/ui";
     rows={4}
     disabled={false}
   />
-  <PromptTextArea.Button>
-    Send
-  </PromptTextArea.Button>
-</PromptTextArea.Wrapper>
+  <PromptTextArea.Button>Send</PromptTextArea.Button>
+</PromptTextArea.Wrapper>;
 ```
 
 ---

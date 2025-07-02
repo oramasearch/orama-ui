@@ -153,7 +153,7 @@ Button to copy an assistant message to the clipboard, with feedback when copied.
 
 ## Usage Example
 
-````tsx
+```tsx
 import { ChatInteractions } from "./ChatInteractions";
 
 <ChatInteractions.Wrapper>
@@ -170,5 +170,5 @@ import { ChatInteractions } from "./ChatInteractions";
       </ChatInteractions.UserActions>
     </>
   )}
-</ChatInteractions.Wrapper>
-````
+</ChatInteractions.Wrapper>;
+```

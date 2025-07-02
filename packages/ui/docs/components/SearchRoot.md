@@ -60,4 +60,3 @@ const collectionManager = new CollectionManager({
 
 - All components that need to access or update the search state must be descendants of `SearchRoot`.
 - The Orama `client` is required for search operations; provide it via props or context.
-

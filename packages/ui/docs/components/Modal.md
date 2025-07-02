@@ -34,14 +34,14 @@ Wraps the modal and manages open/close state, focus, and accessibility.
 
 **Props:**
 
-| Name                 | Type         | Default | Description                                 |
-|----------------------|--------------|---------|---------------------------------------------|
-| `open`               | `boolean`    | `false` | Whether the modal is open                   |
-| `onModalClosed`      | `() => void` |         | Callback when modal closes                  |
-| `closeOnEscape`      | `boolean`    | `true`  | Close modal on Escape key                   |
-| `closeOnOutsideClick`| `boolean`    | `true`  | Close modal on outside click                |
-| `children`           | `ReactNode`  |         | Modal content                               |
-| `className`          | `string`     |         | Additional classes for the dialog           |
+| Name                  | Type         | Default | Description                       |
+| --------------------- | ------------ | ------- | --------------------------------- |
+| `open`                | `boolean`    | `false` | Whether the modal is open         |
+| `onModalClosed`       | `() => void` |         | Callback when modal closes        |
+| `closeOnEscape`       | `boolean`    | `true`  | Close modal on Escape key         |
+| `closeOnOutsideClick` | `boolean`    | `true`  | Close modal on outside click      |
+| `children`            | `ReactNode`  |         | Modal content                     |
+| `className`           | `string`     |         | Additional classes for the dialog |
 
 ---
 
@@ -51,10 +51,10 @@ Container for modal content. Handles arrow key navigation.
 
 **Props:**
 
-| Name        | Type         | Default | Description         |
-|-------------|--------------|---------|---------------------|
-| `className` | `string`     |         | Additional classes  |
-| `children`  | `ReactNode`  |         | Content             |
+| Name        | Type        | Default | Description        |
+| ----------- | ----------- | ------- | ------------------ |
+| `className` | `string`    |         | Additional classes |
+| `children`  | `ReactNode` |         | Content            |
 
 ---
 
@@ -64,10 +64,10 @@ Content area of the modal.
 
 **Props:**
 
-| Name        | Type         | Default | Description         |
-|-------------|--------------|---------|---------------------|
-| `className` | `string`     |         | Additional classes  |
-| `children`  | `ReactNode`  |         | Content             |
+| Name        | Type        | Default | Description        |
+| ----------- | ----------- | ------- | ------------------ |
+| `className` | `string`    |         | Additional classes |
+| `children`  | `ReactNode` |         | Content            |
 
 ---
 
@@ -77,11 +77,11 @@ Button to close the modal.
 
 **Props:**
 
-| Name        | Type         | Default | Description                |
-|-------------|--------------|---------|----------------------------|
-| `className` | `string`     |         | Additional classes         |
-| `children`  | `ReactNode`  | `"×"`   | Custom close icon or text  |
-| `asChild`   | `boolean`    |         | Render as child            |
+| Name        | Type        | Default | Description               |
+| ----------- | ----------- | ------- | ------------------------- |
+| `className` | `string`    |         | Additional classes        |
+| `children`  | `ReactNode` | `"×"`   | Custom close icon or text |
+| `asChild`   | `boolean`   |         | Render as child           |
 
 ---
 

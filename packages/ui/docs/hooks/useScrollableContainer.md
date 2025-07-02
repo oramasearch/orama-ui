@@ -5,7 +5,7 @@ A React hook for managing scrollable containers, providing logic for chat "Go to
 ## Usage
 
 ```tsx
-import { useScrollableContainer } from '@orama/ui/hooks';
+import { useScrollableContainer } from "@orama/ui/hooks";
 
 function MyComponent() {
   const {
@@ -17,12 +17,16 @@ function MyComponent() {
     setLockScrollOnBottom,
     recalculateGoToBottomButton,
   } = useScrollableContainer({
-    onScrollToBottom: () => { /* called after scroll to bottom */ },
-    onGoToBottomButtonChange: (show) => { /* called when button visibility changes */ },
+    onScrollToBottom: () => {
+      /* called after scroll to bottom */
+    },
+    onGoToBottomButtonChange: (show) => {
+      /* called when button visibility changes */
+    },
   });
 
   return (
-    <div ref={containerRef} style={{ overflowY: 'auto', maxHeight: 400 }}>
+    <div ref={containerRef} style={{ overflowY: "auto", maxHeight: 400 }}>
       {/* ...content... */}
       {showGoToBottomButton && (
         <button onClick={() => scrollToBottom()}>Go to Bottom</button>

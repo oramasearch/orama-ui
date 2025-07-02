@@ -2,7 +2,6 @@
 
 The `useSearch` hook provides a simple interface for executing searches, managing loading and error states, and resetting search results. It leverages the Orama search client and gives access to the chat context and dispatch function.
 
-
 ---
 
 ## Usage
@@ -23,14 +22,14 @@ onSearch({ term: "example", groupBy: "category" });
 
 The hook returns an object with the following properties:
 
-| Name      | Type                                                                                                   | Description                                                                 |
-| --------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| onSearch  | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters.                            |
-| onReset   | `() => void`                                                                                           | Resets the search state to its initial values.                              |
-| context   | `ReturnType<typeof useSearchContext>`                                                                  | The current search context, providing access to the search client and state.|
-| dispatch  | `ReturnType<typeof useSearchDispatch>`                                                                 | Function to dispatch actions to the search state management.                |
-| loading   | `boolean`                                                                                              | Indicates if a search operation is in progress.                             |
-| error     | `Error \| null`                                                                                        | The current error state, if any.                                            |
+| Name     | Type                                                                                                   | Description                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| onSearch | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters.                             |
+| onReset  | `() => void`                                                                                           | Resets the search state to its initial values.                               |
+| context  | `ReturnType<typeof useSearchContext>`                                                                  | The current search context, providing access to the search client and state. |
+| dispatch | `ReturnType<typeof useSearchDispatch>`                                                                 | Function to dispatch actions to the search state management.                 |
+| loading  | `boolean`                                                                                              | Indicates if a search operation is in progress.                              |
+| error    | `Error \| null`                                                                                        | The current error state, if any.                                             |
 
 ---
 

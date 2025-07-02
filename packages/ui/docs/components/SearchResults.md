@@ -53,7 +53,7 @@ Groups results by a field.
 
 ```tsx
 <SearchResults.GroupsWrapper groupBy="category">
-  {group => (
+  {(group) => (
     <div>
       <h3>{group.name}</h3>
       <SearchResults.GroupList group={group}>
@@ -99,9 +99,7 @@ Renders a list of results.
 **Usage:**
 
 ```tsx
-<SearchResults.List>
-  {(result) => <div>{result.title}</div>}
-</SearchResults.List>
+<SearchResults.List>{(result) => <div>{result.title}</div>}</SearchResults.List>
 ```
 
 ---
@@ -169,11 +167,7 @@ All components rely on `useSearchContext()` for access to `results` and `searchT
     {(term) => <div>No results for "{term}"</div>}
   </SearchResults.NoResults>
   <SearchResults.List>
-    {(result) => (
-      <SearchResults.Item>
-        {result.title}
-      </SearchResults.Item>
-    )}
+    {(result) => <SearchResults.Item>{result.title}</SearchResults.Item>}
   </SearchResults.List>
 </SearchResults.Wrapper>
 ```

@@ -21,7 +21,9 @@ A custom React hook that tracks the minimum height of a container based on its l
 ### Usage
 
 ```tsx
-const { containerRef, minHeight } = useLastInteractionMinHeight(interactions.length);
+const { containerRef, minHeight } = useLastInteractionMinHeight(
+  interactions.length,
+);
 
 return (
   <div ref={containerRef} style={{ minHeight }}>
