@@ -40,6 +40,8 @@ cd packages/ui
 pnpm build
 ```
 
+👉 **See the [`ui` package README](./packages/ui/README.md) for detailed usage, documentation, and available components.**
+
 ## 🤝 Contributing
 
 We welcome contributions! To get started:
