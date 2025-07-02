@@ -1,4 +1,4 @@
-# `useArrowKeysNavigation`
+# `useArrowKeysNavigation` hook
 
 A custom React hook that enables keyboard navigation using arrow keys within a container element. This hook is useful for building accessible UIs where users can navigate between focusable elements using the keyboard.
 

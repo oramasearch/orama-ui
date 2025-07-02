@@ -1,4 +1,4 @@
-# `useSearch`
+# `useSearch` hook
 
 A custom React hook for managing search functionality within the Orama-powered React applications.
 

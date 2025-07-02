@@ -1,4 +1,4 @@
-# `useChat`
+# `useChat` hook
 
 The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, copying messages to the clipboard, and resetting the chat session.
 
