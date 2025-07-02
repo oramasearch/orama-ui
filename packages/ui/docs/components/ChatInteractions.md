@@ -6,6 +6,17 @@
 
 ## Exports
 
+### `ChatInteractions.Empty`
+
+**Props:**
+
+- `children`: `ReactNode` (optional)  
+  Content to display when there are no interactions.
+- `className`: `string` (optional)
+
+**Description:**  
+Displays custom content when there are no chat interactions. Useful for showing an empty state or onboarding message.
+
 ### `ChatInteractions.Wrapper`
 
 **Props:**

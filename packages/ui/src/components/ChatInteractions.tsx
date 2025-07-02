@@ -1,154 +1,159 @@
-import { AnyObject, Interaction } from "@orama/core";
+import { AnyObject, Interaction } from '@orama/core'
 import React, {
   ComponentPropsWithRef,
   PropsWithChildren,
   ReactNode,
   useEffect,
-  useState,
-} from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import Highlight, { defaultProps, PrismTheme } from "prism-react-renderer";
-import theme from "prism-react-renderer/themes/vsDark";
-import { useChat, useLastInteractionMinHeight } from "../hooks";
-import { useChatContext, useChatDispatch } from "../contexts";
+  useState
+} from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import Highlight, { defaultProps, PrismTheme } from 'prism-react-renderer'
+import theme from 'prism-react-renderer/themes/vsDark'
+import { useChat, useLastInteractionMinHeight } from '../hooks'
+import { useChatContext, useChatDispatch } from '../contexts'
 
 export interface ChatInteractionsWrapperProps
-  extends Omit<ComponentPropsWithRef<"div">, "children"> {
+  extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
   children: (
     interaction: Interaction,
     index?: number,
-    totalInteractions?: number,
-  ) => ReactNode;
-  className?: string;
-  "aria-label"?: string;
-  onNewInteraction?: (index: number) => void;
-  onStreaming?: (interaction: Interaction) => void;
+    totalInteractions?: number
+  ) => ReactNode
+  className?: string
+  'aria-label'?: string
+  onNewInteraction?: (index: number) => void
+  onStreaming?: (interaction: Interaction) => void
 }
 
 export interface UserPromptProps {
-  children: ReactNode;
-  className?: string;
-  "aria-label"?: string;
+  children: ReactNode
+  className?: string
+  'aria-label'?: string
 }
 
 export interface AssistantMessageProps extends PropsWithChildren {
-  className?: string;
+  className?: string
   markdownClassnames?: {
-    [key: string]: string;
-  };
-  theme?: PrismTheme;
+    [key: string]: string
+  }
+  theme?: PrismTheme
 }
 
 export interface UserActionsProps {
-  children: ReactNode;
-  className?: string;
-  "aria-label"?: string;
+  children: ReactNode
+  className?: string
+  'aria-label'?: string
 }
 
 export interface SourcesProps {
-  sources: Array<Interaction["sources"]>;
-  children: (document: AnyObject, index: number) => ReactNode;
-  className?: string;
-  itemClassName?: string;
+  sources: Array<Interaction['sources']>
+  children: (document: AnyObject, index: number) => ReactNode
+  className?: string
+  itemClassName?: string
 }
 
 export interface ScrollToBottomButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+  className?: string
 }
 
 export interface ActionButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: ReactNode;
+  children?: ReactNode
+}
+
+export interface EmptyStateProps {
+  className?: string
+  children?: ReactNode
 }
 
 const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   children,
-  className = "",
+  className = '',
   ref,
   onNewInteraction,
   onStreaming,
   ...rest
 }) => {
-  const { interactions } = useChatContext();
+  const { interactions } = useChatContext()
   const [lastInteraction, setLastInteraction] = useState<number | undefined>(
-    undefined,
-  );
+    undefined
+  )
   const { containerRef, minHeight } = useLastInteractionMinHeight(
-    interactions?.length ?? 0,
-  );
+    interactions?.length ?? 0
+  )
 
   useEffect(() => {
     if (interactions && interactions.length > 0) {
-      setLastInteraction(interactions.length - 1);
+      setLastInteraction(interactions.length - 1)
     } else {
-      setLastInteraction(undefined);
+      setLastInteraction(undefined)
     }
-  }, [interactions, interactions?.length]);
+  }, [interactions, interactions?.length])
 
   useEffect(() => {
     if (lastInteraction) {
-      onNewInteraction?.(lastInteraction);
+      onNewInteraction?.(lastInteraction)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastInteraction]);
+  }, [lastInteraction])
 
   useEffect(() => {
     if (interactions && interactions.length > 0) {
-      const last = interactions[interactions.length - 1];
+      const last = interactions[interactions.length - 1]
       if (last?.response && last.loading) {
-        onStreaming?.(last);
+        onStreaming?.(last)
       }
     }
-  }, [interactions, onStreaming]);
+  }, [interactions, onStreaming])
 
-  if (!interactions || interactions.length === 0) return null;
+  if (!interactions || interactions.length === 0) return null
 
   return (
     <div className={className} ref={ref} {...rest}>
-      <div ref={containerRef} className="h-full">
+      <div ref={containerRef} className='h-full'>
         {interactions.map((interaction, index) => {
-          if (!interaction) return null;
+          if (!interaction) return null
 
-          const isLast = index === lastInteraction;
+          const isLast = index === lastInteraction
 
           return (
             <div
               key={interaction.id}
               style={{
-                minHeight: isLast ? `${minHeight}px` : 0,
+                minHeight: isLast ? `${minHeight}px` : 0
               }}
             >
               {children(interaction, index, lastInteraction)}
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const UserPrompt: React.FC<UserPromptProps> = ({
   children,
-  className = "",
-  "aria-label": ariaLabel = "User message",
+  className = '',
+  'aria-label': ariaLabel = 'User message'
 }) => (
   <div className={className} aria-label={ariaLabel}>
     {children}
   </div>
-);
+)
 
 const AssistantMessage: React.FC<AssistantMessageProps> = ({
   children,
   theme: customTheme,
-  className = "",
+  className = ''
 }) => {
   if (!children) {
-    return null;
+    return null
   }
 
-  const currentTheme = customTheme || theme;
+  const currentTheme = customTheme || theme
 
   return (
     <div className={className}>
@@ -156,24 +161,24 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
         remarkPlugins={[remarkGfm]}
         components={{
           code({ className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || "");
+            const match = /language-(\w+)/.exec(className || '')
 
             if (!match) {
               return (
                 <code
-                  className={`${className || ""} orama-inline-code`}
+                  className={`${className || ''} orama-inline-code`}
                   {...props}
                 >
                   {children}
                 </code>
-              );
+              )
             }
 
-            const language = match[1];
+            const language = match[1]
 
             return (
               <div
-                className="rounded-md overflow-x-auto py-3 p-2 mb-4 text-xs whitespace-pre"
+                className='rounded-md overflow-x-auto py-3 p-2 mb-4 text-xs whitespace-pre'
                 style={{ backgroundColor: currentTheme.plain.backgroundColor }}
               >
                 <Highlight
@@ -187,60 +192,60 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
                     style,
                     tokens,
                     getLineProps,
-                    getTokenProps,
+                    getTokenProps
                   }) => (
                     <pre className={className} style={style}>
                       {tokens.map((line, i) => {
-                        const lineProps = getLineProps({ line });
-                        const { key, ...restLineProps } = lineProps;
+                        const lineProps = getLineProps({ line })
+                        const { key, ...restLineProps } = lineProps
                         return (
                           <div key={i} {...restLineProps}>
                             {line.map((token, j) => {
-                              const tokenProps = getTokenProps({ token });
-                              const { key, ...restTokenProps } = tokenProps;
-                              return <span key={j} {...restTokenProps} />;
+                              const tokenProps = getTokenProps({ token })
+                              const { key, ...restTokenProps } = tokenProps
+                              return <span key={j} {...restTokenProps} />
                             })}
                           </div>
-                        );
+                        )
                       })}
                     </pre>
                   )}
                 </Highlight>
               </div>
-            );
+            )
           },
           h3: ({ node, ...props }) => (
-            <h3 className="text-md font-semibold my-2" {...props} />
+            <h3 className='text-md font-semibold my-2' {...props} />
           ),
           pre: ({ node, ...props }) => (
-            <pre className="text-xs my-2" {...props} />
-          ),
+            <pre className='text-xs my-2' {...props} />
+          )
         }}
       >
-        {typeof children === "string" ? children : String(children)}
+        {typeof children === 'string' ? children : String(children)}
       </ReactMarkdown>
     </div>
-  );
-};
+  )
+}
 
 const UserActions: React.FC<UserActionsProps> = ({
   children,
-  className = "",
-}) => <div className={className}>{children}</div>;
+  className = ''
+}) => <div className={className}>{children}</div>
 
 const Sources: React.FC<SourcesProps> = ({
   children,
   sources,
   className,
-  itemClassName,
+  itemClassName
 }) => {
   if (!sources || sources.length === 0) {
-    return null;
+    return null
   }
 
-  const hasDocument = sources.some((source) => source && source.document);
+  const hasDocument = sources.some((source) => source && source.document)
   if (!hasDocument) {
-    return null;
+    return null
   }
 
   return (
@@ -255,102 +260,102 @@ const Sources: React.FC<SourcesProps> = ({
         </React.Fragment>
       ))}
     </ul>
-  );
-};
+  )
+}
 
 const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
-  className = "",
+  className = '',
   onClick,
-  children,
+  children
 }) => {
-  const dispatch = useChatDispatch();
+  const dispatch = useChatDispatch()
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     dispatch({
-      type: "SET_SCROLL_TO_LAST_INTERACTION",
-      payload: { scrollToLastInteraction: true },
-    });
+      type: 'SET_SCROLL_TO_LAST_INTERACTION',
+      payload: { scrollToLastInteraction: true }
+    })
 
     if (onClick) {
-      onClick(e);
+      onClick(e)
     }
-  };
+  }
 
   return (
     <button
       className={className}
       onClick={handleClick}
-      aria-label="Scroll to bottom"
+      aria-label='Scroll to bottom'
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
 const Reset: React.FC<ActionButtonProps> = ({ children, onClick, ...rest }) => {
-  const { reset } = useChat();
+  const { reset } = useChat()
 
   const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
-    reset();
+    reset()
     if (onClick) {
-      onClick(e);
+      onClick(e)
     }
-  };
+  }
 
   return (
     <button onClick={handleReset} {...rest}>
       {children}
     </button>
-  );
-};
+  )
+}
 
 const RegenerateLatest: React.FC<ActionButtonProps> = ({
   children,
   onClick,
   ...rest
 }) => {
-  const { regenerateLatest } = useChat();
+  const { regenerateLatest } = useChat()
 
   const handleRegenerate = (e: React.MouseEvent<HTMLButtonElement>) => {
-    regenerateLatest();
+    regenerateLatest()
     if (onClick) {
-      onClick(e);
+      onClick(e)
     }
-  };
+  }
 
   return (
     <button onClick={handleRegenerate} {...rest}>
       {children}
     </button>
-  );
-};
+  )
+}
 
 const CopyMessage: React.FC<
   ActionButtonProps & {
-    interaction: Interaction;
-    copiedContent?: React.ReactNode;
+    interaction: Interaction
+    copiedContent?: React.ReactNode
   }
 > = ({ onClick, interaction, children, copiedContent, ...rest }) => {
-  const { copyToClipboard, copiedMessage } = useChat();
-  const [copied, setCopied] = useState(false);
+  const { copyToClipboard, copiedMessage } = useChat()
+  const [copied, setCopied] = useState(false)
 
   const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
-    copyToClipboard(interaction.response || "");
+    copyToClipboard(interaction.response || '')
     if (onClick) {
-      onClick(e);
+      onClick(e)
     }
-  };
+  }
 
   useEffect(() => {
     if (copiedMessage === interaction.response) {
-      setCopied(true);
+      setCopied(true)
       const timer = setTimeout(() => {
-        setCopied(false);
-      }, 3000);
-      return () => clearTimeout(timer);
+        setCopied(false)
+      }, 3000)
+      return () => clearTimeout(timer)
     }
-  }, [copiedMessage, interaction.response]);
+  }, [copiedMessage, interaction.response])
 
   return (
     <button onClick={handleCopy} {...rest}>
@@ -360,8 +365,21 @@ const CopyMessage: React.FC<
         children || <span>Copy</span>
       )}
     </button>
-  );
-};
+  )
+}
+
+const ChatInteractionsEmptyState: React.FC<EmptyStateProps> = ({
+  className = '',
+  children
+}) => {
+  const { interactions } = useChatContext()
+
+  if (interactions && interactions.length > 0) {
+    return null
+  }
+
+  return <div className={className}>{children}</div>
+}
 
 export const ChatInteractions = {
   UserPrompt,
@@ -373,4 +391,5 @@ export const ChatInteractions = {
   Sources,
   ScrollToBottomButton,
   Wrapper: ChatInteractionsWrapper,
-};
+  Empty: ChatInteractionsEmptyState
+}
