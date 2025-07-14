@@ -59,13 +59,67 @@ Displays a user prompt/message in the chat.
 - `children`: `ReactNode`  
   The assistant's message (supports Markdown).
 - `className`: `string` (optional)
-- `markdownClassnames`: `{ [key: string]: string }` (optional)  
+- `markdownClassnames`: `Partial<Record<keyof JSX.IntrinsicElements, string>>` (optional)  
   Custom class names for Markdown elements.
 - `theme`: `PrismTheme` (optional)  
   Custom syntax highlighting theme.
 
-**Description:**  
-Renders the assistant's message with Markdown and syntax-highlighted code blocks.
+**Description:**
+Renders the assistant's message with [react-markdown](https://github.com/remarkjs/react-markdown) and [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) out of the box.  
+Supports GitHub-flavored Markdown, including code blocks with syntax highlighting.
+By default, code blocks use the `vsDark` theme from `prism-react-renderer`.
+
+**Customization:**
+
+- To change the appearance of Markdown elements (e.g., headings, code, lists), use the `markdownClassnames` prop to provide custom class names for specific Markdown tags.
+- To customize code block syntax highlighting, pass a custom `theme` (see [prism-react-renderer themes](https://github.com/FormidableLabs/prism-react-renderer#theming)).
+
+**Example:**
+
+```tsx
+import { ChatInteractions } from '@orama/ui/components'
+
+const markdownClassnames = {
+  h1: 'text-3xl font-bold text-primary mb-4',
+  h2: 'text-2xl font-semibold text-secondary mb-3',
+  p: 'mb-2 leading-relaxed text-base',
+  ul: 'list-disc pl-6 mb-2',
+  li: 'mb-1',
+  code: 'bg-gray-100 text-red-600 px-1 rounded',
+  pre: 'bg-black text-white p-3 rounded-lg overflow-x-auto'
+  strong: 'font-bold',
+}
+
+function Example() {
+  return (
+    <ChatInteractions.AssistantMessage
+      className="assistant-message"
+      markdownClassnames={markdownClassnames}
+      theme={myCustomPrismTheme}
+    >
+      {`
+# Welcome to Orama UI
+
+This is a **demo** of the \`AssistantMessage\` component.
+
+## Features
+
+- Custom Markdown styling
+- Syntax highlighted code blocks
+
+> Try editing the styles via \`markdownClassnames\`!
+
+\`\`\`js
+function hello() {
+  console.log("Hello, world!");
+}
+\`\`\`
+
+      `}
+    </ChatInteractions.AssistantMessage>
+  )
+}
+```
 
 ---
 

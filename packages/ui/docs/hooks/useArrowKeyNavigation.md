@@ -23,10 +23,10 @@ return (
 ```tsx
 import { useArrowKeysNavigation } from "@orama/ui/hooks";
 
-const { ref, useArrowKeysNavigation } = useArrowKeysNavigation();
+const { ref, onKeyDown } = useArrowKeysNavigation();
 
 return (
-  <ul ref={ref} onKeyDown={useArrowKeysNavigation}>
+  <ul ref={ref} onKeyDown={onKeyDown}>
     <button data-focus-on-arrow-nav>Tab 1</button>
     <button data-focus-on-arrow-nav>Tab 2</button>
     <button data-focus-on-arrow-nav>Tab 3</button>
