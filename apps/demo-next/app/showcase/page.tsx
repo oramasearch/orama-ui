@@ -1,16 +1,8 @@
 import React from 'react'
-// import { SearchBoxModal } from '@/components/showcase/SearchBoxModal'
 // import { SlidingPanelChatbox } from '@/components/showcase/SlidingPanelChatbox'
 // import { InlineSearch } from '@/components/showcase/InlineSearch'
 // import { SearchWithDropdown } from '@/components/showcase/SearchWithDropdown'
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle
 // } from '@/components/ui/card'
-// import { Badge } from '@/components/ui/badge'
 import { SearchBoxModal } from '@/components/SearchBoxModal'
 import { Badge } from '@/components/Badge'
 import { HeroShowcase } from '@/components/HeroShowcase'
