@@ -2,7 +2,7 @@
 import React from "react";
 import { CollectionManager } from "@orama/core";
 import { InnerSearchBox } from "./SearchBoxModal";
-import { Modal, SearchRoot, ChatRoot } from "@orama/ui/components";
+import { Modal, SearchRoot, ChatRoot, Icon } from "@orama/ui/components";
 
 const collectionManager = new CollectionManager({
   url: "https://collections.orama.com",
@@ -23,7 +23,10 @@ const Header: React.FC = () => {
 
   return (
     <header className="flex items-center justify-between p-4 bg-gray-800 text-white">
-      <h1 className="text-xl font-bold">Orama UI Demo</h1>
+      <div className="flex items-center gap-3">
+        <Icon name="orama-logo-white" size={32} />
+        <h1 className="text-xl font-bold">Orama UI Demo</h1>
+      </div>
       {/* <div className="min-w-xs">
         <button
           onClick={handleOpen}
