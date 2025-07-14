@@ -32,7 +32,7 @@ const useModalContext = () => {
   return context
 }
 
-interface ModalWrapperProps {
+interface ModalWrapperProps extends React.HTMLAttributes<HTMLDialogElement> {
   closeOnEscape?: boolean
   closeOnOutsideClick?: boolean
   onModalClosed: () => void
@@ -47,7 +47,8 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   onModalClosed,
   children,
   className,
-  open = false
+  open = false,
+  ...rest
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null)
   const innerModalRef = useRef<HTMLDivElement>(null)
@@ -190,6 +191,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         onKeyDown={handleKeyDown}
         onClick={handleClick}
         className={`fixed left-0 right-0 bg-gray-500 bg-opacity-50 w-full h-full inset-0 border-none m-0 p-0 flex z-50 ${className || ''}`}
+        {...rest}
       >
         {children}
       </dialog>
@@ -197,14 +199,14 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   )
 }
 
-interface ModalInnerProps {
+interface ModalInnerProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
-  children: React.ReactNode
 }
 
 const ModalInner: React.FC<ModalInnerProps> = ({
   className = '',
-  children
+  children,
+  ...rest
 }) => {
   const { innerModalRef } = useModalContext()
   const { ref, onKeyDown } = useArrowKeysNavigation()
@@ -220,6 +222,7 @@ const ModalInner: React.FC<ModalInnerProps> = ({
       className={`rounded-lg shadow-lg m-auto max-w-3xl w-full relative ${className}`}
       role='dialog'
       aria-modal='true'
+      {...rest}
     >
       <section ref={ref} className='w-full relative'>
         {children}
@@ -228,31 +231,31 @@ const ModalInner: React.FC<ModalInnerProps> = ({
   )
 }
 
-interface ModalContentProps {
+interface ModalContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
-  children: React.ReactNode
 }
 
 const ModalContent: React.FC<ModalContentProps> = ({
   className = '',
-  children
+  children,
+  ...rest
 }) => {
   return (
-    <div id='modalContent' className={`w-full h-full ${className}`}>
+    <div id='modalContent' className={`w-full h-full ${className}`} {...rest}>
       {children}
     </div>
   )
 }
 
-interface ModalCloseProps {
+interface ModalCloseProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
-  children?: React.ReactNode
-  asChild?: boolean
 }
 
 const ModalClose: React.FC<ModalCloseProps> = ({
   className = '',
-  children = '×'
+  children = '×',
+  ...rest
 }) => {
   const { onModalClosed } = useModalContext()
 
@@ -266,6 +269,7 @@ const ModalClose: React.FC<ModalCloseProps> = ({
       type='button'
       className={className}
       aria-label='Close modal'
+      {...rest}
     >
       {children}
     </button>

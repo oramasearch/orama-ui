@@ -1,21 +1,22 @@
-import React, { ComponentProps, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { GroupCount } from '@/types'
 import { SearchParams } from '@orama/core'
 import { useSearchContext, useSearchDispatch } from '../contexts'
 import { useSearch, useArrowKeysNavigation } from '../hooks'
 
-interface WrapperProps extends ComponentProps<'section'> {
+interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   className?: string
 }
 
-interface ListProps extends Omit<ComponentProps<'ul'>, 'children'> {
+interface ListProps
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   children: (group: GroupedResult, isSelected: boolean) => ReactNode
   className?: string
   itemClassName?: string
 }
 
-interface ItemProps extends ComponentProps<'button'> {
+interface ItemProps extends React.HTMLAttributes<HTMLButtonElement> {
   isSelected?: boolean
   searchParams?: SearchParams
   filterBy: string

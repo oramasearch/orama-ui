@@ -1,131 +1,135 @@
-import React, { ComponentPropsWithRef, useMemo } from "react";
-import { Hit } from "@orama/core";
-import { useSearchContext } from "../contexts";
-import { GroupedResult } from "@/types";
+import React, { ComponentPropsWithRef, useMemo } from 'react'
+import { Hit } from '@orama/core'
+import { useSearchContext } from '../contexts'
+import { GroupedResult } from '@/types'
 
-export interface SearchResultsWrapperProps {
-  children: React.ReactNode;
+export interface SearchResultsWrapperProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Optional class name for custom styling.
    */
-  className?: string;
+  className?: string
 }
 
 export const SearchResultsWrapper: React.FC<SearchResultsWrapperProps> = ({
   children,
-  className = "",
+  className = ''
 }) => {
-  return <div className={className}>{children}</div>;
-};
+  return <div className={className}>{children}</div>
+}
 
 export interface SearchResultsGroupedWrapperProps
-  extends Omit<ComponentPropsWithRef<"div">, "children"> {
-  children: (groupedResult: GroupedResult) => React.ReactNode;
-  groupBy: string;
-  className?: string;
+  extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
+  children: (groupedResult: GroupedResult) => React.ReactNode
+  groupBy: string
+  className?: string
 }
 export const SearchResultsGroupedWrapper: React.FC<
   SearchResultsGroupedWrapperProps
-> = ({ children, groupBy, className = "", ...rest }) => {
-  const { results } = useSearchContext();
+> = ({ children, groupBy, className = '', ...rest }) => {
+  const { results } = useSearchContext()
 
   const groupedResults = useMemo(() => {
     if (!results || results.length === 0) {
-      return [];
+      return []
     }
-    const groupsMap = new Map<string, GroupedResult>();
+    const groupsMap = new Map<string, GroupedResult>()
 
     results.forEach((result) => {
-      const groupValue = result.document?.[groupBy];
+      const groupValue = result.document?.[groupBy]
 
       if (
         !groupValue ||
-        (typeof groupValue !== "string" && typeof groupValue !== "number")
+        (typeof groupValue !== 'string' && typeof groupValue !== 'number')
       ) {
-        return;
+        return
       }
 
-      const groupKey = String(groupValue);
+      const groupKey = String(groupValue)
 
       if (groupsMap.has(groupKey)) {
-        const existingGroup = groupsMap.get(groupKey)!;
-        existingGroup.hits.push(result);
-        existingGroup.count += 1;
+        const existingGroup = groupsMap.get(groupKey)!
+        existingGroup.hits.push(result)
+        existingGroup.count += 1
       } else {
         groupsMap.set(groupKey, {
           name: groupKey,
           hits: [result],
-          count: 1,
-        });
+          count: 1
+        })
       }
-    });
+    })
 
-    const groupsArray = Array.from(groupsMap.values());
+    const groupsArray = Array.from(groupsMap.values())
 
-    return groupsArray;
-  }, [results, groupBy]);
+    return groupsArray
+  }, [results, groupBy])
 
   if (!results || results.length === 0) {
-    return null;
+    return null
   }
 
   return (
     <div
       className={className}
-      role="region"
-      aria-label="Grouped search results"
+      role='region'
+      aria-label='Grouped search results'
       {...rest}
     >
       {groupedResults.map((group) => (
         <React.Fragment key={group.name}>{children(group)}</React.Fragment>
       ))}
     </div>
-  );
-};
-
-export interface SearchResultsNoResultsProps {
-  children: (searchTerm: string) => React.ReactNode;
-  className?: string;
+  )
 }
+
+export interface SearchResultsNoResultsProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  children: (searchTerm: string) => React.ReactNode
+  className?: string
+}
+
 export const SearchResultsNoResults: React.FC<SearchResultsNoResultsProps> = ({
   children,
-  className = "",
+  className = '',
+  ...rest
 }) => {
-  const { searchTerm, results } = useSearchContext();
+  const { searchTerm, results } = useSearchContext()
 
   if (results && results.length > 0) {
-    return null;
+    return null
   }
 
   return (
-    <div className={className} aria-live="polite">
-      {children(searchTerm || "")}
+    <div className={className} aria-live='polite' {...rest}>
+      {children(searchTerm || '')}
     </div>
-  );
-};
+  )
+}
 
-export interface SearchResultsListProps {
-  children: (result: Hit, index: number) => React.ReactNode;
-  className?: string;
-  itemClassName?: string;
-  emptyMessage?: string;
+export interface SearchResultsListProps
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+  children: (result: Hit, index: number) => React.ReactNode
+  className?: string
+  itemClassName?: string
+  emptyMessage?: string
 }
 
 const SearchResultsList: React.FC<SearchResultsListProps> = ({
   children,
-  className = "",
+  className = '',
   itemClassName,
-  ...props
+  ...rest
 }) => {
-  const { results } = useSearchContext();
+  const { results } = useSearchContext()
 
   if (!results || results.length === 0) {
-    return null;
+    return null
   }
 
   return (
     <div>
-      <ul className={className} aria-live="polite" {...props}>
+      <ul className={className} aria-live='polite' {...rest}>
         {results.map((result, index) => (
           <li key={result.id || `result-${index}`} className={itemClassName}>
             {children(result, index)}
@@ -133,15 +137,15 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 const SearchResultsGroupList: React.FC<{
-  children: (result: Hit, index: number) => React.ReactNode;
-  group: GroupedResult;
-  className?: string;
-  itemClassName?: string;
-}> = ({ children, group, className = "", itemClassName = "" }) => {
+  children: (result: Hit, index: number) => React.ReactNode
+  group: GroupedResult
+  className?: string
+  itemClassName?: string
+}> = ({ children, group, className = '', itemClassName = '' }) => {
   return (
     <ul className={className}>
       {group.hits.map((hit, index) => (
@@ -150,17 +154,17 @@ const SearchResultsGroupList: React.FC<{
         </li>
       ))}
     </ul>
-  );
-};
-
-interface SearchResultsItemProps<T extends React.ElementType = "div"> {
-  as?: T;
-  onClick?: (result: Hit) => void;
-  children?: React.ReactNode;
-  className?: string;
+  )
 }
 
-const SearchResultsItem = <T extends React.ElementType = "div">({
+interface SearchResultsItemProps<T extends React.ElementType = 'div'> {
+  as?: T
+  onClick?: (result: Hit) => void
+  children?: React.ReactNode
+  className?: string
+}
+
+const SearchResultsItem = <T extends React.ElementType = 'div'>({
   as,
   onClick,
   children,
@@ -168,25 +172,25 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
   ...props
 }: SearchResultsItemProps<T> &
   Omit<React.ComponentPropsWithoutRef<T>, keyof SearchResultsItemProps<T>>) => {
-  const Component = as || "div";
+  const Component = as || 'div'
 
-  const isInteractive = Boolean(onClick) || Component === "a" || props.href;
+  const isInteractive = Boolean(onClick) || Component === 'a' || props.href
   const needsKeyboardHandling =
-    isInteractive && Component !== "a" && Component !== "button";
+    isInteractive && Component !== 'a' && Component !== 'button'
 
   return (
     <Component
       className={className}
-      role={needsKeyboardHandling ? "button" : undefined}
+      role={needsKeyboardHandling ? 'button' : undefined}
       tabIndex={needsKeyboardHandling ? 0 : undefined}
-      aria-label={isInteractive ? "Search result" : undefined}
+      aria-label={isInteractive ? 'Search result' : undefined}
       data-focus-on-arrow-nav
       {...props}
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
 export const SearchResults = {
   Wrapper: SearchResultsWrapper,
@@ -194,5 +198,5 @@ export const SearchResults = {
   GroupsWrapper: SearchResultsGroupedWrapper,
   GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
-  NoResults: SearchResultsNoResults,
-};
+  NoResults: SearchResultsNoResults
+}

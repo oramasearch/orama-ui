@@ -1,49 +1,29 @@
-/**
- * Example interface:
- * <Suggestions.List>
- *  {suggestion => (
- * *    <Suggestions.Item key={suggestion.id} onClick={() => handleSuggestionClick(suggestion)}>
- * *      {suggestion.title}
- * *    </Suggestions.Item>
- *  )}
- * </Suggestions.List>
- */
+import { AnswerConfig } from '@orama/core'
+import { useChat } from '../hooks'
+import React from 'react'
 
-import { AnswerConfig } from "@orama/core";
-import { useChat } from "../hooks";
-import React from "react";
-
-interface SuggestionsWrapper {
-  className?: string;
-  children: React.ReactNode;
+interface SuggestionsWrapper extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string
 }
 
 const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
-  className = "",
+  className = '',
   children,
+  ...rest
 }) => {
-  return <div className={className}>{children}</div>;
-};
-
-interface SuggestionsListProps {
-  children: React.ReactNode;
-  className?: string;
-  "aria-label"?: string;
+  return (
+    <div className={className} {...rest}>
+      {children}
+    </div>
+  )
 }
 
-const SuggestionsList: React.FC<SuggestionsListProps> = ({
-  children,
-  className = "",
-}) => {
-  return <ul className={className}>{children}</ul>;
-};
-
-interface SuggestionsItemProps {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
-  className?: string;
-  itemClassName?: string;
-  askOptions?: Omit<AnswerConfig, "query">;
+interface SuggestionsItemProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  children: React.ReactNode
+  className?: string
+  askOptions?: Omit<AnswerConfig, 'query'>
 }
 
 /**
@@ -62,39 +42,37 @@ interface SuggestionsItemProps {
 const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
   children,
-  className = "",
-  itemClassName = "",
+  className = '',
   askOptions = {},
+  ...rest
 }) => {
-  const { onAsk } = useChat();
+  const { onAsk } = useChat()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+    event.stopPropagation()
+    event.preventDefault()
     if (onClick) {
-      onClick(event);
+      onClick(event)
     }
     onAsk({
-      query: event.currentTarget.textContent || "",
-      ...askOptions,
-    });
-  };
+      query: event.currentTarget.textContent || '',
+      ...askOptions
+    })
+  }
   return (
-    <li className={className}>
-      <button
-        type="button"
-        className={itemClassName}
-        onClick={handleClick}
-        data-focus-on-arrow-nav
-      >
-        {children}
-      </button>
-    </li>
-  );
-};
+    <button
+      type='button'
+      className={className}
+      onClick={handleClick}
+      data-focus-on-arrow-nav
+      {...rest}
+    >
+      {children}
+    </button>
+  )
+}
 
 export const Suggestions = {
   Wrapper: SuggestionsWrapper,
-  List: SuggestionsList,
-  Item: SuggestionsItem,
-};
+  Item: SuggestionsItem
+}

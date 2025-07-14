@@ -1,9 +1,7 @@
 import { AnyObject, Interaction } from '@orama/core'
 import React, {
-  ComponentProps,
   ComponentPropsWithRef,
   JSX,
-  PropsWithChildren,
   ReactNode,
   useEffect,
   useState
@@ -32,21 +30,23 @@ export interface ChatInteractionsWrapperProps
   onStreaming?: (interaction: Interaction) => void
 }
 
-export interface UserPromptProps extends ComponentProps<'div'> {
+export interface UserPromptProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
-export interface AssistantMessageProps extends ComponentProps<'div'> {
+export interface AssistantMessageProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
   markdownClassnames?: Partial<Record<keyof JSX.IntrinsicElements, string>>
   theme?: PrismTheme
 }
 
-export interface UserActionsProps extends ComponentProps<'div'> {
+export interface UserActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
-export interface SourcesProps extends Omit<ComponentProps<'ul'>, 'children'> {
+export interface SourcesProps
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   sources: Array<Interaction['sources']>
   children: (document: AnyObject, index: number) => ReactNode
   className?: string
@@ -63,7 +63,7 @@ export interface ActionButtonProps
   children?: ReactNode
 }
 
-export interface EmptyStateProps extends ComponentProps<'div'> {
+export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
