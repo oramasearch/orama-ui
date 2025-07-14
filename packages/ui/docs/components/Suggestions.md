@@ -40,12 +40,12 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 
 **Props:**
 
-| Name        | Type                                                   | Default | Description                                                               |
-| ----------- | ------------------------------------------------------ | ------- | ------------------------------------------------------------------------- |
-| onClick     | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                          |
-| children    | `ReactNode`                                            |         | Content to display inside the suggestion button                           |
-| className   | `string`                                               | `""`    | Optional CSS class for the `<button>` element                             |
-| askOptions  | `Omit<AnswerConfig, "query">`                          | `{}`    | Additional options passed to the `onAsk` function from the `useChat` hook |
+| Name       | Type                                                   | Default | Description                                                               |
+| ---------- | ------------------------------------------------------ | ------- | ------------------------------------------------------------------------- |
+| onClick    | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                          |
+| children   | `ReactNode`                                            |         | Content to display inside the suggestion button                           |
+| className  | `string`                                               | `""`    | Optional CSS class for the `<button>` element                             |
+| askOptions | `Omit<AnswerConfig, "query">`                          | `{}`    | Additional options passed to the `onAsk` function from the `useChat` hook |
 
 **Behavior:**
 

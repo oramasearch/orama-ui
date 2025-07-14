@@ -1,13 +1,13 @@
-import { AnswerConfig } from '@orama/core'
-import { useChat } from '../hooks'
-import React from 'react'
+import { AnswerConfig } from "@orama/core";
+import { useChat } from "../hooks";
+import React from "react";
 
 interface SuggestionsWrapper extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
+  className?: string;
 }
 
 const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
-  className = '',
+  className = "",
   children,
   ...rest
 }) => {
@@ -15,15 +15,15 @@ const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
     <div className={className} {...rest}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 interface SuggestionsItemProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-  children: React.ReactNode
-  className?: string
-  askOptions?: Omit<AnswerConfig, 'query'>
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  children: React.ReactNode;
+  className?: string;
+  askOptions?: Omit<AnswerConfig, "query">;
 }
 
 /**
@@ -42,26 +42,26 @@ interface SuggestionsItemProps
 const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
   children,
-  className = '',
+  className = "",
   askOptions = {},
   ...rest
 }) => {
-  const { onAsk } = useChat()
+  const { onAsk } = useChat();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
-    event.preventDefault()
+    event.stopPropagation();
+    event.preventDefault();
     if (onClick) {
-      onClick(event)
+      onClick(event);
     }
     onAsk({
-      query: event.currentTarget.textContent || '',
-      ...askOptions
-    })
-  }
+      query: event.currentTarget.textContent || "",
+      ...askOptions,
+    });
+  };
   return (
     <button
-      type='button'
+      type="button"
       className={className}
       onClick={handleClick}
       data-focus-on-arrow-nav
@@ -69,10 +69,10 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
     >
       {children}
     </button>
-  )
-}
+  );
+};
 
 export const Suggestions = {
   Wrapper: SuggestionsWrapper,
-  Item: SuggestionsItem
-}
+  Item: SuggestionsItem,
+};
