@@ -177,17 +177,7 @@ function Content({
       }}
       {...rest}
     >
-      {/* <div
-        id='panel'
-        aria-hidden={!ctx.open}
-        tabIndex={-1}
-        style={{
-          height: '100%',
-          overflowY: 'auto'
-        }}
-      > */}
       {children}
-      {/* </div> */}
     </div>
   )
 }
