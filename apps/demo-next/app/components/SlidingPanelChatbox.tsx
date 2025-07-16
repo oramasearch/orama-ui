@@ -34,7 +34,7 @@ export const SlidingPanelChatbox = () => {
           Open Chatbox
         </button>
         <SlidingPanel.Wrapper open={open} onClose={() => setOpen(false)}>
-          <SlidingPanel.Backdrop className={'bg-black/50'} />
+          <SlidingPanel.Backdrop className={'bg-black/80'} />
           <SlidingPanel.Content
             position={position}
             className={`bg-white w-full duration-400 ease-in-out ${position === 'left' || position === 'right' ? 'max-w-md h-full' : 'h-[80vh]'}`}
