@@ -674,6 +674,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                                   className={
                                     themeClasses.chatActions.actionButton
                                   }
+                                  interaction={interaction}
                                 >
                                   <RotateCcw className='w-4 h-4' />
                                 </ChatInteractions.RegenerateLatest>

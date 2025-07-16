@@ -209,6 +209,7 @@ export const InnerSearchBox = () => {
                               onClick={() => {
                                 console.log('Regenerate latest interaction')
                               }}
+                              interaction={interaction}
                             >
                               Regenerate latest response
                             </ChatInteractions.RegenerateLatest>
