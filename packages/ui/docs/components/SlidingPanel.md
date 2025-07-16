@@ -8,6 +8,7 @@ The `SlidingPanel` is a composable, accessible sliding panel component, which pr
 
 ```tsx
 import { SlidingPanel } from "@orama/ui/components";
+import React from "react";
 
 function Example() {
   const [open, setOpen] = React.useState(false);
@@ -16,8 +17,8 @@ function Example() {
     <>
       <button onClick={() => setOpen(true)}>Open Panel</button>
       <SlidingPanel.Wrapper open={open} onClose={() => setOpen(false)}>
-        <SlidingPanel.Backdrop />
-        <SlidingPanel.Content>
+        <SlidingPanel.Backdrop className="bg-black/40" />
+        <SlidingPanel.Content position='right'>
           <header className="flex justify-between items-center">
             <h2>Panel Title</h2>
             <SlidingPanel.Close />
@@ -56,10 +57,18 @@ Wraps the main content of the panel and handles animation.
 
 **Props:**
 
-| Name       | Type                   | Required | Description              |
-| ---------- | ---------------------- | -------- | ------------------------ |
-| `children` | `ReactNode`            | Yes      | Content inside the panel |
-| ...        | `HTMLDivElement` props | No       | Any other div props      |
+| Name       | Type                                         | Required | Description                                                                                 |
+| ---------- | -------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`                                  | Yes      | Content inside the panel                                                                    |
+| `position` | `'left' \| 'right' \| 'top' \| 'bottom'`     | No       | Direction from which the panel slides in. Default is `'bottom'`.                            |
+| ...        | `HTMLDivElement` props                       | No       | Any other div props                                                                         |
+
+#### `position` prop
+
+- **left**: Panel slides in from the left edge of the screen.
+- **right**: Panel slides in from the right edge of the screen.
+- **top**: Panel slides in from the top edge of the screen.
+- **bottom** (default): Panel slides in from the bottom edge of the screen.
 
 ---
 
@@ -86,6 +95,34 @@ You can provide custom children (e.g., an icon), or it defaults to `×`.
 | ---------- | ------------------------- | -------- | ---------------------- |
 | `children` | `ReactNode`               | No       | Custom close content   |
 | ...        | `HTMLButtonElement` props | No       | Any other button props |
+
+---
+
+## Styling
+
+The `SlidingPanel` component includes the **bare minimum styles** required for accessibility, focus management, positioning, and sliding animation. This includes:
+
+- Fixed positioning and z-index for overlay and panel.
+- Transition and transform utilities for sliding animation.
+- Focus trapping and keyboard accessibility.
+
+**What’s not covered:**
+
+- Panel width, height, padding, border-radius, background color, and shadow are **not** included by default.
+- You are expected to provide your own utility classes (e.g., Tailwind, CSS Modules, etc.) for visual customization.
+- The backdrop does not include a default color; you should provide a class like `bg-black/40` for a dimmed effect.
+
+**Example of minimal required classes:**
+
+```tsx
+<SlidingPanel.Content
+  position="right"
+  className="bg-white max-w-md h-full p-4 rounded-l-lg shadow-lg"
+>
+  {/* ... */}
+</SlidingPanel.Content>
+<SlidingPanel.Backdrop className="bg-black/40" />
+```
 
 ---
 

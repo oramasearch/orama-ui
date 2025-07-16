@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import {
-  Star,
   ArrowLeft,
   ArrowUp,
   ArrowDown,
@@ -13,8 +12,7 @@ import {
   Settings,
   File
 } from 'lucide-react'
-import { CollectionManager, Hit } from '@orama/core'
-import { cn } from '@/lib/utils'
+import { oramaDocsCollection } from '@/data'
 import {
   PromptTextArea,
   SearchInput,
@@ -23,15 +21,8 @@ import {
   ChatInteractions,
   SearchResults,
   Suggestions,
-  FacetTabs,
   Modal
 } from '@orama/ui/components'
-
-const collectionManager = new CollectionManager({
-  url: 'https://atlantis.cluster.oramacore.com',
-  collectionID: 'ooo4f22zau7q7ta4i1grlgji',
-  readAPIKey: 'WvStWzar7tqdX3FOZbhCMDWSQsWAewUu'
-})
 
 const mockInitialContent = [
   {
@@ -318,8 +309,8 @@ export const SearchBoxModal = () => {
       >
         <Modal.Inner className='flex max-w-lg h-120 m-auto bg-white'>
           <Modal.Content>
-            <SearchRoot client={collectionManager}>
-              <ChatRoot client={collectionManager}>
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>

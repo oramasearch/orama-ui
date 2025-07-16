@@ -1,32 +1,20 @@
-"use client";
-import React from "react";
-import { CollectionManager } from "@orama/core";
-import { InnerSearchBox } from "./SearchBoxModal";
-import { Modal, SearchRoot, ChatRoot, Icon } from "@orama/ui/components";
-
-const collectionManager = new CollectionManager({
-  url: "https://collections.orama.com",
-  collectionID: "q126p2tuxl69ylzhx2twjobw",
-  readAPIKey: "uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y",
-});
+'use client'
+import React from 'react'
+import { oramaDocsCollection } from '@/data'
+import { InnerSearchBox } from './SearchBoxModal'
+import { Modal, SearchRoot, ChatRoot, OramaLogo } from '@orama/ui/components'
 
 const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+  const [isOpen, setIsOpen] = React.useState(false)
 
   const handleClose = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   return (
-    <header className="flex items-center justify-between p-4 bg-gray-800 text-white">
-      <div className="flex items-center gap-3">
-        <Icon name="orama-logo-white" size={32} />
-        <h1 className="text-xl font-bold">Orama UI Demo</h1>
-      </div>
+    <header className='flex items-center justify-between p-4 bg-gray-800 text-white'>
+       <OramaLogo theme="dark" size={32} />
+      <h1 className='text-xl font-bold'>Orama UI Demo</h1>
       {/* <div className="min-w-xs">
         <button
           onClick={handleOpen}
@@ -47,8 +35,8 @@ const Header: React.FC = () => {
       >
         <Modal.Inner>
           <Modal.Content>
-            <SearchRoot client={collectionManager}>
-              <ChatRoot client={collectionManager}>
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>
@@ -56,7 +44,7 @@ const Header: React.FC = () => {
         </Modal.Inner>
       </Modal.Wrapper>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

@@ -1,18 +1,12 @@
-"use client";
-import React from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
-import { CollectionManager } from "@orama/core";
+'use client'
+import React from 'react'
+import { ArrowUp, ArrowDown } from 'lucide-react'
 import {
   ChatRoot,
   ChatInteractions,
-  PromptTextArea,
-} from "@orama/ui/components";
-
-const collectionManager = new CollectionManager({
-  url: "https://collections.orama.com",
-  collectionID: "q126p2tuxl69ylzhx2twjobw",
-  readAPIKey: "uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y",
-});
+  PromptTextArea
+} from '@orama/ui/components'
+import { oramaDocsCollection } from '@/data'
 
 export const InnerChat = () => {
   return (
@@ -20,7 +14,7 @@ export const InnerChat = () => {
       <ChatInteractions.Wrapper>
         {(interaction) => (
           <>
-            <ChatInteractions.UserPrompt aria-label="User message">
+            <ChatInteractions.UserPrompt aria-label='User message'>
               {interaction.query}
             </ChatInteractions.UserPrompt>
             <ChatInteractions.Sources
@@ -47,30 +41,30 @@ export const InnerChat = () => {
           </>
         )}
       </ChatInteractions.Wrapper>
-      <ChatInteractions.ScrollToBottomButton aria-label="Scroll to bottom">
+      <ChatInteractions.ScrollToBottomButton aria-label='Scroll to bottom'>
         <ArrowDown />
       </ChatInteractions.ScrollToBottomButton>
       <PromptTextArea.Wrapper>
         <PromptTextArea.Field
-          placeholder="Type your question here..."
+          placeholder='Type your question here...'
           rows={1}
           maxLength={500}
           autoFocus
         />
         <div>
-          <PromptTextArea.Button aria-label="Ask AI">
-            <ArrowUp className="w-4 h-4" />
+          <PromptTextArea.Button aria-label='Ask AI'>
+            <ArrowUp className='w-4 h-4' />
           </PromptTextArea.Button>
         </div>
       </PromptTextArea.Wrapper>
     </>
-  );
-};
+  )
+}
 
 export const MyChat = () => {
   return (
-    <ChatRoot client={collectionManager}>
+    <ChatRoot client={oramaDocsCollection}>
       <InnerChat />
     </ChatRoot>
-  );
-};
+  )
+}
