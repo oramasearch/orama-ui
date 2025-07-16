@@ -368,7 +368,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                 ariaLabel='Search for products'
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${themeClasses.input}`}
                 searchParams={{
-                  groupBy: 'category',
+                  // groupBy: 'category',
                   limit: 10
                 }}
               />

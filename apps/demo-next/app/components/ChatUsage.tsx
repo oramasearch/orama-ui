@@ -1,17 +1,12 @@
 'use client'
 import React from 'react'
 import { ArrowUp, ArrowDown } from 'lucide-react'
-import { CollectionManager } from '@orama/core'
 import {
   ChatRoot,
   ChatInteractions,
   PromptTextArea
 } from '@orama/ui/components'
-
-const collectionManager = new CollectionManager({
-  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
-  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
-})
+import { oramaDocsCollection } from '@/data'
 
 export const InnerChat = () => {
   return (
@@ -68,7 +63,7 @@ export const InnerChat = () => {
 
 export const MyChat = () => {
   return (
-    <ChatRoot client={collectionManager}>
+    <ChatRoot client={oramaDocsCollection}>
       <InnerChat />
     </ChatRoot>
   )

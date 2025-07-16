@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { CollectionManager } from '@orama/core'
+import { oramaDocsCollection } from '@/data'
 import {
   FacetTabs,
   SearchInput,
@@ -8,11 +8,6 @@ import {
   SearchResults
 } from '@orama/ui/components'
 import { useSearchContext } from '@orama/ui/contexts'
-
-const collectionManager = new CollectionManager({
-  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
-  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
-})
 
 export const InnerSearchBox = () => {
   const { selectedFacet } = useSearchContext()
@@ -81,7 +76,7 @@ export const InnerSearchBox = () => {
 
 export const SearchBox = () => {
   return (
-    <SearchRoot client={collectionManager}>
+    <SearchRoot client={oramaDocsCollection}>
       <InnerSearchBox />
     </SearchRoot>
   )

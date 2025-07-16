@@ -1,20 +1,11 @@
 'use client'
 import React from 'react'
-import { CollectionManager } from '@orama/core'
+import { oramaDocsCollection } from '@/data'
 import { InnerSearchBox } from './SearchBoxModal'
 import { Modal, SearchRoot, ChatRoot } from '@orama/ui/components'
 
-const collectionManager = new CollectionManager({
-  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
-  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
-})
-
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false)
-
-  const handleOpen = () => {
-    setIsOpen(true)
-  }
 
   const handleClose = () => {
     setIsOpen(false)
@@ -43,8 +34,8 @@ const Header: React.FC = () => {
       >
         <Modal.Inner>
           <Modal.Content>
-            <SearchRoot client={collectionManager}>
-              <ChatRoot client={collectionManager}>
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>

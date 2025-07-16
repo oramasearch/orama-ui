@@ -12,7 +12,7 @@ import {
   Settings,
   File
 } from 'lucide-react'
-import { CollectionManager, Hit } from '@orama/core'
+import { oramaDocsCollection } from '@/data'
 import {
   PromptTextArea,
   SearchInput,
@@ -23,11 +23,6 @@ import {
   Suggestions,
   Modal
 } from '@orama/ui/components'
-
-const collectionManager = new CollectionManager({
-  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
-  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
-})
 
 const mockInitialContent = [
   {
@@ -314,8 +309,8 @@ export const SearchBoxModal = () => {
       >
         <Modal.Inner className='flex max-w-lg h-120 m-auto bg-white'>
           <Modal.Content>
-            <SearchRoot client={collectionManager}>
-              <ChatRoot client={collectionManager}>
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>
