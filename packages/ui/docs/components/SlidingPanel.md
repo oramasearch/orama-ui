@@ -18,7 +18,7 @@ function Example() {
       <button onClick={() => setOpen(true)}>Open Panel</button>
       <SlidingPanel.Wrapper open={open} onClose={() => setOpen(false)}>
         <SlidingPanel.Backdrop className="bg-black/40" />
-        <SlidingPanel.Content position='right'>
+        <SlidingPanel.Content position="right">
           <header className="flex justify-between items-center">
             <h2>Panel Title</h2>
             <SlidingPanel.Close />
@@ -57,11 +57,11 @@ Wraps the main content of the panel and handles animation.
 
 **Props:**
 
-| Name       | Type                                         | Required | Description                                                                                 |
-| ---------- | -------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `children` | `ReactNode`                                  | Yes      | Content inside the panel                                                                    |
-| `position` | `'left' \| 'right' \| 'top' \| 'bottom'`     | No       | Direction from which the panel slides in. Default is `'bottom'`.                            |
-| ...        | `HTMLDivElement` props                       | No       | Any other div props                                                                         |
+| Name       | Type                                     | Required | Description                                                      |
+| ---------- | ---------------------------------------- | -------- | ---------------------------------------------------------------- |
+| `children` | `ReactNode`                              | Yes      | Content inside the panel                                         |
+| `position` | `'left' \| 'right' \| 'top' \| 'bottom'` | No       | Direction from which the panel slides in. Default is `'bottom'`. |
+| ...        | `HTMLDivElement` props                   | No       | Any other div props                                              |
 
 #### `position` prop
 

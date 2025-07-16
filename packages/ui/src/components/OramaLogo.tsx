@@ -1,14 +1,12 @@
 import React from "react";
 
-export interface OramaLogoProps {
+export interface OramaLogoProps extends React.SVGProps<SVGSVGElement> {
   /** The name of the icon to display */
   theme: "light" | "dark";
   /** The size of the icon (width and height) */
   size?: number | string;
   /** Custom CSS class name */
   className?: string;
-  /** Additional props to pass to the SVG element */
-  [key: string]: any;
 }
 
 const OramaLogo: React.FC<OramaLogoProps> = ({
