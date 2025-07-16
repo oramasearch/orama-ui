@@ -214,7 +214,7 @@ import { ChatInteractions } from "./ChatInteractions";
   {(interaction) => (
     <>
       <ChatInteractions.UserPrompt>
-        {interaction.prompt}
+        {interaction.query}
       </ChatInteractions.UserPrompt>
       <ChatInteractions.AssistantMessage>
         {interaction.response}

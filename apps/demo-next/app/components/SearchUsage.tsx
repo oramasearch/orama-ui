@@ -1,32 +1,31 @@
-"use client";
-import React from "react";
-import { CollectionManager } from "@orama/core";
+'use client'
+import React from 'react'
+import { CollectionManager } from '@orama/core'
 import {
   FacetTabs,
   SearchInput,
   SearchRoot,
-  SearchResults,
-} from "@orama/ui/components";
-import { useSearchContext } from "@orama/ui/contexts";
+  SearchResults
+} from '@orama/ui/components'
+import { useSearchContext } from '@orama/ui/contexts'
 
 const collectionManager = new CollectionManager({
-  url: "https://collections.orama.com",
-  collectionID: "q126p2tuxl69ylzhx2twjobw",
-  readAPIKey: "uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y",
-});
+  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
+  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
+})
 
 export const InnerSearchBox = () => {
-  const { selectedFacet } = useSearchContext();
+  const { selectedFacet } = useSearchContext()
 
   return (
     <div>
       <SearchInput.Wrapper>
         <SearchInput.Input
-          inputId="product-search"
-          ariaLabel="Search for products"
-          placeholder="Find your next favorite thing..."
+          inputId='product-search'
+          ariaLabel='Search for products'
+          placeholder='Find your next favorite thing...'
           searchParams={{
-            groupBy: "category",
+            groupBy: 'category'
           }}
         />
       </SearchInput.Wrapper>
@@ -34,11 +33,11 @@ export const InnerSearchBox = () => {
       <FacetTabs.Wrapper>
         <FacetTabs.List>
           {(
-            group, // TODO: consider to pass isSelected as second boolean argument, so I would not need to use useSearchContext
+            group // TODO: consider to pass isSelected as second boolean argument, so I would not need to use useSearchContext
           ) => (
             <FacetTabs.Item
               isSelected={group.name === selectedFacet}
-              filterBy={"category"}
+              filterBy={'category'}
               group={group}
             >
               {group.name} ({group.count})
@@ -61,7 +60,7 @@ export const InnerSearchBox = () => {
         )}
       </SearchResults.NoResults>
 
-      <SearchResults.GroupsWrapper groupBy="category">
+      <SearchResults.GroupsWrapper groupBy='category'>
         {(group) => (
           <div key={group.name}>
             <h2>{group.name}</h2>
@@ -77,13 +76,13 @@ export const InnerSearchBox = () => {
         )}
       </SearchResults.GroupsWrapper>
     </div>
-  );
-};
+  )
+}
 
 export const SearchBox = () => {
   return (
     <SearchRoot client={collectionManager}>
       <InnerSearchBox />
     </SearchRoot>
-  );
-};
+  )
+}

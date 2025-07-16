@@ -16,9 +16,8 @@ import { useSearchContext } from '@orama/ui/contexts'
 import { cn } from '@/lib/utils'
 
 const collectionManager = new CollectionManager({
-  url: 'https://collections.orama.com',
-  collectionID: 'q126p2tuxl69ylzhx2twjobw',
-  readAPIKey: 'uXAoFvHnNZfvbR4GmXdRjTHSvfMPb45y'
+  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
+  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
 })
 
 export const InnerSearchBox = () => {

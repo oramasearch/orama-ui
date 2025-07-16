@@ -12,7 +12,6 @@ import {
   PauseCircle,
   ArrowDown
 } from 'lucide-react'
-import { CollectionManager } from '@orama/core'
 import { useArrowKeysNavigation, useScrollableContainer } from '@orama/ui/hooks'
 import { cn } from '@/lib/utils'
 import {
@@ -26,12 +25,7 @@ import {
   Suggestions,
   SlidingPanel
 } from '@orama/ui/components'
-
-const collectionManager = new CollectionManager({
-  url: 'https://atlantis.cluster.oramacore.com',
-  collectionID: 'ooo4f22zau7q7ta4i1grlgji',
-  readAPIKey: 'WvStWzar7tqdX3FOZbhCMDWSQsWAewUu'
-})
+import { oramaDocsCollection } from '../data'
 
 export const ComponentShowcase = () => {
   const [activeDemo, setActiveDemo] = useState(0)
@@ -357,8 +351,8 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
   } = useScrollableContainer()
 
   return (
-    <SearchRoot client={collectionManager}>
-      <ChatRoot client={collectionManager}>
+    <SearchRoot client={oramaDocsCollection}>
+      <ChatRoot client={oramaDocsCollection}>
         <section
           className={`p-6 transition-all duration-500 ${themeClasses.container}`}
           ref={ref}

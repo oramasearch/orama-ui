@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import {
-  Star,
   ArrowLeft,
   ArrowUp,
   ArrowDown,
@@ -14,7 +13,6 @@ import {
   File
 } from 'lucide-react'
 import { CollectionManager, Hit } from '@orama/core'
-import { cn } from '@/lib/utils'
 import {
   PromptTextArea,
   SearchInput,
@@ -23,14 +21,12 @@ import {
   ChatInteractions,
   SearchResults,
   Suggestions,
-  FacetTabs,
   Modal
 } from '@orama/ui/components'
 
 const collectionManager = new CollectionManager({
-  url: 'https://atlantis.cluster.oramacore.com',
-  collectionID: 'ooo4f22zau7q7ta4i1grlgji',
-  readAPIKey: 'WvStWzar7tqdX3FOZbhCMDWSQsWAewUu'
+  collectionID: '224433cb-cd19-4b80-a1df-a019413a0b66',
+  apiKey: 'c1_zDbVdyyKg1j__mnEb8_dgr4ETQHSYGfCbVaS7dEaPzORmsuPRTN70Qepv94'
 })
 
 const mockInitialContent = [

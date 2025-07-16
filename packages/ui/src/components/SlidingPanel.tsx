@@ -134,10 +134,9 @@ function Content({
   useEffect(() => {
     if (open) {
       setIsVisible(true)
-      setTimeout(() => setIsAnimating(true), 10)
+      setTimeout(() => setIsAnimating(true), 100)
     } else {
       setIsAnimating(false)
-      setTimeout(() => setIsVisible(false), 400)
     }
   }, [open])
 
