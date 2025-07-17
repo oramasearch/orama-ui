@@ -31,10 +31,12 @@ Displays custom content when there are no chat interactions. Useful for showing 
   Callback when a new interaction is added.
 - `onStreaming`: `(interaction: Interaction) => void` (optional)  
   Callback when an interaction is streaming.
+- `beforeInteractions`: `ReactNode` (optional)  
+  Custom content to render before the list of interactions.
 - ...other `div` props
 
 **Description:**  
-Wraps and renders a list of chat interactions, handling scroll and minimum height for the last interaction. Notifies when new interactions are added or streaming.
+Wraps and renders a list of chat interactions, handling scroll and minimum height for the last interaction. Notifies when new interactions are added or streaming. You can use `beforeInteractions` to inject custom content (e.g. a header, actions, or info) before the interactions list.
 
 ---
 

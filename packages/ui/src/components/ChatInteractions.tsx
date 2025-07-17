@@ -28,6 +28,7 @@ export interface ChatInteractionsWrapperProps
   'aria-label'?: string
   onNewInteraction?: (index: number) => void
   onStreaming?: (interaction: Interaction) => void
+  beforeInteractions?: React.ReactNode
 }
 
 export interface UserPromptProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -70,9 +71,9 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
 const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   children,
   className = '',
-  ref,
   onNewInteraction,
   onStreaming,
+  beforeInteractions,
   ...rest
 }) => {
   const { interactions } = useChatContext()
@@ -116,6 +117,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
       {...rest}
       style={{ height: '100%' }}
     >
+      {beforeInteractions}
       {interactions.map((interaction, index) => {
         if (!interaction) return null
 
