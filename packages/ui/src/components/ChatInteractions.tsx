@@ -108,7 +108,9 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
     }
   }, [interactions, onStreaming])
 
-  if (!interactions || interactions.length === 0) return null
+  const hasInteractions = interactions && interactions.length > 0
+
+  if (!hasInteractions && !beforeInteractions) return null
 
   return (
     <div
