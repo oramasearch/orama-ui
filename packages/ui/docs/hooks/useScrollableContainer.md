@@ -36,6 +36,57 @@ function MyComponent() {
 }
 ```
 
+### Chat with Smooth Scroll Behavior
+
+Below is a minimal example showing how to use `useScrollableContainer` with `ChatInteractions.Wrapper` to build a chat UI with smooth scroll-to-bottom behavior.
+
+```tsx
+import React, { useEffect } from "react";
+import { useScrollableContainer } from "@orama/ui/hooks";
+import { ChatInteractions } from "@orama/ui/components";
+
+function ChatBox() {
+  const {
+    containerRef,
+    showGoToBottomButton,
+    scrollToBottom,
+    recalculateGoToBottomButton,
+  } = useScrollableContainer();
+
+  // Automatically scrolls to the bottom when new messages arrive
+  useEffect(() => {
+    if (interactions.length > 0) {
+      scrollToBottom({ animated: true });
+    }
+    recalculateGoToBottomButton();
+  }, [interactions, scrollToBottom, recalculateGoToBottomButton]);
+
+  return (
+    <div className='flex'>
+      <div>Chatbox header...</div>
+      <div ref={containerRef} className="flex-1 overflow-y-auto" >
+        <ChatInteractions.Wrapper
+          onScroll={recalculateGoToBottomButton}
+          onStreaming={recalculateGoToBottomButton}
+          onNewInteraction={() => {
+            scrollToBottom({ animated: true })
+          }}
+        >
+          {(interaction) => (
+            <div className="mb-2">
+              <ChatInteractions.AssistantMessage>
+                {interaction.response}
+              </ChatInteractions.AssistantMessage>
+            </div>
+          )}
+        </ChatInteractions.Wrapper>
+      </div>
+      <div>Chatbox footer...</div>
+    </div>
+  );
+}
+```
+
 ## API
 
 ### Arguments
