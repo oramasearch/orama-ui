@@ -38,7 +38,7 @@ export const ScrollableChatContainer = () => {
             }}
           >
             {(interaction) => (
-              <div key={interaction.id} className='py-2 flex flex-col gap-2'>
+              <div key={interaction.id} className='p-4 flex flex-col gap-2'>
                 <ChatInteractions.UserPrompt className='bg-gray-100 my-1 py-2 px-4 font-semibold rounded-lg'>
                   {interaction.query}
                 </ChatInteractions.UserPrompt>
