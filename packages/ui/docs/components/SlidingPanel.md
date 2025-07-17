@@ -37,6 +37,32 @@ function Example() {
 
 ## API
 
+### `<SlidingPanel.Trigger>`
+
+| Name           | Type                                   | Required | Description                                                      |
+| -------------- | -------------------------------------- | -------- | ---------------------------------------------------------------- |
+| `initialPrompt`| `string`                               | No       | The initial prompt to set when opening the panel                 |
+| `children`     | `ReactNode`                            | No       | Custom button content                                            |
+| ...            | `HTMLButtonElement` props              | No       | Any other button props
+
+**Usage Example:**
+
+```tsx
+const [open, setOpen] = React.useState(false);
+
+<SlidingPanel.Trigger
+  initialPrompt="What is Orama?"
+  onClick={() => setOpen(true)}
+>
+  Open & Ask "What is Orama?"
+</SlidingPanel.Trigger>
+<SlidingPanel.Wrapper open={open} onClose={() => setOpen(false)}>
+  <SlidingPanel.Content>
+    {/* Use initialPrompt in your chatbox logic */}
+  </SlidingPanel.Content>
+</SlidingPanel.Wrapper>
+```
+
 ### `<SlidingPanel.Wrapper>`
 
 **Props:**
