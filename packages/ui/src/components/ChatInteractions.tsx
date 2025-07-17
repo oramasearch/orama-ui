@@ -110,25 +110,28 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   if (!interactions || interactions.length === 0) return null
 
   return (
-    <div className={className} ref={ref} {...rest}>
-      <div ref={containerRef} className='h-full'>
-        {interactions.map((interaction, index) => {
-          if (!interaction) return null
+    <div
+      className={className}
+      ref={containerRef}
+      {...rest}
+      style={{ height: '100%' }}
+    >
+      {interactions.map((interaction, index) => {
+        if (!interaction) return null
 
-          const isLast = index === lastInteraction
+        const isLast = index === lastInteraction
 
-          return (
-            <div
-              key={interaction.id}
-              style={{
-                minHeight: isLast ? `${minHeight}px` : 0
-              }}
-            >
-              {children(interaction, index, lastInteraction)}
-            </div>
-          )
-        })}
-      </div>
+        return (
+          <div
+            key={interaction.id}
+            style={{
+              minHeight: isLast ? `${minHeight}px` : 0
+            }}
+          >
+            {children(interaction, index, lastInteraction)}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -377,12 +380,17 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
 
 const Reset: React.FC<ActionButtonProps> = ({ children, onClick, ...rest }) => {
   const { reset } = useChat()
+  const { interactions } = useChatContext()
 
   const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
     reset()
     if (onClick) {
       onClick(e)
     }
+  }
+
+  if (!interactions || interactions.length === 0) {
+    return null
   }
 
   return (

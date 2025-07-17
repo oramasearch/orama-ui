@@ -1,144 +1,143 @@
-import { useRef, useState, useEffect, useCallback } from "react";
-
-const BOTTOM_THRESHOLD = 1;
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 export function useScrollableContainer({
   onScrollToBottom,
-  onGoToBottomButtonChange,
+  onGoToBottomButtonChange
 }: {
-  onScrollToBottom?: () => void;
-  onGoToBottomButtonChange?: (show: boolean) => void;
+  onScrollToBottom?: () => void
+  onGoToBottomButtonChange?: (show: boolean) => void
 } = {}) {
   const [containerElement, setContainerElement] =
-    useState<HTMLDivElement | null>(null);
-  const [showGoToBottomButton, setShowGoToBottomButton] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [lockScrollOnBottom, setLockScrollOnBottom] = useState(false);
-  const prevScrollTop = useRef(0);
+    useState<HTMLDivElement | null>(null)
+  const [showGoToBottomButton, setShowGoToBottomButton] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const [lockScrollOnBottom, setLockScrollOnBottom] = useState(false)
+  const prevScrollTop = useRef(0)
 
   // Easing function for smooth scroll animation
   const easeInOutQuad = (t: number) =>
-    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 
   const calculateIsScrollOnBottom = useCallback(() => {
-    const el = containerElement;
-    if (!el) return false;
-    if (!el.scrollTop) return false;
-    const scrollableHeight = el.scrollHeight - el.clientHeight;
-    return el.scrollTop + BOTTOM_THRESHOLD >= scrollableHeight;
-  }, [containerElement]);
+    const el = containerElement
+    if (!el) return false
+    if (!el.scrollTop) return false
+    const scrollableHeight = el.scrollHeight - el.clientHeight
+    return el.scrollTop >= scrollableHeight
+  }, [containerElement])
 
   const calculateIsContainerOverflowing = useCallback(() => {
-    const el = containerElement;
-    if (!el) return false;
-    const isOverflowing = el.scrollHeight > el.clientHeight;
-    return isOverflowing;
-  }, [containerElement]);
+    const el = containerElement
+    if (!el) return false
+    const isOverflowing = el.scrollHeight > el.clientHeight
+    return isOverflowing
+  }, [containerElement])
 
   const recalculateGoToBottomButton = useCallback(() => {
-    const isOverflowing = calculateIsContainerOverflowing();
+    const isOverflowing = calculateIsContainerOverflowing()
     if (!isOverflowing) {
-      setShowGoToBottomButton(false);
-      onGoToBottomButtonChange?.(false);
-      return;
+      setShowGoToBottomButton(false)
+      onGoToBottomButtonChange?.(false)
+      return
     }
-    const show = !calculateIsScrollOnBottom();
-    setShowGoToBottomButton(show);
-    onGoToBottomButtonChange?.(show);
+    const show = !calculateIsScrollOnBottom()
+    setShowGoToBottomButton(show)
+    onGoToBottomButtonChange?.(show)
   }, [
     calculateIsContainerOverflowing,
     calculateIsScrollOnBottom,
-    onGoToBottomButtonChange,
-  ]);
+    onGoToBottomButtonChange
+  ])
 
   const scrollToBottom = useCallback(
     ({
       animated = true,
-      onScrollDone,
+      onScrollDone
     }: { animated?: boolean; onScrollDone?: () => void } = {}) => {
-      const el = containerElement;
+      const el = containerElement
 
-      if (!el) return;
+      if (!el) return
 
       if (!animated) {
-        el.scrollTop = el.scrollHeight;
-        onScrollDone?.();
-        onScrollToBottom?.();
-        return;
+        el.scrollTop = el.scrollHeight
+        onScrollDone?.()
+        onScrollToBottom?.()
+        return
       }
 
-      setIsScrolling(true);
-      const startTime = performance.now();
-      const startPosition = el.scrollTop;
-      const scrollTarget = el.scrollHeight - el.clientHeight;
-      const duration = 300;
+      setIsScrolling(true)
+      const startTime = performance.now()
+      const startPosition = el.scrollTop
+      const scrollTarget = el.scrollHeight - el.clientHeight
+      const duration = 300
 
       function animateScroll(currentTime: number) {
-        if (!containerElement) return;
-        const elapsedTime = currentTime - startTime;
-        const scrollProgress = Math.min(1, elapsedTime / duration);
-        const ease = easeInOutQuad(scrollProgress);
-        const scrollTo = startPosition + (scrollTarget - startPosition) * ease;
-        el?.scrollTo(0, scrollTo);
+        if (!containerElement) return
+        const elapsedTime = currentTime - startTime
+        const scrollProgress = Math.min(1, elapsedTime / duration)
+        const ease = easeInOutQuad(scrollProgress)
+        const scrollTo = startPosition + (scrollTarget - startPosition) * ease
+        el?.scrollTo(0, scrollTo)
         if (elapsedTime < duration) {
-          requestAnimationFrame(animateScroll);
+          requestAnimationFrame(animateScroll)
         } else {
-          setIsScrolling(false);
-          onScrollDone?.();
-          onScrollToBottom?.();
+          setIsScrolling(false)
+          onScrollDone?.()
+          onScrollToBottom?.()
         }
       }
-      requestAnimationFrame(animateScroll);
+      requestAnimationFrame(animateScroll)
+      setShowGoToBottomButton(false)
     },
-    [onScrollToBottom, containerElement],
-  );
+    [onScrollToBottom, containerElement]
+  )
 
   // Wheel handler
   const handleWheel = useCallback(() => {
-    const el = containerElement;
-    if (!el) return;
-    const isOverflowing = calculateIsContainerOverflowing();
+    const el = containerElement
+    if (!el) return
+    const isOverflowing = calculateIsContainerOverflowing()
     if (!isOverflowing) {
-      setLockScrollOnBottom(false);
-      setShowGoToBottomButton(false);
-      onGoToBottomButtonChange?.(false);
-      return;
+      setLockScrollOnBottom(false)
+      setShowGoToBottomButton(false)
+      onGoToBottomButtonChange?.(false)
+      return
     }
-    setShowGoToBottomButton(!calculateIsScrollOnBottom());
-    setLockScrollOnBottom(calculateIsScrollOnBottom());
-    prevScrollTop.current = el.scrollTop;
+    setShowGoToBottomButton(!calculateIsScrollOnBottom())
+    setLockScrollOnBottom(calculateIsScrollOnBottom())
+    prevScrollTop.current = el.scrollTop
   }, [
     containerElement,
     calculateIsContainerOverflowing,
     calculateIsScrollOnBottom,
-    onGoToBottomButtonChange,
-  ]);
+    onGoToBottomButtonChange
+  ])
 
   // Attach listeners
   useEffect(() => {
-    const el = containerElement;
-    if (!el) return;
-    el.addEventListener("wheel", handleWheel);
+    const el = containerElement
+    if (!el) return
+    el.addEventListener('wheel', handleWheel)
     return () => {
-      el.removeEventListener("wheel", handleWheel);
-    };
-  }, [handleWheel, containerElement]);
+      el.removeEventListener('wheel', handleWheel)
+    }
+  }, [handleWheel, containerElement])
 
   // Resize observer for container
   useEffect(() => {
-    const el = containerElement;
-    if (!el) return;
+    const el = containerElement
+    if (!el) return
     const observer = new window.ResizeObserver(() => {
-      recalculateGoToBottomButton();
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [recalculateGoToBottomButton, containerElement]);
+      recalculateGoToBottomButton()
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [recalculateGoToBottomButton, containerElement])
 
   // Callback ref to be used in JSX
   const containerRef = useCallback((node: HTMLDivElement | null) => {
-    setContainerElement(node);
-  }, []);
+    setContainerElement(node)
+  }, [])
 
   return {
     containerRef,
@@ -148,6 +147,6 @@ export function useScrollableContainer({
     isScrolling,
     lockScrollOnBottom,
     setLockScrollOnBottom,
-    recalculateGoToBottomButton,
-  };
+    recalculateGoToBottomButton
+  }
 }

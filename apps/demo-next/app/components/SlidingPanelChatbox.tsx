@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { PromptTextArea, ChatRoot } from '@orama/ui/components'
 import { oramaDocsCollection } from '@/data'
+import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'
 
 const positions = ['left', 'right', 'top', 'bottom'] as const
 
@@ -20,6 +21,8 @@ export const SlidingPanelChatbox = () => {
   const [position, setPosition] = useState<'left' | 'right' | 'top' | 'bottom'>(
     'right'
   )
+  const { containerRef, scrollToBottom, recalculateGoToBottomButton } =
+    useScrollableContainer()
 
   return (
     <ChatRoot client={oramaDocsCollection}>
@@ -91,112 +94,122 @@ export const SlidingPanelChatbox = () => {
                   </button>
                 </div>
               </div>
-              <div className='flex-1 rounded p-4 overflow-y-auto'>
-                <div className='flex gap-3'>
-                  <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100'>
-                    <Bot className='w-4 h-4 text-gray-600' />
-                  </div>
-                  <div className='flex-1 max-w-xs'>
-                    <div className='inline-block p-3 rounded-2xl bg-gray-100 text-gray-900'>
-                      <p className='text-sm'>
-                        Hello! How can I help you today?
-                      </p>
+              <div
+                className='flex-1 rounded overflow-y-auto'
+                ref={containerRef}
+              >
+                <div className='px-4 py-8'>
+                  <div className='flex gap-3'>
+                    <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100'>
+                      <Bot className='w-4 h-4 text-gray-600' />
                     </div>
-                  </div>
-                </div>
-
-                <ChatInteractions.Wrapper>
-                  {(interaction) => (
-                    <div className='flex flex-col gap-3 my-4'>
-                      <ChatInteractions.UserPrompt className='flex gap-3 flex-row-reverse'>
-                        <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-r from-purple-500 to-pink-500'>
-                          <User className='w-4 h-4 text-white' />
-                        </div>
-                        <div className='flex-1 max-w-xs text-right'>
-                          <div className='inline-block p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white'>
-                            <p className='text-sm'>{interaction.query}</p>
-                          </div>
-                        </div>
-                      </ChatInteractions.UserPrompt>
-                      <div className='flex gap-3'>
-                        <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100'>
-                          <Bot className='w-4 h-4 text-gray-600' />
-                        </div>
-                        <div className='inline-block p-3 rounded-2xl bg-gray-100 text-gray-900 text-sm max-w-full'>
-                          <ChatInteractions.Loading interaction={interaction}>
-                            <div className='flex items-center gap-1'>
-                              <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
-                              <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
-                              <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
-                            </div>
-                          </ChatInteractions.Loading>
-                          <ChatInteractions.Error interaction={interaction}>
-                            <p className='text-red-500'>
-                              Error occurred while fetching the response.
-                            </p>
-                          </ChatInteractions.Error>
-                          <ChatInteractions.AssistantMessage
-                            markdownClassnames={{
-                              p: 'my-2',
-                              pre: 'rounded-md [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:my-3 [&_pre]:text-xs [&_pre]:whitespace-break-spaces',
-                              code: 'bg-gray-200 p-1 rounded'
-                            }}
-                          >
-                            {interaction.response}
-                          </ChatInteractions.AssistantMessage>
-                        </div>
+                    <div className='flex-1 max-w-xs'>
+                      <div className='inline-block p-3 rounded-2xl bg-gray-100 text-gray-900'>
+                        <p className='text-sm'>
+                          Hello! How can I help you today?
+                        </p>
                       </div>
-                      {!!interaction.response && !interaction.loading && (
-                        <div className='ml-11'>
-                          <div className='flex items-center gap-1'>
-                            <ChatInteractions.RegenerateLatest
-                              className='flex items-center h-8 px-2 text-xs hover:bg-gray-100 rounded-lg'
-                              interaction={interaction}
+                    </div>
+                  </div>
+                  <ChatInteractions.Wrapper
+                    onScroll={recalculateGoToBottomButton}
+                    onStreaming={recalculateGoToBottomButton}
+                    onNewInteraction={() => {
+                      scrollToBottom({ animated: true })
+                    }}
+                  >
+                    {(interaction) => (
+                      <div className='flex flex-col gap-3 py-4'>
+                        <ChatInteractions.UserPrompt className='flex gap-3 flex-row-reverse'>
+                          <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-r from-purple-500 to-pink-500'>
+                            <User className='w-4 h-4 text-white' />
+                          </div>
+                          <div className='flex-1 max-w-xs text-right'>
+                            <div className='inline-block p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white'>
+                              <p className='text-sm'>{interaction.query}</p>
+                            </div>
+                          </div>
+                        </ChatInteractions.UserPrompt>
+                        <div className='flex gap-3'>
+                          <div className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100'>
+                            <Bot className='w-4 h-4 text-gray-600' />
+                          </div>
+                          <div className='inline-block p-3 rounded-2xl bg-gray-100 text-gray-900 text-sm max-w-full'>
+                            <ChatInteractions.Loading interaction={interaction}>
+                              <div className='flex items-center gap-1'>
+                                <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
+                                <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
+                                <span className='animate-pulse bg-gray-300 h-2 w-2 rounded-full' />
+                              </div>
+                            </ChatInteractions.Loading>
+                            <ChatInteractions.Error interaction={interaction}>
+                              <p className='text-red-500'>
+                                Error occurred while fetching the response.
+                              </p>
+                            </ChatInteractions.Error>
+                            <ChatInteractions.AssistantMessage
+                              markdownClassnames={{
+                                p: 'my-2',
+                                pre: 'rounded-md [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:my-3 [&_pre]:text-xs [&_pre]:whitespace-break-spaces',
+                                code: 'bg-gray-200 p-1 rounded'
+                              }}
                             >
-                              <RotateCcw className='w-3 h-3 mr-1' />
-                              Retry
-                            </ChatInteractions.RegenerateLatest>
-                            <ChatInteractions.CopyMessage
-                              interaction={interaction}
-                              className='flex items-center h-8 px-2 text-xs hover:bg-gray-100 rounded-lg'
-                              copiedContent={
-                                <>
-                                  <Copy className='w-3 h-3 mr-1' />
-                                  Copied!
-                                </>
-                              }
-                            >
-                              <Copy className='w-3 h-3 mr-1' />
-                              Copy
-                            </ChatInteractions.CopyMessage>
-                            {/* <div className="flex items-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleReaction(msg.id, 'up')}
-                              className={`h-8 w-8 p-0 hover:bg-gray-100 ${
-                                reactions[msg.id] === 'up' ? 'bg-green-50 text-green-600' : ''
-                              }`}
-                            >
-                              <ThumbsUp className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleReaction(msg.id, 'down')}
-                              className={`h-8 w-8 p-0 hover:bg-gray-100 ${
-                                reactions[msg.id] === 'down' ? 'bg-red-50 text-red-600' : ''
-                              }`}
-                            >
-                              <ThumbsDown className="w-3 h-3" />
-                            </Button>
-                          </div> */}
+                              {interaction.response}
+                            </ChatInteractions.AssistantMessage>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </ChatInteractions.Wrapper>
+                        {!!interaction.response && !interaction.loading && (
+                          <div className='ml-11'>
+                            <div className='flex items-center gap-1'>
+                              <ChatInteractions.RegenerateLatest
+                                className='flex items-center h-8 px-2 text-xs hover:bg-gray-100 rounded-lg'
+                                interaction={interaction}
+                              >
+                                <RotateCcw className='w-3 h-3 mr-1' />
+                                Retry
+                              </ChatInteractions.RegenerateLatest>
+                              <ChatInteractions.CopyMessage
+                                interaction={interaction}
+                                className='flex items-center h-8 px-2 text-xs hover:bg-gray-100 rounded-lg'
+                                copiedContent={
+                                  <>
+                                    <Copy className='w-3 h-3 mr-1' />
+                                    Copied!
+                                  </>
+                                }
+                              >
+                                <Copy className='w-3 h-3 mr-1' />
+                                Copy
+                              </ChatInteractions.CopyMessage>
+                              {/* <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleReaction(msg.id, 'up')}
+                                className={`h-8 w-8 p-0 hover:bg-gray-100 ${
+                                  reactions[msg.id] === 'up' ? 'bg-green-50 text-green-600' : ''
+                                }`}
+                              >
+                                <ThumbsUp className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleReaction(msg.id, 'down')}
+                                className={`h-8 w-8 p-0 hover:bg-gray-100 ${
+                                  reactions[msg.id] === 'down' ? 'bg-red-50 text-red-600' : ''
+                                }`}
+                              >
+                                <ThumbsDown className="w-3 h-3" />
+                              </Button>
+                            </div> */}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </ChatInteractions.Wrapper>
+                </div>
               </div>
               <PromptTextArea.Wrapper className='p-4 border-t border-gray-200'>
                 <div className='flex gap-2'>
