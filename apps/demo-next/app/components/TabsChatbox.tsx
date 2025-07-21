@@ -68,9 +68,7 @@ export const TabsChatbox: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
-                {chat.prompt && chat?.prompt?.length > 30
-                  ? `${chat.prompt.substring(0, 30)}...`
-                  : chat.prompt}
+                {chat.prompt || chat.label}
               </Tabs.Button>
               {itemsWithChat.length > 1 && (
                 <button

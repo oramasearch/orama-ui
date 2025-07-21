@@ -112,7 +112,8 @@ const TabsButton: React.FC<TabsButtonProps> = ({
   useEffect(() => {
     registerTab(tabId)
     return () => unregisterTab(tabId)
-  }, [tabId, registerTab, unregisterTab])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabId])
 
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     const currentIndex = tabs.indexOf(tabId)
