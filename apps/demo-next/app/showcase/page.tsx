@@ -6,7 +6,7 @@ import React from 'react'
 import { ScrollableChatContainer } from '@/components/ScrollableChatContainer'
 import { SearchBoxModal } from '@/components/SearchBoxModal'
 import { SlidingPanelChatbox } from '@/components/SlidingPanelChatbox'
-import { TabsChatbox } from '@/components/TabsChatbox'
+import { VerticalTabsChatbox } from '@/components/TabsChatbox'
 import { Badge } from '@/components/Badge'
 import { HeroShowcase } from '@/components/HeroShowcase'
 import Header from '@/components/Header'
@@ -28,17 +28,17 @@ const Showcase = () => {
       cardDescription: 'Click to open the search modal'
     },
     {
-      title: 'Search with Dropdown',
+      title: 'Chat with Vertical Tabs',
       description:
-        'A search input combined with a dropdown filter, ideal for filtered search experiences with categorized results and suggestions.',
-      badge: 'Filter',
+        'A chat interface with vertical tabs for easy navigation between conversations.',
+      badge: 'Chat',
       features: [
-        'Filter dropdown with categories',
-        'Live search suggestions',
-        'Keyboard navigation support',
-        'Responsive design'
+        'Vertical tab layout',
+        'Easy switching between chats',
+        'Add and remove chats dynamically',
+        'Keyboard navigation support'
       ],
-      component: <TabsChatbox />,
+      component: <VerticalTabsChatbox />,
       cardDescription: 'Type to see suggestions and use the filter'
     },
     {

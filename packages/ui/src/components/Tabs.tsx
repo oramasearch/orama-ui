@@ -1,11 +1,11 @@
+import { useArrowKeysNavigation } from '../hooks'
 import React, {
   createContext,
   useContext,
   useState,
   useRef,
   useEffect,
-  ReactNode,
-  KeyboardEvent
+  ReactNode
 } from 'react'
 
 // Types
@@ -22,6 +22,11 @@ interface TabsWrapperProps {
   defaultTab?: string
   onTabChange?: (tabId: string) => void
   className?: string
+}
+
+export interface TabsButtonsListProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
 }
 
 interface TabsButtonProps {
@@ -103,6 +108,19 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
   )
 }
 
+const TabsButtonsList: React.FC<TabsButtonsListProps> = ({ children }) => {
+  const { ref, onKeyDown } = useArrowKeysNavigation()
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    onKeyDown(event.nativeEvent)
+  }
+  return (
+    <section ref={ref} onKeyDown={handleKeyDown}>
+      {children}
+    </section>
+  )
+}
+
 // Button Component
 const TabsButton: React.FC<TabsButtonProps> = ({
   tabId,
@@ -120,39 +138,6 @@ const TabsButton: React.FC<TabsButtonProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabId])
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    const currentIndex = tabs.indexOf(tabId)
-    let nextIndex: number
-
-    switch (e.key) {
-      case 'ArrowLeft':
-        e.preventDefault()
-        nextIndex = currentIndex > 0 ? currentIndex - 1 : tabs.length - 1
-        setActiveTab(tabs[nextIndex]!)
-        break
-      case 'ArrowRight':
-        e.preventDefault()
-        nextIndex = currentIndex < tabs.length - 1 ? currentIndex + 1 : 0
-        setActiveTab(tabs[nextIndex]!)
-        break
-      case 'Home':
-        e.preventDefault()
-        setActiveTab(tabs[0]!)
-        break
-      case 'End':
-        e.preventDefault()
-        setActiveTab(tabs[tabs.length - 1]!)
-        break
-      case 'Enter':
-      case ' ':
-        e.preventDefault()
-        if (!disabled) {
-          setActiveTab(tabId)
-        }
-        break
-    }
-  }
-
   const handleClick = () => {
     if (!disabled) {
       setActiveTab(tabId)
@@ -165,12 +150,13 @@ const TabsButton: React.FC<TabsButtonProps> = ({
     <button
       ref={buttonRef}
       role='tab'
-      tabIndex={isActive ? 0 : -1}
+      // tabIndex={isActive ? 0 : -1}
       aria-selected={isActive}
       aria-controls={`tabpanel-${tabId}`}
       id={`tab-${tabId}`}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
+      data-focus-on-arrow-nav-left-right
+      data-focus-on-arrow-nav
       disabled={disabled}
       className={className}
       type='button'
@@ -199,7 +185,6 @@ const TabsContent: React.FC<TabsContentProps> = ({
       id={`tabpanel-${tabId}`}
       aria-labelledby={`tab-${tabId}`}
       className={className}
-      tabIndex={0}
     >
       {children}
     </div>
@@ -209,5 +194,6 @@ const TabsContent: React.FC<TabsContentProps> = ({
 export const Tabs = {
   Wrapper: TabsWrapper,
   Button: TabsButton,
+  ButtonsList: TabsButtonsList,
   Content: TabsContent
 }

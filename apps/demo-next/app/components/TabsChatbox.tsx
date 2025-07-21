@@ -6,9 +6,9 @@ import {
   PromptTextArea,
   Tabs
 } from '@orama/ui/components'
-import { ArrowDown, Pen, PenBoxIcon } from 'lucide-react'
+import { PenBoxIcon } from 'lucide-react'
 import { oramaDocsCollection } from '@/data'
-import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'
+import { useScrollableContainer } from '@orama/ui/hooks'
 import { Interaction } from '@orama/core'
 
 type ChatTabItem = {
@@ -21,7 +21,7 @@ type ChatTabItem = {
   closable?: boolean
 }
 
-export const TabsChatbox: React.FC = () => {
+export const VerticalTabsChatbox: React.FC = () => {
   const [chatTabs, setChatTabs] = useState(0)
   const [itemsWithChat, setItemsWithChat] = useState<ChatTabItem[]>([
     {
@@ -50,7 +50,7 @@ export const TabsChatbox: React.FC = () => {
       closable: true,
       chatStatus: 'idle'
     }
-    setItemsWithChat((prev) => [...prev, newChat])
+    setItemsWithChat((prev) => [newChat, ...prev])
     setChatTabs(chatTabs + 1)
     setActiveTab(newId)
   }
@@ -73,51 +73,60 @@ export const TabsChatbox: React.FC = () => {
         onTabChange={setActiveTab}
         className='border border-gray-200 rounded-lg overflow-hidden flex h-[500px] bg-white'
       >
-        {/* Vertical Tab List */}
         <div
           role='tablist'
           className='flex flex-col w-52 bg-gray-50 border-r border-gray-200 overflow-y-auto'
           aria-label='Chat conversations'
         >
-          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-200'>
-            <span className='flex-1 text-sm text-gray-500'>
-              {itemsWithChat.length} Chats
-            </span>
-            {/* style as a button with  */}
-            <button
-              onClick={addNewChat}
-              className='inline-flex items-center gap-1 p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-100'
-              aria-label='Add new chat'
-            >
-              <PenBoxIcon className='w-4 h-4' />
-              New Chat
-            </button>
-          </div>
-          <div className='space-y-1 flex flex-col-reverse'>
-            {itemsWithChat.map((chat) => (
-              <div key={chat.id} className='flex items-center'>
-                <Tabs.Button
-                  tabId={chat.id}
-                  className={`w-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors text-left focus:outline-none ${
-                    activeTab === chat.id
-                      ? 'bg-white text-blue-600 border-l-4 border-blue-600'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  {chat.prompt || chat.label}
-                </Tabs.Button>
-                {itemsWithChat.length > 1 && (
-                  <button
-                    onClick={() => removeChat(chat.id)}
-                    className='ml-1 p-1 text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded'
-                    aria-label={`Close ${chat.prompt}`}
+          <Tabs.ButtonsList>
+            <div className='flex items-center justify-between px-4 py-2 border-b border-gray-200'>
+              <span className='flex-1 text-sm text-gray-500'>
+                {itemsWithChat.length} Chats
+              </span>
+              {/* style as a button with  */}
+              <button
+                onClick={addNewChat}
+                className='inline-flex items-center gap-1 p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-blue-600 focus:text-white rounded'
+                aria-label='Add new chat'
+                data-focus-on-arrow-nav
+              >
+                <PenBoxIcon className='w-4 h-4' />
+                New Chat
+              </button>
+            </div>
+            <div className='space-y-1 flex flex-col'>
+              {itemsWithChat.map((chat) => (
+                <div key={chat.id} className='flex items-center relative'>
+                  <Tabs.Button
+                    tabId={chat.id}
+                    className={`w-full px-4 py-2 text-sm font-medium whitespace-nowrap text-left focus:outline-none focus:text-gray-600 focus:border-blue-600 focus:border-l-4 ${
+                      activeTab === chat.id
+                        ? 'bg-white text-blue-600 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
                   >
-                    ×
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+                    {/* Truncate text if it overflows the content and add ... at the end */}
+                    <span className='truncate flex-1'>
+                      {chat.prompt
+                        ? chat.prompt.length > 20
+                          ? `${chat.prompt.slice(0, 20)}...`
+                          : chat.prompt
+                        : chat.label}
+                    </span>
+                  </Tabs.Button>
+                  {itemsWithChat.length > 1 && (
+                    <button
+                      onClick={() => removeChat(chat.id)}
+                      className='ml-1 p-1 text-gray-400 hover:text-blue-600 focus:text-blue-600 focus:outline-none rounded absolute right-2 top-1/2 transform -translate-y-1/2'
+                      aria-label={`Close ${chat.prompt}`}
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Tabs.ButtonsList>
         </div>
 
         {/* Tab Contents */}
@@ -191,6 +200,7 @@ export const TabsChatbox: React.FC = () => {
                         rows={1}
                         placeholder='Ask something...'
                         className='flex-1 py-2 px-2 border border-gray-600 rounded-md'
+                        autoFocus
                       />
                       <PromptTextArea.Button className='bg-black text-white py-2 px-4 rounded-md'>
                         Send
