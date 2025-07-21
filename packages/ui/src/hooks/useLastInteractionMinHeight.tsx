@@ -9,12 +9,6 @@ export function useLastInteractionMinHeight(
 
   useEffect(() => {
     if (!containerRef.current) return
-    console.log(
-      'Calculating minHeight for last interaction',
-      containerRef,
-      containerRef.current.clientHeight,
-      interactionsLength
-    )
     const handleResize = () => {
       setMinHeight(containerRef.current!.clientHeight)
     }

@@ -1,6 +1,14 @@
 'use client'
 import { useState } from 'react'
-import { Tabs } from '@orama/ui/components'
+import {
+  ChatInteractions,
+  ChatRoot,
+  PromptTextArea,
+  Tabs
+} from '@orama/ui/components'
+import { ArrowDown, Pen, PenBoxIcon } from 'lucide-react'
+import { oramaDocsCollection } from '@/data'
+import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'
 
 type ChatTabItem = {
   id: string
@@ -14,8 +22,23 @@ type ChatTabItem = {
 
 export const TabsChatbox: React.FC = () => {
   const [chatTabs, setChatTabs] = useState(0)
-  const [itemsWithChat, setItemsWithChat] = useState<ChatTabItem[]>([])
-  const [activeTab, setActiveTab] = useState<string | undefined>()
+  const [itemsWithChat, setItemsWithChat] = useState<ChatTabItem[]>([
+    {
+      id: 'tab-0',
+      label: 'Untitled',
+      prompt: undefined,
+      closable: true,
+      content: undefined,
+      chatStatus: 'idle'
+    }
+  ])
+  const [activeTab, setActiveTab] = useState<string | undefined>('tab-0')
+  const {
+    containerRef,
+    showGoToBottomButton,
+    scrollToBottom,
+    recalculateGoToBottomButton
+  } = useScrollableContainer()
 
   const addNewChat = () => {
     const newId = `tab-${chatTabs + 1}`
@@ -26,9 +49,7 @@ export const TabsChatbox: React.FC = () => {
       closable: true,
       chatStatus: 'idle'
     }
-    setItemsWithChat((prev) => {
-      return [...prev, newChat]
-    })
+    setItemsWithChat((prev) => [...prev, newChat])
     setChatTabs(chatTabs + 1)
     setActiveTab(newId)
   }
@@ -44,83 +65,128 @@ export const TabsChatbox: React.FC = () => {
   }
 
   return (
-    <div className='max-w-4xl mx-auto p-6'>
+    <div className='max-w-full mx-auto p-6'>
       <h1 className='text-2xl font-bold mb-6'>Chat Tabs Demo</h1>
-
       <Tabs.Wrapper
         defaultTab={activeTab}
         onTabChange={setActiveTab}
-        className='border border-gray-200 rounded-lg overflow-hidden'
+        className='border border-gray-200 rounded-lg overflow-hidden flex h-[500px] bg-white'
       >
-        {/* Tab List */}
+        {/* Vertical Tab List */}
         <div
           role='tablist'
-          className='flex bg-gray-50 border-b border-gray-200 overflow-x-auto'
+          className='flex flex-col w-52 bg-gray-50 border-r border-gray-200 overflow-y-auto'
           aria-label='Chat conversations'
         >
-          {itemsWithChat.map((chat) => (
-            <div key={chat.id} className='flex items-center'>
-              <Tabs.Button
-                tabId={chat.id}
-                className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
-                  activeTab === chat.id
-                    ? 'bg-white text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                {chat.prompt || chat.label}
-              </Tabs.Button>
-              {itemsWithChat.length > 1 && (
-                <button
-                  onClick={() => removeChat(chat.id)}
-                  className='ml-1 p-1 text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded'
-                  aria-label={`Close ${chat.prompt}`}
+          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-200'>
+            <span className='flex-1 text-sm text-gray-500'>
+              {itemsWithChat.length} Chats
+            </span>
+            {/* style as a button with  */}
+            <button
+              onClick={addNewChat}
+              className='inline-flex items-center gap-1 p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-100'
+              aria-label='Add new chat'
+            >
+              <PenBoxIcon className='w-4 h-4' />
+              New Chat
+            </button>
+          </div>
+          <div className='space-y-1 flex flex-col-reverse'>
+            {itemsWithChat.map((chat) => (
+              <div key={chat.id} className='flex items-center'>
+                <Tabs.Button
+                  tabId={chat.id}
+                  className={`w-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors text-left focus:outline-none ${
+                    activeTab === chat.id
+                      ? 'bg-white text-blue-600 border-l-4 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
-                  ×
-                </button>
-              )}
-            </div>
-          ))}
-          <button
-            onClick={addNewChat}
-            className='px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
-            aria-label='Add new chat'
-          >
-            + New Chat
-          </button>
+                  {chat.prompt || chat.label}
+                </Tabs.Button>
+                {itemsWithChat.length > 1 && (
+                  <button
+                    onClick={() => removeChat(chat.id)}
+                    className='ml-1 p-1 text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded'
+                    aria-label={`Close ${chat.prompt}`}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Tab Contents */}
-        <div className='min-h-96'>
+        <div className='flex-1 min-h-96 overflow-y-auto'>
           {itemsWithChat.map((chat) => (
-            <Tabs.Content key={chat.id} tabId={chat.id} className='p-6'>
-              <div className='space-y-4'>
-                <h2 className='text-lg font-semibold text-gray-900'>
-                  {chat.prompt}
-                </h2>
-                <div className='space-y-3'>
-                  {/* {chat.messages.map((message, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 rounded-lg ${
-                        index % 2 === 0
-                          ? 'bg-blue-50 text-blue-900 ml-auto max-w-xs'
-                          : 'bg-gray-100 text-gray-900 mr-auto max-w-xs'
-                      }`}
+            <ChatRoot client={oramaDocsCollection} key={chat.id}>
+              <Tabs.Content tabId={chat.id} className='h-full'>
+                <div className='flex flex-col h-full'>
+                  {/* SCROLLABLE BLOCK */}
+                  <div ref={containerRef} className='flex-1 overflow-y-auto'>
+                    <ChatInteractions.Wrapper
+                      onScroll={recalculateGoToBottomButton}
+                      onStreaming={recalculateGoToBottomButton}
+                      onNewInteraction={() => {
+                        scrollToBottom({ animated: true })
+                      }}
                     >
-                      {message}
-                    </div>
-                  ))} */}
+                      {(interaction) => (
+                        <div
+                          key={interaction.id}
+                          className='p-4 flex flex-col gap-2'
+                        >
+                          <ChatInteractions.UserPrompt className='bg-gray-100 my-1 py-2 px-4 font-semibold rounded-lg'>
+                            {interaction.query}
+                          </ChatInteractions.UserPrompt>
+                          <ChatInteractions.Loading
+                            className='text-gray-500 text-sm'
+                            interaction={interaction}
+                          >
+                            <div className='animate-pulse bg-gray-200 h-4 w-3/4 rounded' />
+                          </ChatInteractions.Loading>
+                          <ChatInteractions.AssistantMessage
+                            markdownClassnames={{
+                              p: 'my-2',
+                              pre: 'rounded-md [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:my-3 [&_pre]:text-xs [&_pre]:whitespace-break-spaces wrap-break-word',
+                              code: 'bg-gray-200 p-1 rounded'
+                            }}
+                            className='py-1 px-4 bg-gray-200 rounded-lg'
+                          >
+                            {interaction.response}
+                          </ChatInteractions.AssistantMessage>
+                        </div>
+                      )}
+                    </ChatInteractions.Wrapper>
+                  </div>
+
+                  {/* BOTTOM BLOCK */}
+                  <div className='bg-white rounded-b-md flex flex-col items-center justify-between relative'>
+                    {/* {showGoToBottomButton && (
+                      <button
+                        className='ml-2 px-3 py-1 bg-gray-800/70 text-white rounded text-sm absolute -top-10 right-4'
+                        onClick={() => scrollToBottom()}
+                      >
+                        <ArrowDown className='w-4 h-4' />
+                      </button>
+                    )} */}
+                    <PromptTextArea.Wrapper className='flex items-center gap-2 w-full p-3 border-t border-gray-200'>
+                      <PromptTextArea.Field
+                        rows={1}
+                        placeholder='Ask something...'
+                        className='flex-1 py-2 px-2 border border-gray-600 rounded-md'
+                      />
+                      <PromptTextArea.Button className='bg-black text-white py-2 px-4 rounded-md'>
+                        Send
+                      </PromptTextArea.Button>
+                    </PromptTextArea.Wrapper>
+                  </div>
                 </div>
-                <div className='mt-4 pt-4 border-t border-gray-200'>
-                  <input
-                    type='text'
-                    placeholder='Type your message...'
-                    className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-                  />
-                </div>
-              </div>
-            </Tabs.Content>
+              </Tabs.Content>
+            </ChatRoot>
           ))}
         </div>
       </Tabs.Wrapper>
