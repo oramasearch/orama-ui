@@ -26,7 +26,7 @@ export interface ChatInteractionsWrapperProps
   ) => ReactNode
   className?: string
   'aria-label'?: string
-  onNewInteraction?: (index: number) => void
+  onNewInteraction?: (interaction: Interaction) => void
   onStreaming?: (interaction: Interaction) => void
   beforeInteractions?: React.ReactNode
 }
@@ -93,8 +93,12 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   }, [interactions, interactions?.length])
 
   useEffect(() => {
-    if (lastInteraction) {
-      onNewInteraction?.(lastInteraction)
+    if (
+      typeof lastInteraction === 'number' &&
+      interactions &&
+      interactions[lastInteraction]
+    ) {
+      onNewInteraction?.(interactions[lastInteraction]!)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastInteraction])

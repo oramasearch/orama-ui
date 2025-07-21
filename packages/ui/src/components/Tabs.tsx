@@ -56,13 +56,12 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
   className = ''
 }) => {
   const [tabs, setTabs] = useState<string[]>([])
-  const [activeTab, setActiveTabState] = useState<string>(defaultTab || '')
+  const [activeTab, setActiveTabState] = useState<string>('')
 
   const registerTab = (tabId: string) => {
     setTabs((prev) => {
       if (!prev.includes(tabId)) {
         const newTabs = [...prev, tabId]
-        // Set first tab as active if no active tab is set
         if (!activeTab && newTabs.length === 1) {
           setActiveTabState(tabId)
         }
@@ -88,6 +87,12 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
     unregisterTab,
     tabs
   }
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab)
+    }
+  }, [defaultTab])
 
   return (
     <TabsContext.Provider value={contextValue}>

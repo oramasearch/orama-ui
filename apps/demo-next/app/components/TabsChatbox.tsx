@@ -9,6 +9,7 @@ import {
 import { ArrowDown, Pen, PenBoxIcon } from 'lucide-react'
 import { oramaDocsCollection } from '@/data'
 import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'
+import { Interaction } from '@orama/core'
 
 type ChatTabItem = {
   id: string
@@ -130,8 +131,20 @@ export const TabsChatbox: React.FC = () => {
                     <ChatInteractions.Wrapper
                       onScroll={recalculateGoToBottomButton}
                       onStreaming={recalculateGoToBottomButton}
-                      onNewInteraction={() => {
+                      onNewInteraction={(interaction: Interaction) => {
                         scrollToBottom({ animated: true })
+                        if (
+                          !itemsWithChat.find((item) => item.id === chat.id)
+                            ?.prompt
+                        ) {
+                          setItemsWithChat((prev) =>
+                            prev.map((item) =>
+                              item.id === chat.id
+                                ? { ...item, prompt: interaction.query }
+                                : item
+                            )
+                          )
+                        }
                       }}
                     >
                       {(interaction) => (
