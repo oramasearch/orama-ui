@@ -6,6 +6,7 @@ import React from 'react'
 import { ScrollableChatContainer } from '@/components/ScrollableChatContainer'
 import { SearchBoxModal } from '@/components/SearchBoxModal'
 import { SlidingPanelChatbox } from '@/components/SlidingPanelChatbox'
+import { TabsChatbox } from '@/components/TabsChatbox'
 import { Badge } from '@/components/Badge'
 import { HeroShowcase } from '@/components/HeroShowcase'
 import Header from '@/components/Header'
@@ -37,7 +38,7 @@ const Showcase = () => {
         'Keyboard navigation support',
         'Responsive design'
       ],
-      // component: <SearchWithDropdown />,
+      component: <TabsChatbox />,
       cardDescription: 'Type to see suggestions and use the filter'
     },
     {

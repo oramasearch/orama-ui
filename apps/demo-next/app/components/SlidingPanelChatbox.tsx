@@ -1,15 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { ChatInteractions, SlidingPanel } from '@orama/ui/components'
-import {
-  Bot,
-  Copy,
-  RotateCcw,
-  Send,
-  ThumbsDown,
-  ThumbsUp,
-  User
-} from 'lucide-react'
+import { Bot, Copy, RotateCcw, Send, User } from 'lucide-react'
 import { PromptTextArea, ChatRoot } from '@orama/ui/components'
 import { oramaDocsCollection } from '@/data'
 import { useScrollableContainer } from '@orama/ui/hooks/useScrollableContainer'

@@ -8,4 +8,5 @@ export { SearchResults } from "./SearchResults";
 export { SearchRoot } from "./SearchRoot";
 export { Suggestions } from "./Suggestions";
 export { SlidingPanel } from "./SlidingPanel";
+export { Tabs } from "./Tabs";
 export { default as OramaLogo } from "./OramaLogo";

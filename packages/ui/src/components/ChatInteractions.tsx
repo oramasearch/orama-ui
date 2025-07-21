@@ -120,7 +120,7 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
       style={{ height: '100%' }}
     >
       {beforeInteractions}
-      {interactions.map((interaction, index) => {
+      {interactions?.map((interaction, index) => {
         if (!interaction) return null
 
         const isLast = index === lastInteraction
@@ -188,7 +188,7 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
                   {...defaultProps}
                   code={String(children).trim()}
                   language={language as Language}
-                  theme={theme}
+                  theme={currentTheme}
                 >
                   {({
                     className,
