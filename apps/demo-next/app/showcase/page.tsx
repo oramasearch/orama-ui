@@ -44,7 +44,7 @@ const Showcase = () => {
       component: (
         <div className='w-full'>
           <VerticalTabsChatbox />
-          {/* <HorizontalTabsChatbox /> */}
+          <HorizontalTabsChatbox />
         </div>
       ),
       cardDescription: 'Type to see suggestions and use the filter'

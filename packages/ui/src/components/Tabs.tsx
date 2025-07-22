@@ -8,7 +8,6 @@ import React, {
   ReactNode
 } from 'react'
 
-// Types
 interface TabsContextType {
   activeTab: string
   setActiveTab: (tabId: string) => void
@@ -42,7 +41,6 @@ interface TabsPanelProps {
   className?: string
 }
 
-// Context
 const TabsContext = createContext<TabsContextType | null>(null)
 
 const useTabsContext = () => {
@@ -113,12 +111,20 @@ const TabsList: React.FC<TabsListProps> = ({
   ...rest
 }) => {
   const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
+  const { setActiveTab } = useTabsContext()
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
     if (orientation === 'vertical') {
       onKeyDown(event.nativeEvent)
     } else {
       onArrowLeftRight(event.nativeEvent)
+    }
+
+    const focusedTabID = event.currentTarget
+      .querySelector(':focus')
+      ?.getAttribute('id')
+    if (focusedTabID) {
+      setActiveTab(focusedTabID)
     }
   }
   return (
@@ -134,7 +140,7 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
   className = '',
   disabled = false
 }) => {
-  const { activeTab, setActiveTab, registerTab, unregisterTab, tabs } =
+  const { activeTab, setActiveTab, registerTab, unregisterTab } =
     useTabsContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -159,7 +165,7 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
       tabIndex={!isActive ? -1 : undefined}
       aria-selected={isActive}
       aria-controls={`tabpanel-${tabId}`}
-      id={`tab-${tabId}`}
+      id={tabId}
       onClick={handleClick}
       data-focus-on-arrow-nav-left-right
       data-focus-on-arrow-nav
