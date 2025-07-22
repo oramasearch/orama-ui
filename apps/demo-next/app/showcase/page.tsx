@@ -6,7 +6,10 @@ import React from 'react'
 import { ScrollableChatContainer } from '@/components/ScrollableChatContainer'
 import { SearchBoxModal } from '@/components/SearchBoxModal'
 import { SlidingPanelChatbox } from '@/components/SlidingPanelChatbox'
-import { VerticalTabsChatbox } from '@/components/TabsChatbox'
+import {
+  HorizontalTabsChatbox,
+  VerticalTabsChatbox
+} from '@/components/TabsChatbox'
 import { Badge } from '@/components/Badge'
 import { HeroShowcase } from '@/components/HeroShowcase'
 import Header from '@/components/Header'
@@ -38,7 +41,12 @@ const Showcase = () => {
         'Add and remove chats dynamically',
         'Keyboard navigation support'
       ],
-      component: <VerticalTabsChatbox />,
+      component: (
+        <div className='w-full'>
+          <VerticalTabsChatbox />
+          {/* <HorizontalTabsChatbox /> */}
+        </div>
+      ),
       cardDescription: 'Type to see suggestions and use the filter'
     },
     {

@@ -24,19 +24,19 @@ interface TabsWrapperProps {
   className?: string
 }
 
-export interface TabsButtonsListProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
+  orientation?: 'horizontal' | 'vertical'
 }
 
-interface TabsButtonProps {
+interface TabsTriggerProps {
   tabId: string
   children: ReactNode
   className?: string
   disabled?: boolean
 }
 
-interface TabsContentProps {
+interface TabsPanelProps {
   tabId: string
   children: ReactNode
   className?: string
@@ -53,7 +53,6 @@ const useTabsContext = () => {
   return context
 }
 
-// Wrapper Component
 const TabsWrapper: React.FC<TabsWrapperProps> = ({
   children,
   defaultTab,
@@ -108,21 +107,28 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
   )
 }
 
-const TabsButtonsList: React.FC<TabsButtonsListProps> = ({ children }) => {
-  const { ref, onKeyDown } = useArrowKeysNavigation()
+const TabsList: React.FC<TabsListProps> = ({
+  children,
+  orientation = 'vertical',
+  ...rest
+}) => {
+  const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    onKeyDown(event.nativeEvent)
+    if (orientation === 'vertical') {
+      onKeyDown(event.nativeEvent)
+    } else {
+      onArrowLeftRight(event.nativeEvent)
+    }
   }
   return (
-    <section ref={ref} onKeyDown={handleKeyDown}>
+    <section ref={ref} onKeyDown={handleKeyDown} {...rest}>
       {children}
     </section>
   )
 }
 
-// Button Component
-const TabsButton: React.FC<TabsButtonProps> = ({
+const TabsTrigger: React.FC<TabsTriggerProps> = ({
   tabId,
   children,
   className = '',
@@ -150,7 +156,7 @@ const TabsButton: React.FC<TabsButtonProps> = ({
     <button
       ref={buttonRef}
       role='tab'
-      // tabIndex={isActive ? 0 : -1}
+      tabIndex={!isActive ? -1 : undefined}
       aria-selected={isActive}
       aria-controls={`tabpanel-${tabId}`}
       id={`tab-${tabId}`}
@@ -166,8 +172,7 @@ const TabsButton: React.FC<TabsButtonProps> = ({
   )
 }
 
-// Content Component
-const TabsContent: React.FC<TabsContentProps> = ({
+const TabsPanel: React.FC<TabsPanelProps> = ({
   tabId,
   children,
   className = ''
@@ -193,7 +198,7 @@ const TabsContent: React.FC<TabsContentProps> = ({
 
 export const Tabs = {
   Wrapper: TabsWrapper,
-  Button: TabsButton,
-  ButtonsList: TabsButtonsList,
-  Content: TabsContent
+  Trigger: TabsTrigger,
+  List: TabsList,
+  Panel: TabsPanel
 }
