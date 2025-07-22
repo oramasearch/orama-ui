@@ -97,7 +97,7 @@ export const VerticalTabsChatbox: React.FC = () => {
             <div className='space-y-1 flex flex-col'>
               {itemsWithChat.map((chat) => (
                 <div key={chat.id} className='flex items-center relative'>
-                  <Tabs.Trigger
+                  <Tabs.Button
                     tabId={chat.id}
                     className={`w-full px-4 py-2 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-l-4 ${
                       activeTab === chat.id
@@ -113,7 +113,7 @@ export const VerticalTabsChatbox: React.FC = () => {
                           : chat.prompt
                         : chat.label}
                     </span>
-                  </Tabs.Trigger>
+                  </Tabs.Button>
                   {itemsWithChat.length > 1 && (
                     <button
                       onClick={() => removeChat(chat.id)}
@@ -297,7 +297,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
             <div className='flex flex-row items-center space-x-1 w-full'>
               {itemsWithChat.map((chat) => (
                 <div key={chat.id} className='flex items-center relative'>
-                  <Tabs.Trigger
+                  <Tabs.Button
                     tabId={chat.id}
                     className={`px-4 py-2 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-b-4 ${
                       activeTab === chat.id
@@ -312,7 +312,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
                           : chat.prompt
                         : chat.label}
                     </span>
-                  </Tabs.Trigger>
+                  </Tabs.Button>
                   {itemsWithChat.length > 1 && (
                     <button
                       onClick={() => removeChat(chat.id)}

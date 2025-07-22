@@ -28,7 +28,7 @@ export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: 'horizontal' | 'vertical'
 }
 
-interface TabsTriggerProps {
+interface TabsButtonProps {
   tabId: string
   children: ReactNode
   className?: string
@@ -134,7 +134,7 @@ const TabsList: React.FC<TabsListProps> = ({
   )
 }
 
-const TabsTrigger: React.FC<TabsTriggerProps> = ({
+const TabsButton: React.FC<TabsButtonProps> = ({
   tabId,
   children,
   className = '',
@@ -204,7 +204,7 @@ const TabsPanel: React.FC<TabsPanelProps> = ({
 
 export const Tabs = {
   Wrapper: TabsWrapper,
-  Trigger: TabsTrigger,
+  Button: TabsButton,
   List: TabsList,
   Panel: TabsPanel
 }
