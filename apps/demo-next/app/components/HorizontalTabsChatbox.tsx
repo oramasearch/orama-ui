@@ -109,7 +109,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
             <Tabs.DynamicPanels>
               {(item, chatTabs, setChatTabs) => (
                 <ChatRoot client={oramaDocsCollection}>
-                  <Tabs.Panel tabId={item.id} className='h-full'>
+                  <Tabs.DynamicPanel tabId={item.id} className='h-full'>
                     <div className='flex flex-col h-full'>
                       {/* SCROLLABLE BLOCK */}
                       <div
@@ -190,7 +190,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
                         </PromptTextArea.Wrapper>
                       </div>
                     </div>
-                  </Tabs.Panel>
+                  </Tabs.DynamicPanel>
                 </ChatRoot>
               )}
             </Tabs.DynamicPanels>
