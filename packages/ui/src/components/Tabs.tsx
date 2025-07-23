@@ -62,6 +62,7 @@ interface TabsPanelProps {
   tabId: string
   children: ReactNode
   className?: string
+  askOptions?: Omit<AnswerConfig, 'query'>
 }
 
 interface TabsCounterProps {
@@ -205,13 +206,14 @@ const TabsButton: React.FC<TabsButtonProps> = ({
     useTabsContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    registerTab(tabId)
-    return () => unregisterTab(tabId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabId])
+  // useEffect(() => {
+  //   registerTab(tabId)
+  //   return () => unregisterTab(tabId)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [tabId])
 
   const handleClick = () => {
+    console.log('Button clicked:', tabId)
     if (!disabled) {
       setActiveTab(tabId)
     }
@@ -323,18 +325,23 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
 const TabsPanel: React.FC<TabsPanelProps> = ({
   tabId,
   children,
+  askOptions = {},
   className = ''
 }) => {
   const { activeTab, prompt, setPrompt } = useTabsContext()
-  const { onAsk } = useChat()
+  const { onAsk, dispatch } = useChat()
   const isActive = activeTab === tabId
+  const processedPromptRef = React.useRef<string | undefined>(undefined)
 
   useEffect(() => {
-    if (isActive && prompt) {
-      onAsk({
-        query: prompt
-      })
+    if (isActive && prompt && processedPromptRef.current !== prompt) {
+      dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt: prompt } })
+      if (onAsk) {
+        onAsk({ query: prompt, ...askOptions })
+      }
       setPrompt?.(undefined)
+      dispatch({ type: 'CLEAR_USER_PROMPT' })
+      processedPromptRef.current = prompt
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt, isActive])
@@ -355,16 +362,24 @@ const TabsPanel: React.FC<TabsPanelProps> = ({
   )
 }
 
-const TabsDynamicPanels: React.FC<{
-  children: (item: ChatTabItem) => React.ReactNode
-}> = ({ children }) => {
-  const { chatTabs } = useTabsContext()
-  if (!chatTabs) return null
+interface TabsDynamicPanelsProps {
+  children: (
+    item: ChatTabItem,
+    chatTabs?: ChatTabItem[],
+    setChatTabs?: (tabs: ChatTabItem[]) => void
+  ) => React.ReactNode
+}
 
+const TabsDynamicPanels: React.FC<TabsDynamicPanelsProps> = ({ children }) => {
+  const { chatTabs, setChatTabs } = useTabsContext()
+
+  if (!chatTabs) return null
   return (
     <>
       {chatTabs.map((item) => (
-        <React.Fragment key={item.id}>{children(item)}</React.Fragment>
+        <React.Fragment key={item.id}>
+          {children(item, chatTabs, setChatTabs)}
+        </React.Fragment>
       ))}
     </>
   )
