@@ -162,10 +162,6 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
   className = '',
   ...rest
 }) => {
-  useEffect(() => {
-    console.log('Rendering AssistantMessage with custom theme:')
-  }, [])
-
   if (!children) {
     return null
   }

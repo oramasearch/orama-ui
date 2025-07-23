@@ -6,7 +6,8 @@ import React from 'react'
 import { ScrollableChatContainer } from '@/components/ScrollableChatContainer'
 import { SearchBoxModal } from '@/components/SearchBoxModal'
 import { SlidingPanelChatbox } from '@/components/SlidingPanelChatbox'
-import { HorizontalTabsChatbox } from '@/components/TabsChatbox'
+import { HorizontalTabsChatbox } from '@/components/HorizontalTabsChatbox'
+import { VerticalTabsChatbox } from '@/components/VerticalTabsChatbox'
 import { Badge } from '@/components/Badge'
 import { HeroShowcase } from '@/components/HeroShowcase'
 import Header from '@/components/Header'
@@ -40,7 +41,7 @@ const Showcase = () => {
       ],
       component: (
         <div className='w-full'>
-          {/* <VerticalTabsChatbox /> */}
+          <VerticalTabsChatbox />
           <HorizontalTabsChatbox />
         </div>
       ),

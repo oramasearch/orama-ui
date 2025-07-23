@@ -43,6 +43,12 @@ export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: 'horizontal' | 'vertical'
 }
 
+export interface TabsDynamicListProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  children: (item: ChatTabItem) => ReactNode
+  orientation?: 'horizontal' | 'vertical'
+}
+
 interface TabsButtonProps {
   tabId: string
   children: ReactNode
@@ -67,6 +73,10 @@ interface TabsPanelProps {
 
 interface TabsCounterProps {
   children: (count: number) => ReactNode
+}
+interface TabCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  tabId: string
+  children?: ReactNode
 }
 
 const TabsContext = createContext<TabsContextType | null>(null)
@@ -131,14 +141,6 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
     }
   }, [defaultTab])
 
-  useEffect(() => {
-    if (chatTab) {
-      setChatTabs((prev) => [...prev, chatTab])
-      registerTab(chatTab.id)
-      setActiveTab(chatTab.id)
-    }
-  }, [chatTab])
-
   return (
     <TabsContext.Provider value={contextValue}>
       <div className={className} role='tabpanel'>
@@ -175,6 +177,7 @@ const TabsList: React.FC<TabsListProps> = ({
       setActiveTab(focusedTabID)
     }
   }
+
   return (
     <section ref={ref} onKeyDown={handleKeyDown} {...rest}>
       {children}
@@ -182,17 +185,38 @@ const TabsList: React.FC<TabsListProps> = ({
   )
 }
 
-const TabsDynamicList: React.FC<{
-  children: (item: ChatTabItem) => React.ReactNode
-}> = ({ children }) => {
+const TabsDynamicList: React.FC<TabsDynamicListProps> = ({
+  children,
+  orientation = 'vertical',
+  ...rest
+}) => {
   const { chatTabs } = useTabsContext()
+  const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
+  const { setActiveTab } = useTabsContext()
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (orientation === 'vertical') {
+      onKeyDown(event.nativeEvent)
+    } else {
+      onArrowLeftRight(event.nativeEvent)
+    }
+
+    const focusedTabID = event.currentTarget
+      .querySelector(':focus')
+      ?.getAttribute('id')
+    if (focusedTabID) {
+      setActiveTab(focusedTabID)
+    }
+  }
+
   if (!chatTabs) return null
+
   return (
-    <>
+    <section ref={ref} onKeyDown={handleKeyDown} {...rest}>
       {chatTabs.map((item) => (
         <React.Fragment key={item.id}>{children(item)}</React.Fragment>
       ))}
-    </>
+    </section>
   )
 }
 
@@ -206,11 +230,11 @@ const TabsButton: React.FC<TabsButtonProps> = ({
     useTabsContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  // useEffect(() => {
-  //   registerTab(tabId)
-  //   return () => unregisterTab(tabId)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tabId])
+  useEffect(() => {
+    registerTab(tabId)
+    return () => unregisterTab(tabId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabId])
 
   const handleClick = () => {
     console.log('Button clicked:', tabId)
@@ -241,10 +265,7 @@ const TabsButton: React.FC<TabsButtonProps> = ({
   )
 }
 
-const TabsClose: React.FC<{ tabId: string; children?: React.ReactNode }> = ({
-  tabId,
-  children
-}) => {
+const TabsClose: React.FC<TabCloseProps> = ({ tabId, children, ...rest }) => {
   const { setChatTabs, chatTabs, unregisterTab, activeTab, setActiveTab } =
     useTabsContext()
   const handleClose = (e: React.MouseEvent) => {
@@ -263,6 +284,8 @@ const TabsClose: React.FC<{ tabId: string; children?: React.ReactNode }> = ({
       aria-label='Close tab'
       data-focus-on-arrow-nav-left-right
       data-focus-on-arrow-nav
+      tabIndex={activeTab === tabId ? 0 : -1}
+      {...rest}
     >
       {children ?? '×'}
     </button>
@@ -323,6 +346,30 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
 }
 
 const TabsPanel: React.FC<TabsPanelProps> = ({
+  tabId,
+  children,
+  className = ''
+}) => {
+  const { activeTab } = useTabsContext()
+  const isActive = activeTab === tabId
+
+  if (!isActive) {
+    return null
+  }
+
+  return (
+    <div
+      role='tabpanel'
+      id={`tabpanel-${tabId}`}
+      aria-labelledby={`tab-${tabId}`}
+      className={className}
+    >
+      {children}
+    </div>
+  )
+}
+
+const TabsDynamicPanel: React.FC<TabsPanelProps> = ({
   tabId,
   children,
   askOptions = {},
@@ -392,7 +439,8 @@ export const Tabs = {
   Trigger: TabsTrigger,
   List: TabsList,
   DynamicList: TabsDynamicList,
-  Panel: TabsPanel,
   DynamicPanels: TabsDynamicPanels,
+  Panel: TabsPanel,
+  DynamicPanel: TabsDynamicPanel,
   Counter: TabsCounter
 }

@@ -73,12 +73,15 @@ export const HorizontalTabsChatbox: React.FC = () => {
             </Tabs.List>
           </div>
           <div className='flex items-center space-x-1 w-full border-b border-gray-200'>
-            <Tabs.DynamicList>
+            <Tabs.DynamicList
+              className='inline-flex overflow-x-auto w-full'
+              orientation='horizontal'
+            >
               {(item) => (
                 <div className='flex items-center relative'>
                   <Tabs.Button
                     tabId={item.id}
-                    className={`px-4 py-2 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-b-4 ${
+                    className={`px-4 py-2 pr-8 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-b-4 ${
                       activeTab === item.id
                         ? 'bg-white text-blue-600 border-b-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -92,7 +95,10 @@ export const HorizontalTabsChatbox: React.FC = () => {
                         : item.label}
                     </span>
                   </Tabs.Button>
-                  <Tabs.Close tabId={item.id} />
+                  <Tabs.Close
+                    tabId={item.id}
+                    className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-900'
+                  />
                 </div>
               )}
             </Tabs.DynamicList>
