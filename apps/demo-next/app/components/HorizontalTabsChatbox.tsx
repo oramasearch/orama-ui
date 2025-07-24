@@ -10,10 +10,13 @@ import { ArrowDown, PenBoxIcon, X } from 'lucide-react'
 import { oramaDocsCollection } from '@/data'
 import { useScrollableContainer } from '@orama/ui/hooks'
 import { Interaction } from '@orama/core'
+import { getThemeClasses } from '@/lib/utils'
 
 export const HorizontalTabsChatbox: React.FC = () => {
   const [chatTabs, setChatTabs] = useState(0)
   const [activeTab, setActiveTab] = useState<string | undefined>('chat-0')
+  const [theme, setTheme] = useState('modern')
+  const themeClasses = getThemeClasses(theme)
   const {
     containerRef,
     showGoToBottomButton,
@@ -30,16 +33,40 @@ export const HorizontalTabsChatbox: React.FC = () => {
   ]
 
   return (
-    <div className='max-w-full mx-auto p-6'>
-      <h1 className='text-2xl font-bold mb-6'>Horizontal Tabs</h1>
-      <Tabs.Wrapper defaultTab={activeTab} onTabChange={setActiveTab}>
+    <div className={`max-w-full mx-auto p-6 ${themeClasses.wrapper}`}>
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className={`text-2xl font-bold ${themeClasses.text}`}>
+          Horizontal Tabs
+        </h1>
+        <div className={themeClasses.text}>
+          <label htmlFor='theme-select' className='mr-2 text-sm font-medium'>
+            Theme:
+          </label>
+          <select
+            id='theme-select'
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            className={`border rounded px-2 py-1 text-sm ${themeClasses.input}`}
+          >
+            <option value='modern'>Modern</option>
+            <option value='dark'>Dark</option>
+            <option value='playful'>Playful</option>
+          </select>
+        </div>
+      </div>
+      <Tabs.Wrapper
+        defaultTab={activeTab}
+        onTabChange={setActiveTab}
+        orientation='horizontal'
+        className={themeClasses.wrapper}
+      >
         <div className='mb-4 flex flex-wrap gap-2'>
           {suggestedPrompts.map((prompt, idx) => (
             <Tabs.Trigger
               key={idx}
               type='button'
               onClick={() => setChatTabs(chatTabs + 1)}
-              className='px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm hover:bg-blue-100 border border-blue-200 transition'
+              className={`px-3 py-1 rounded-full text-sm transition ${themeClasses.promptButton}`}
               prompt={prompt}
               tabId={`chat-${chatTabs + 1}`}
             >
@@ -47,19 +74,21 @@ export const HorizontalTabsChatbox: React.FC = () => {
             </Tabs.Trigger>
           ))}
         </div>
-        <div className='border border-gray-200 rounded-lg overflow-hidden flex flex-col h-[500px] bg-white max-w-full'>
-          <div className='flex items-center justify-between w-full border-b border-gray-200'>
-            <Tabs.List orientation='horizontal' className='w-full'>
+        <div
+          className={`overflow-hidden flex flex-col h-[500px] max-w-full ${themeClasses.container}`}
+        >
+          <div className='flex items-center justify-between w-full border-b'>
+            <Tabs.List className='w-full'>
               <div className='flex items-center justify-between px-4 py-2 w-full'>
                 <Tabs.Counter>
                   {(count) => (
-                    <span className='text-sm text-gray-500'>
+                    <span className={`text-sm ${themeClasses.text}`}>
                       {count} {count === 1 ? 'Chat' : 'Chats'}
                     </span>
                   )}
                 </Tabs.Counter>
                 <Tabs.Trigger
-                  className='ml-4 inline-flex items-center gap-1 p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded'
+                  className={`ml-4 inline-flex items-center gap-1 p-2 text-sm rounded ${themeClasses.promptButton}`}
                   aria-label='Add new chat'
                   tabId={`chat-${chatTabs + 1}`}
                   onClick={() => setChatTabs(chatTabs + 1)}
@@ -72,19 +101,16 @@ export const HorizontalTabsChatbox: React.FC = () => {
               </div>
             </Tabs.List>
           </div>
-          <div className='flex items-center space-x-1 w-full border-b border-gray-200'>
-            <Tabs.DynamicList
-              className='inline-flex overflow-x-auto w-full'
-              orientation='horizontal'
-            >
+          <div className='flex items-center space-x-1 w-full border-b'>
+            <Tabs.DynamicList className='inline-flex overflow-x-auto w-full'>
               {(item) => (
                 <div className='flex items-center relative'>
                   <Tabs.Button
                     tabId={item.id}
-                    className={`px-4 py-2 pr-8 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-b-4 ${
+                    className={`px-4 py-2 pr-8 text-sm font-medium whitespace-nowrap text-left focus:border-b-4 ${
                       activeTab === item.id
-                        ? 'bg-white text-blue-600 border-b-4 border-blue-600'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        ? `${themeClasses.categorySelected} border-b-4`
+                        : `${themeClasses.category}`
                     }`}
                   >
                     <span className='truncate max-w-[120px] block'>
@@ -97,7 +123,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
                   </Tabs.Button>
                   <Tabs.Close
                     tabId={item.id}
-                    className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-900'
+                    className='absolute right-2 top-1/2 transform -translate-y-1/2'
                   />
                 </div>
               )}
@@ -105,7 +131,9 @@ export const HorizontalTabsChatbox: React.FC = () => {
           </div>
 
           {/* Tab Contents */}
-          <div className='flex-1 min-h-96 overflow-y-auto'>
+          <div
+            className={`flex-1 min-h-96 overflow-y-auto ${themeClasses.resultsContainer}`}
+          >
             <Tabs.DynamicPanels>
               {(item, chatTabs, setChatTabs) => (
                 <ChatRoot client={oramaDocsCollection}>
@@ -142,22 +170,24 @@ export const HorizontalTabsChatbox: React.FC = () => {
                               key={interaction.id}
                               className='p-4 flex flex-col gap-2'
                             >
-                              <ChatInteractions.UserPrompt className='bg-gray-100 my-1 py-2 px-4 font-semibold rounded-lg'>
+                              <ChatInteractions.UserPrompt
+                                className={themeClasses.userPrompt}
+                              >
                                 {interaction.query}
                               </ChatInteractions.UserPrompt>
                               <ChatInteractions.Loading
-                                className='text-gray-500 text-sm'
+                                className={themeClasses.resultContent}
                                 interaction={interaction}
                               >
-                                <div className='animate-pulse bg-gray-200 h-4 w-3/4 rounded' />
+                                <div className='animate-pulse h-4 w-3/4 rounded' />
                               </ChatInteractions.Loading>
                               <ChatInteractions.AssistantMessage
                                 markdownClassnames={{
                                   p: 'my-2',
                                   pre: 'rounded-md [&_pre]:rounded-md [&_pre]:p-4 [&_pre]:my-3 [&_pre]:text-xs [&_pre]:whitespace-break-spaces wrap-break-word',
-                                  code: 'bg-gray-200 p-1 rounded'
+                                  code: 'p-1 rounded'
                                 }}
-                                className='py-1 px-4 bg-gray-200 rounded-lg'
+                                className={themeClasses.assistantMessage}
                               >
                                 {interaction.response}
                               </ChatInteractions.AssistantMessage>
@@ -167,24 +197,30 @@ export const HorizontalTabsChatbox: React.FC = () => {
                       </div>
 
                       {/* BOTTOM BLOCK */}
-                      <div className='bg-white rounded-b-md flex flex-col items-center justify-between relative'>
+                      <div
+                        className={`rounded-b-md flex flex-col items-center justify-between relative`}
+                      >
                         {showGoToBottomButton && (
                           <button
-                            className='ml-2 px-2 py-1 bg-gray-800/60 text-white rounded text-sm absolute -top-8 right-4'
+                            className='ml-2 px-2 py-1 rounded text-sm absolute -top-8 right-4'
                             onClick={() => scrollToBottom()}
                           >
                             <ArrowDown className='w-4 h-4' />
                           </button>
                         )}
-                        <PromptTextArea.Wrapper className='flex items-center gap-2 w-full p-3 border-t border-gray-200'>
+                        <PromptTextArea.Wrapper
+                          className={`flex items-center gap-2 w-full p-3`}
+                        >
                           <PromptTextArea.Field
                             rows={1}
                             id='prompt-input-2'
                             name='prompt-input-2'
                             placeholder='Ask something...'
-                            className='flex-1 py-2 px-2 border border-gray-600 rounded-md'
+                            className={`flex-1 py-2 px-2 border ${themeClasses.input}`}
                           />
-                          <PromptTextArea.Button className='bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed'>
+                          <PromptTextArea.Button
+                            className={`py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed ${themeClasses.promptButton}`}
+                          >
                             Send
                           </PromptTextArea.Button>
                         </PromptTextArea.Wrapper>

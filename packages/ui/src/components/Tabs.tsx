@@ -1,3 +1,4 @@
+import { AnswerConfig } from '@orama/core'
 import { useArrowKeysNavigation, useChat } from '../hooks'
 import React, {
   createContext,
@@ -36,17 +37,16 @@ interface TabsWrapperProps {
   onTabChange?: (tabId: string) => void
   className?: string
   chatTab?: ChatTabItem
+  orientation?: 'horizontal' | 'vertical'
 }
 
 export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  orientation?: 'horizontal' | 'vertical'
 }
 
 export interface TabsDynamicListProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   children: (item: ChatTabItem) => ReactNode
-  orientation?: 'horizontal' | 'vertical'
 }
 
 interface TabsButtonProps {
@@ -94,12 +94,30 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
   defaultTab,
   onTabChange,
   chatTab,
+  orientation = 'vertical',
   className = ''
 }) => {
   const [tabs, setTabs] = useState<string[]>([])
   const [activeTab, setActiveTabState] = useState<string>('')
   const [prompt, setPrompt] = useState<string | undefined>(undefined)
   const [chatTabs, setChatTabs] = useState<ChatTabItem[]>([])
+  const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (orientation === 'vertical') {
+      onKeyDown(event.nativeEvent)
+    } else {
+      onArrowLeftRight(event.nativeEvent)
+    }
+
+    const focusedTab = event.currentTarget.querySelector(':focus')
+    const focusedTabID = focusedTab?.getAttribute('id')
+    const isTab = focusedTab?.getAttribute('role') === 'tab'
+
+    if (focusedTabID && isTab) {
+      setActiveTab(focusedTabID)
+    }
+  }
 
   const registerTab = (tabId: string) => {
     setTabs((prev) => {
@@ -143,9 +161,14 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <div className={className} role='tabpanel'>
+      <section
+        className={className}
+        role='tabpanel'
+        ref={ref}
+        onKeyDown={handleKeyDown}
+      >
         {children}
-      </div>
+      </section>
     </TabsContext.Provider>
   )
 }
@@ -155,68 +178,24 @@ const TabsCounter: React.FC<TabsCounterProps> = ({ children }) => {
   return <React.Fragment>{children(chatTabs?.length ?? 0)}</React.Fragment>
 }
 
-const TabsList: React.FC<TabsListProps> = ({
-  children,
-  orientation = 'vertical',
-  ...rest
-}) => {
-  const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
-  const { setActiveTab } = useTabsContext()
-
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    if (orientation === 'vertical') {
-      onKeyDown(event.nativeEvent)
-    } else {
-      onArrowLeftRight(event.nativeEvent)
-    }
-
-    const focusedTabID = event.currentTarget
-      .querySelector(':focus')
-      ?.getAttribute('id')
-    if (focusedTabID) {
-      setActiveTab(focusedTabID)
-    }
-  }
-
-  return (
-    <section ref={ref} onKeyDown={handleKeyDown} {...rest}>
-      {children}
-    </section>
-  )
+const TabsList: React.FC<TabsListProps> = ({ children, ...rest }) => {
+  return <div {...rest}>{children}</div>
 }
 
 const TabsDynamicList: React.FC<TabsDynamicListProps> = ({
   children,
-  orientation = 'vertical',
   ...rest
 }) => {
   const { chatTabs } = useTabsContext()
-  const { ref, onKeyDown, onArrowLeftRight } = useArrowKeysNavigation()
-  const { setActiveTab } = useTabsContext()
-
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    if (orientation === 'vertical') {
-      onKeyDown(event.nativeEvent)
-    } else {
-      onArrowLeftRight(event.nativeEvent)
-    }
-
-    const focusedTabID = event.currentTarget
-      .querySelector(':focus')
-      ?.getAttribute('id')
-    if (focusedTabID) {
-      setActiveTab(focusedTabID)
-    }
-  }
 
   if (!chatTabs) return null
 
   return (
-    <section ref={ref} onKeyDown={handleKeyDown} {...rest}>
+    <div {...rest}>
       {chatTabs.map((item) => (
         <React.Fragment key={item.id}>{children(item)}</React.Fragment>
       ))}
-    </section>
+    </div>
   )
 }
 
@@ -237,7 +216,6 @@ const TabsButton: React.FC<TabsButtonProps> = ({
   }, [tabId])
 
   const handleClick = () => {
-    console.log('Button clicked:', tabId)
     if (!disabled) {
       setActiveTab(tabId)
     }
