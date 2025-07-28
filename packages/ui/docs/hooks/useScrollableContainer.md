@@ -62,14 +62,14 @@ function ChatBox() {
   }, [interactions, scrollToBottom, recalculateGoToBottomButton]);
 
   return (
-    <div className='flex'>
+    <div className="flex">
       <div>Chatbox header...</div>
-      <div ref={containerRef} className="flex-1 overflow-y-auto" >
+      <div ref={containerRef} className="flex-1 overflow-y-auto">
         <ChatInteractions.Wrapper
           onScroll={recalculateGoToBottomButton}
           onStreaming={recalculateGoToBottomButton}
           onNewInteraction={() => {
-            scrollToBottom({ animated: true })
+            scrollToBottom({ animated: true });
           }}
         >
           {(interaction) => (

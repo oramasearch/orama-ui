@@ -4,21 +4,22 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 
 ---
 
-## Usage Example
+## Usage
 
 ```tsx
+import { Suggestions } from "@orama/ui";
+
 <Suggestions.Wrapper className="suggestions-wrapper">
   {suggestions.map((suggestion) => (
     <Suggestions.Item
       key={suggestion.id}
       onClick={() => handleSuggestionClick(suggestion)}
       className="suggestion-button"
-      askOptions={{ someOption: true }}
     >
       <span>{suggestion.title}</span>
     </Suggestions.Item>
   ))}
-</Suggestions.Wrapper>
+</Suggestions.Wrapper>;
 ```
 
 ---
