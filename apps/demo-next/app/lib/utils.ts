@@ -13,7 +13,8 @@ export const getThemeClasses = (theme: string) => {
         wrapper: "bg-white",
         container: "bg-white border border-gray-200 rounded-xl shadow-lg",
         closeButton: "text-gray-500 hover:text-gray-700 focus:text-gray-700",
-        input: "rounded-xl border-gray-300 focus:ring-purple-400 focus:border-purple-400",
+        input:
+          "rounded-xl border-gray-300 focus:ring-purple-400 focus:border-purple-400",
         promptButton:
           "rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white",
         text: "text-gray-900",
@@ -27,8 +28,7 @@ export const getThemeClasses = (theme: string) => {
         resultTitle:
           "text-gray-900 group-hover:text-purple-700 group-focus:text-purple-700",
         resultContent: "text-gray-600",
-        userPrompt:
-          "text-purple-700 text-purple-700",
+        userPrompt: "text-purple-700 text-purple-700",
         assistantMessage: "text-gray-600",
         chatActions: {
           resetButton:
@@ -80,8 +80,7 @@ export const getThemeClasses = (theme: string) => {
         resultTitle:
           "text-gray-100 group-hover:text-cyan-300 group-focus:text-cyan-300",
         resultContent: "text-gray-400",
-        userPrompt:
-          "text-cyan-300 group-focus:text-cyan-300",
+        userPrompt: "text-cyan-300 group-focus:text-cyan-300",
         assistantMessage: "text-gray-400",
         chatActions: {
           resetButton:
@@ -115,12 +114,10 @@ export const getThemeClasses = (theme: string) => {
       };
     case "playful":
       return {
-        wrapper:
-          "bg-gradient-to-br from-yellow-100 to-pink-100",
+        wrapper: "bg-gradient-to-br from-yellow-100 to-pink-100",
         container:
           "bg-gradient-to-br from-yellow-100 to-pink-100 border-2 border-pink-300 rounded-3xl shadow-lg",
-        closeButton:
-          "text-pink-500 hover:text-pink-600 focus:text-pink-600",
+        closeButton: "text-pink-500 hover:text-pink-600 focus:text-pink-600",
         input:
           "border-pink-300 focus:ring-pink-400 focus:border-pink-400 rounded-full",
         promptButton:
@@ -136,8 +133,7 @@ export const getThemeClasses = (theme: string) => {
         resultTitle:
           "text-gray-800 group-hover:text-pink-700 group-focus:text-pink-700",
         resultContent: "text-gray-600",
-        userPrompt:
-          "text-pink-700",
+        userPrompt: "text-pink-700",
         assistantMessage: "text-gray-600",
         chatActions: {
           resetButton:
@@ -187,8 +183,7 @@ export const getThemeClasses = (theme: string) => {
         resultTitle:
           "text-gray-900 group-hover:text-purple-700 group-focus:text-purple-700",
         resultContent: "text-gray-600",
-        userPrompt:
-          "text-purple-700",
+        userPrompt: "text-purple-700",
         assistantMessage: "text-gray-600",
         chatActions: {
           resetButton:
