@@ -71,10 +71,7 @@ export const VerticalTabsChatbox: React.FC = () => {
               </Tabs.Trigger>
             </div>
             <div className='flex flex-col'>
-              <Tabs.List
-                orientation='vertical'
-                className='flex-1 overflow-y-auto'
-              >
+              <Tabs.List className='flex-1 overflow-y-auto'>
                 <Tabs.Button
                   tabId='tab-0'
                   className={`w-full px-4 py-2 text-sm font-medium whitespace-nowrap text-left focus:border-blue-600 focus:border-l-4 ${
@@ -88,7 +85,7 @@ export const VerticalTabsChatbox: React.FC = () => {
                   </span>
                 </Tabs.Button>
               </Tabs.List>
-              <Tabs.DynamicList orientation='vertical'>
+              <Tabs.DynamicList>
                 {(item) => (
                   <div className='flex items-center relative'>
                     <Tabs.Button

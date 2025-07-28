@@ -13,7 +13,7 @@ import { Interaction } from '@orama/core'
 import { getThemeClasses } from '@/lib/utils'
 
 export const HorizontalTabsChatbox: React.FC = () => {
-  const [chatTabs, setChatTabs] = useState(0)
+  const [tabID, setTabID] = useState(0)
   const [activeTab, setActiveTab] = useState<string | undefined>('chat-0')
   const [theme, setTheme] = useState('modern')
   const themeClasses = getThemeClasses(theme)
@@ -65,10 +65,10 @@ export const HorizontalTabsChatbox: React.FC = () => {
             <Tabs.Trigger
               key={idx}
               type='button'
-              onClick={() => setChatTabs(chatTabs + 1)}
+              onClick={() => setTabID(tabID + 1 + idx)}
               className={`px-3 py-1 rounded-full text-sm transition ${themeClasses.promptButton}`}
               prompt={prompt}
-              tabId={`chat-${chatTabs + 1}`}
+              tabId={`chat-${tabID + 1 + idx}`}
             >
               {prompt}
             </Tabs.Trigger>
@@ -77,7 +77,7 @@ export const HorizontalTabsChatbox: React.FC = () => {
         <div
           className={`overflow-hidden flex flex-col h-[500px] max-w-full ${themeClasses.container}`}
         >
-          <div className='flex items-center justify-between w-full border-b'>
+          <div className='flex items-center justify-between w-full border-b border-gray-500'>
             <Tabs.List className='w-full'>
               <div className='flex items-center justify-between px-4 py-2 w-full'>
                 <Tabs.Counter>
@@ -90,8 +90,8 @@ export const HorizontalTabsChatbox: React.FC = () => {
                 <Tabs.Trigger
                   className={`ml-4 inline-flex items-center gap-1 p-2 text-sm rounded ${themeClasses.promptButton}`}
                   aria-label='Add new chat'
-                  tabId={`chat-${chatTabs + 1}`}
-                  onClick={() => setChatTabs(chatTabs + 1)}
+                  tabId={`chat-${tabID + 1}`}
+                  onClick={() => setTabID(tabID + 1)}
                   data-focus-on-arrow-nav
                   data-focus-on-arrow-nav-left-right
                 >
@@ -101,8 +101,8 @@ export const HorizontalTabsChatbox: React.FC = () => {
               </div>
             </Tabs.List>
           </div>
-          <div className='flex items-center space-x-1 w-full border-b'>
-            <Tabs.DynamicList className='inline-flex overflow-x-auto w-full'>
+          <div className='flex items-center space-x-1 w-full'>
+            <Tabs.DynamicList className='inline-flex overflow-x-auto w-full border-b border-gray-500 empty:hidden'>
               {(item) => (
                 <div className='flex items-center relative'>
                   <Tabs.Button
@@ -123,8 +123,10 @@ export const HorizontalTabsChatbox: React.FC = () => {
                   </Tabs.Button>
                   <Tabs.Close
                     tabId={item.id}
-                    className='absolute right-2 top-1/2 transform -translate-y-1/2'
-                  />
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 ${themeClasses.closeButton}`}
+                  >
+                    <X className='w-3 h-3' />
+                  </Tabs.Close>
                 </div>
               )}
             </Tabs.DynamicList>
@@ -202,10 +204,10 @@ export const HorizontalTabsChatbox: React.FC = () => {
                       >
                         {showGoToBottomButton && (
                           <button
-                            className='ml-2 px-2 py-1 rounded text-sm absolute -top-8 right-4'
+                            className={`ml-2 px-2 py-1 rounded text-sm absolute -top-8 right-4 [&_svg]:text-current ${themeClasses.closeButton}`}
                             onClick={() => scrollToBottom()}
                           >
-                            <ArrowDown className='w-4 h-4' />
+                            <ArrowDown className='w-5 h-5' />
                           </button>
                         )}
                         <PromptTextArea.Wrapper
@@ -216,7 +218,8 @@ export const HorizontalTabsChatbox: React.FC = () => {
                             id='prompt-input-2'
                             name='prompt-input-2'
                             placeholder='Ask something...'
-                            className={`flex-1 py-2 px-2 border ${themeClasses.input}`}
+                            className={`flex-1 py-2 px-2 border focus:outline-none ${themeClasses.input}`}
+                            autoFocus
                           />
                           <PromptTextArea.Button
                             className={`py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed ${themeClasses.promptButton}`}

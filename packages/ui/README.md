@@ -51,6 +51,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
 - [`Suggestions`](./docs/components/Suggestions.md)
 - [`Modal`](./docs/components/Modal.md)
 - [`SlidingPanel`](./docs/components/SlidingPanel.md)
+- [`Tabs`](./docs/components/Tabs.md)
 
 ---
 

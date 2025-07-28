@@ -251,6 +251,13 @@ const TabsClose: React.FC<TabCloseProps> = ({ tabId, children, ...rest }) => {
     unregisterTab(tabId)
     setChatTabs?.(chatTabs?.filter((tab) => tab.id !== tabId) ?? [])
     if (activeTab === tabId && chatTabs && chatTabs.length > 1) {
+      // next tab should be the previous one if present, otherwise it't next one
+      const currentIndex = chatTabs.findIndex((tab) => tab.id === tabId)
+      const previousTab = chatTabs[currentIndex - 1]
+      if (previousTab) {
+        setActiveTab(previousTab.id)
+        return
+      }
       const nextTab = chatTabs.find((tab) => tab.id !== tabId)
       if (nextTab) setActiveTab(nextTab.id)
     }

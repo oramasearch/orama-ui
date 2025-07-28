@@ -12,6 +12,7 @@ export const getThemeClasses = (theme: string) => {
       return {
         wrapper: "bg-white",
         container: "bg-white border border-gray-200 rounded-xl shadow-lg",
+        closeButton: "text-gray-500 hover:text-gray-700 focus:text-gray-700",
         input: "rounded-xl border-gray-300 focus:ring-purple-400 focus:border-purple-400",
         promptButton:
           "rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white",
@@ -63,6 +64,7 @@ export const getThemeClasses = (theme: string) => {
       return {
         wrapper: "bg-gray-900",
         container: "bg-gray-900 border border-gray-700 rounded-xl shadow-2xl",
+        closeButton: "text-gray-400 hover:text-gray-300 focus:text-gray-300",
         input:
           "rounded-xl bg-gray-800 border-gray-600 text-white focus:ring-cyan-400 focus:border-cyan-400",
         promptButton:
@@ -117,6 +119,8 @@ export const getThemeClasses = (theme: string) => {
           "bg-gradient-to-br from-yellow-100 to-pink-100",
         container:
           "bg-gradient-to-br from-yellow-100 to-pink-100 border-2 border-pink-300 rounded-3xl shadow-lg",
+        closeButton:
+          "text-pink-500 hover:text-pink-600 focus:text-pink-600",
         input:
           "border-pink-300 focus:ring-pink-400 focus:border-pink-400 rounded-full",
         promptButton:
@@ -167,8 +171,10 @@ export const getThemeClasses = (theme: string) => {
       };
     default:
       return {
+        wrapper: "bg-white",
         container: "bg-white border border-gray-200 rounded-xl shadow-lg",
         input: "border-gray-300 focus:ring-purple-400 focus:border-purple-400",
+        closeButton: "text-gray-500 hover:text-gray-700 focus:text-gray-700",
         promptButton:
           "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white",
         text: "text-gray-900",
