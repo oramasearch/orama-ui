@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "@orama/core": "^1.0.0",
-    "react": "^19"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
