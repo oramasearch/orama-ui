@@ -2,7 +2,13 @@
 import React from "react";
 import { oramaDocsCollection } from "@/data";
 import { InnerSearchBox } from "./SearchBoxModal";
-import { Modal, SearchRoot, ChatRoot, OramaLogo } from "@orama/ui/components";
+import {
+  Modal,
+  SearchRoot,
+  ChatRoot,
+  OramaLogo,
+  OramaIcon,
+} from "@orama/ui/components";
 import Link from "next/link";
 
 const Header: React.FC = () => {
@@ -15,7 +21,10 @@ const Header: React.FC = () => {
   return (
     <header className="flex items-center justify-between p-4 bg-gray-800 text-white">
       <Link href="/">
-        <OramaLogo theme="dark" size={24} className="mr-2" />
+        <div className="flex items-center">
+          <OramaIcon theme="dark" size={24} className="mr-2" />
+          <OramaLogo theme="dark" size={24} className="mr-2" />
+        </div>
       </Link>
       <h1 className="text-xl font-bold">Orama UI Demo</h1>
       {/* <div className="min-w-xs">
