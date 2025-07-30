@@ -55,10 +55,7 @@ export function useArrowKeysNavigation(
       event.preventDefault();
 
       const focusableElements = ref.current.querySelectorAll(selector);
-      let focusableArray = Array.from(focusableElements) as HTMLElement[];
-      focusableArray = focusableArray.filter(
-        (element) => element.tabIndex !== -1,
-      );
+      const focusableArray = Array.from(focusableElements) as HTMLElement[];
 
       if (focusableArray.length === 0) return;
 
@@ -96,10 +93,7 @@ export function useArrowKeysNavigation(
       event.stopPropagation();
       event.preventDefault();
       const focusableElements = ref.current.querySelectorAll(selectorLeftRight);
-      let focusableArray = Array.from(focusableElements) as HTMLElement[];
-      focusableArray = focusableArray.filter(
-        (element) => element.tabIndex !== -1,
-      );
+      const focusableArray = Array.from(focusableElements) as HTMLElement[];
 
       if (focusableArray.length === 0) return;
 

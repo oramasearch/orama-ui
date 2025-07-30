@@ -262,7 +262,6 @@ export const InnerSearchBox = () => {
                     // console.log("User prompt changed:", userPrompt);
                   }}
                   className="w-full border-0 focus:outline-none"
-                  autoFocus
                 />
                 {/* on click focus on the text area */}
                 <div className="flex justify-end items-center gap-2">

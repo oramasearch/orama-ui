@@ -12,14 +12,8 @@ export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
   className = "",
   ...rest
 }) => {
-  const focusTextArea = () => {
-    const textArea = document.querySelector("textarea");
-    if (textArea instanceof HTMLTextAreaElement) {
-      textArea.focus();
-    }
-  };
   return (
-    <div className={className} onClick={focusTextArea} {...rest}>
+    <div className={className} {...rest}>
       {children}
     </div>
   );

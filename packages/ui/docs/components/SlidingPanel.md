@@ -39,11 +39,11 @@ function Example() {
 
 ### `<SlidingPanel.Trigger>`
 
-| Name           | Type                                   | Required | Description                                                      |
-| -------------- | -------------------------------------- | -------- | ---------------------------------------------------------------- |
-| `initialPrompt`| `string`                               | No       | The initial prompt to set when opening the panel                 |
-| `children`     | `ReactNode`                            | No       | Custom button content                                            |
-| ...            | `HTMLButtonElement` props              | No       | Any other button props
+| Name            | Type                      | Required | Description                                      |
+| --------------- | ------------------------- | -------- | ------------------------------------------------ |
+| `initialPrompt` | `string`                  | No       | The initial prompt to set when opening the panel |
+| `children`      | `ReactNode`               | No       | Custom button content                            |
+| ...             | `HTMLButtonElement` props | No       | Any other button props                           |
 
 **Usage Example:**
 

@@ -100,7 +100,7 @@ export function useChat(): useChatProps {
       try {
         let session = answerSession;
         if (!session) {
-          session = client.createAnswerSession({
+          session = client.createAISession({
             events: {
               onStateChange: (state) => {
                 const normalizedState = state.filter((item) => !!item.query);
