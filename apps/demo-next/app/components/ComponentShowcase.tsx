@@ -682,11 +682,14 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                                   themeClasses.chatActions.actionButton
                                 }
                                 interaction={interaction}
-                                copiedContent={
-                                  <ClipboardCheck className='w-4 h-4' />
-                                }
                               >
-                                <Copy className='w-4 h-4' />
+                                {(copied) =>
+                                  copied ? (
+                                    <ClipboardCheck className='w-4 h-4' />
+                                  ) : (
+                                    <Copy className='w-4 h-4' />
+                                  )
+                                }
                               </ChatInteractions.CopyMessage>
                             </li>
                           </ul>

@@ -198,12 +198,21 @@ Button to regenerate the latest assistant response.
 - All standard `button` props.
 - `interaction`: `Interaction`  
   The interaction whose message to copy.
-- `copiedContent`: `ReactNode` (optional)  
-  Content to show when copied.
-- `children`: `ReactNode` (optional)
+- `children`: `(copied: boolean) => React.ReactNode`
+Render function for custom button content. Receives a boolean indicating if the message was just copied.
+
 
 **Description:**  
-Button to copy an assistant message to the clipboard, with feedback when copied.
+Button to copy an assistant message to the clipboard, with feedback when copied.  
+The `children` prop lets you customize the button content based on the copy state.
+
+**Example:**
+
+```tsx
+<ChatInteractions.CopyMessage interaction={interaction}>
+  {(copied) => copied ? <span>Copied!</span> : <span>Copy</span>}
+</ChatInteractions.CopyMessage>
+```
 
 ---
 

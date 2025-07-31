@@ -10,7 +10,9 @@ import {
   FileText,
   Users,
   Settings,
-  File
+  File,
+  ClipboardCheck,
+  Copy
 } from 'lucide-react'
 import { oramaDocsCollection } from '@/data'
 import {
@@ -219,7 +221,13 @@ export const InnerSearchBox = () => {
                               console.log('Copy message clicked')
                             }}
                           >
-                            Copy message
+                            {(copied) =>
+                              copied ? (
+                                <ClipboardCheck className='w-4 h-4' />
+                              ) : (
+                                <Copy className='w-4 h-4' />
+                              )
+                            }
                           </ChatInteractions.CopyMessage>
                         </li>
                         <li>

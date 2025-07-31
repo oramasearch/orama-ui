@@ -1,6 +1,14 @@
 'use client'
 import React, { useState } from 'react'
-import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause } from 'lucide-react'
+import {
+  Star,
+  ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  Pause,
+  ClipboardCheck,
+  Copy
+} from 'lucide-react'
 import { oramaDocsCollection } from '@/data'
 import {
   FacetTabs,
@@ -237,7 +245,13 @@ export const InnerSearchBox = () => {
                               console.log('Copy message clicked')
                             }}
                           >
-                            Copy message
+                            {(copied) =>
+                              copied ? (
+                                <ClipboardCheck className='w-4 h-4' />
+                              ) : (
+                                <Copy className='w-4 h-4' />
+                              )
+                            }
                           </ChatInteractions.CopyMessage>
                         </li>
                         <li>
