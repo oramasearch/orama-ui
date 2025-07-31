@@ -143,8 +143,8 @@ Container for user action buttons (e.g., copy, reset).
 
 **Props:**
 
-- `sources`: `Array<Interaction["sources"]>`  
-  List of source objects.
+- `interaction`: `Interaction`  
+  The current interaction
 - `children`: `(document: AnyObject, index: number) => ReactNode`  
   Render prop for each document.
 - `className`: `string` (optional)
