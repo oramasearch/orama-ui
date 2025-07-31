@@ -17,11 +17,7 @@ export const InnerChat = () => {
             <ChatInteractions.UserPrompt aria-label="User message">
               {interaction.query}
             </ChatInteractions.UserPrompt>
-            <ChatInteractions.Sources
-              sources={
-                Array.isArray(interaction.sources) ? interaction.sources : []
-              }
-            >
+            <ChatInteractions.Sources interaction={interaction}>
               {(document, index: number) => (
                 <div key={index}>
                   <span>{document?.title as string}</span>

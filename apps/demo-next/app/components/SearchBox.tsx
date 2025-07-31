@@ -1,6 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { Star, ArrowLeft, ArrowUp, ArrowDown, Pause } from "lucide-react";
+import {
+  Star,
+  ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  Pause,
+  ClipboardCheck,
+  Copy,
+} from "lucide-react";
 import { oramaDocsCollection } from "@/data";
 import {
   FacetTabs,
@@ -187,11 +195,7 @@ export const InnerSearchBox = () => {
                       </div>
                     )}
                     <ChatInteractions.Sources
-                      sources={
-                        Array.isArray(interaction.sources)
-                          ? interaction.sources
-                          : []
-                      }
+                      interaction={interaction}
                       className="flex flex-row gap-2 mb-2 mt-3 overflow-auto overflow-x-scroll pb-2"
                       itemClassName="group inline-flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer"
                     >
@@ -241,7 +245,13 @@ export const InnerSearchBox = () => {
                               console.log("Copy message clicked");
                             }}
                           >
-                            Copy message
+                            {(copied) =>
+                              copied ? (
+                                <ClipboardCheck className="w-4 h-4" />
+                              ) : (
+                                <Copy className="w-4 h-4" />
+                              )
+                            }
                           </ChatInteractions.CopyMessage>
                         </li>
                         <li>

@@ -584,11 +584,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                           </div>
                         )}
                       <ChatInteractions.Sources
-                        sources={
-                          Array.isArray(interaction.sources)
-                            ? interaction.sources
-                            : []
-                        }
+                        interaction={interaction}
                         className={`flex flex-row gap-1 mb-1 mt-2 overflow-x-auto ${themeClasses.sources.container}`}
                         itemClassName={themeClasses.sources.item}
                       >
@@ -689,11 +685,14 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                                   themeClasses.chatActions.actionButton
                                 }
                                 interaction={interaction}
-                                copiedContent={
-                                  <ClipboardCheck className="w-4 h-4" />
-                                }
                               >
-                                <Copy className="w-4 h-4" />
+                                {(copied) =>
+                                  copied ? (
+                                    <ClipboardCheck className="w-4 h-4" />
+                                  ) : (
+                                    <Copy className="w-4 h-4" />
+                                  )
+                                }
                               </ChatInteractions.CopyMessage>
                             </li>
                           </ul>
