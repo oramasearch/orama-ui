@@ -48,7 +48,7 @@ export interface UserActionsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface SourcesProps
   extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
-  sources: Array<Interaction["sources"]>;
+  interaction: Interaction;
   children: (document: AnyObject, index: number) => ReactNode;
   className?: string;
   itemClassName?: string;
@@ -325,17 +325,25 @@ const UserActions: React.FC<UserActionsProps> = ({
 
 const Sources: React.FC<SourcesProps> = ({
   children,
-  sources,
+  interaction,
   className,
   itemClassName,
   ...rest
 }) => {
+  const { sources, response } = interaction;
+
   if (!sources || sources.length === 0) {
     return null;
   }
 
-  const hasDocument = sources.some((source) => source && source.document);
+  const hasDocument =
+    Array.isArray(sources) &&
+    sources.some((source) => source && source.document);
   if (!hasDocument) {
+    return null;
+  }
+
+  if (!response) {
     return null;
   }
 
@@ -425,9 +433,9 @@ const RegenerateLatest: React.FC<
 
   const isLatest =
     interactions && interactions[interactions.length - 1] === interaction;
-  const isLoading = interaction.loading && !interaction.response;
+  const isStreaming = interaction.loading && interaction.response;
 
-  if (isLoading || !isLatest) {
+  if (isStreaming || !isLatest) {
     return null;
   }
 
@@ -438,15 +446,21 @@ const RegenerateLatest: React.FC<
   );
 };
 
-const CopyMessage: React.FC<
-  ActionButtonProps & {
-    interaction: Interaction;
-    copiedContent?: React.ReactNode;
-  }
-> = ({ onClick, interaction, children, copiedContent, ...rest }) => {
+export interface CopyMessageProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  children: (copied: boolean) => React.ReactNode;
+  interaction: Interaction;
+}
+
+const CopyMessage: React.FC<CopyMessageProps> = ({
+  onClick,
+  children,
+  interaction,
+  ...rest
+}) => {
   const { copyToClipboard, copiedMessage } = useChat();
   const [copied, setCopied] = useState(false);
-  const isLoading = interaction.loading && !interaction.response;
+  const isStreaming = interaction.loading && interaction.response;
 
   const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
     copyToClipboard(interaction.response || "");
@@ -456,26 +470,22 @@ const CopyMessage: React.FC<
   };
 
   useEffect(() => {
-    if (copiedMessage === interaction.response) {
+    if (copiedMessage) {
       setCopied(true);
       const timer = setTimeout(() => {
         setCopied(false);
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [copiedMessage, interaction.response]);
+  }, [copiedMessage]);
 
-  if (isLoading) {
+  if (isStreaming) {
     return null;
   }
 
   return (
     <button onClick={handleCopy} {...rest}>
-      {copied ? (
-        <>{copiedContent || <span>Copied!</span>}</>
-      ) : (
-        children || <span>Copy</span>
-      )}
+      {children(copied)}
     </button>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ChatInteractions, SlidingPanel } from "@orama/ui/components";
-import { Bot, Copy, RotateCcw, Send, User } from "lucide-react";
+import { Bot, ClipboardCheck, Copy, RotateCcw, Send, User } from "lucide-react";
 import { PromptTextArea, ChatRoot } from "@orama/ui/components";
 import { oramaDocsCollection } from "@/data";
 import { useScrollableContainer } from "@orama/ui/hooks/useScrollableContainer";
@@ -164,15 +164,14 @@ export const SlidingPanelChatbox = () => {
                             <ChatInteractions.CopyMessage
                               interaction={interaction}
                               className="flex items-center h-8 px-2 text-xs hover:bg-gray-100 rounded-lg"
-                              copiedContent={
-                                <>
-                                  <Copy className="w-3 h-3 mr-1" />
-                                  Copied!
-                                </>
-                              }
                             >
-                              <Copy className="w-3 h-3 mr-1" />
-                              Copy
+                              {(copied) =>
+                                copied ? (
+                                  <ClipboardCheck className="w-3 h-3 mr-1" />
+                                ) : (
+                                  <Copy className="w-3 h-3 mr-1" />
+                                )
+                              }
                             </ChatInteractions.CopyMessage>
                             {/* <div className="flex items-center gap-1">
                               <Button
