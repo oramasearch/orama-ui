@@ -52,6 +52,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   rows = 4,
   'aria-label': ariaLabel = 'Prompt input',
   'aria-describedby': ariaDescribedBy,
+  onKeyDown,
   askOptions = {},
   ...props
 }) => {
@@ -73,6 +74,8 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
         dispatch({ type: 'CLEAR_USER_PROMPT' })
       }
     }
+
+    onKeyDown?.(e)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
