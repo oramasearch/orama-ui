@@ -58,9 +58,8 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   ref,
   ...props
 }) => {
-  const { ask } = useChat()
-  const { userPrompt } = useChatContext()
-  const dispatch = useChatDispatch()
+  const { ask, context, dispatch } = useChat()
+  const { userPrompt } = context
   const internalRef = React.useRef<HTMLTextAreaElement>(null)
   const textAreaRef = ref ?? internalRef
 
