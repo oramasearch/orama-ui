@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react";
 
 /**
  * Custom React hook for copying text to the clipboard.
@@ -14,27 +14,27 @@ import { useState, useCallback } from 'react'
  */
 
 export interface UseClipboardReturn {
-  copyToClipboard: (message: string) => void
-  copied: string
-  error: Error | null
+  copyToClipboard: (message: string) => void;
+  copied: string;
+  error: Error | null;
 }
 
 export function useClipboard(): UseClipboardReturn {
-  const [copied, setCopied] = useState('')
-  const [error, setError] = useState<Error | null>(null)
+  const [copied, setCopied] = useState("");
+  const [error, setError] = useState<Error | null>(null);
 
   const copyToClipboard = useCallback((message: string) => {
-    setError(null)
-    setCopied('')
+    setError(null);
+    setCopied("");
     if (!navigator.clipboard) {
-      setError(new Error('Clipboard API not supported'))
-      return
+      setError(new Error("Clipboard API not supported"));
+      return;
     }
     navigator.clipboard
       .writeText(message)
       .then(() => setCopied(message))
-      .catch(() => setError(new Error('Failed to copy message to clipboard')))
-  }, [])
+      .catch(() => setError(new Error("Failed to copy message to clipboard")));
+  }, []);
 
-  return { copyToClipboard, copied, error }
+  return { copyToClipboard, copied, error };
 }

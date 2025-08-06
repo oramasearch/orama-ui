@@ -7,20 +7,20 @@ A custom React hook for copying text to the clipboard.
 ## Usage
 
 ```tsx
-import { useClipboard } from '../hooks/useClipboard'
+import { useClipboard } from "../hooks/useClipboard";
 
 function ExampleComponent() {
-  const { copyToClipboard, copied, error } = useClipboard()
+  const { copyToClipboard, copied, error } = useClipboard();
 
   return (
     <div>
-      <button onClick={() => copyToClipboard('Hello world!')}>
+      <button onClick={() => copyToClipboard("Hello world!")}>
         Copy "Hello world!"
       </button>
       {copied && <span>Copied: {copied}</span>}
       {error && <span>Error: {error.message}</span>}
     </div>
-  )
+  );
 }
 ```
 
@@ -28,17 +28,17 @@ function ExampleComponent() {
 
 ### Return Object
 
-| Property         | Type                                 | Description                                      |
-|------------------|--------------------------------------|--------------------------------------------------|
-| `copyToClipboard`| `(message: string) => void`          | Copies the provided string to the clipboard.      |
-| `copied`         | `string`                             | The last successfully copied string.              |
-| `error`          | `Error \| null`                      | Error object if copying failed, otherwise `null`. |
+| Property          | Type                        | Description                                       |
+| ----------------- | --------------------------- | ------------------------------------------------- |
+| `copyToClipboard` | `(message: string) => void` | Copies the provided string to the clipboard.      |
+| `copied`          | `string`                    | The last successfully copied string.              |
+| `error`           | `Error \| null`             | Error object if copying failed, otherwise `null`. |
 
 ## Example
 
 ```tsx
-const { copyToClipboard, copied, error } = useClipboard()
-copyToClipboard('Hello world!')
+const { copyToClipboard, copied, error } = useClipboard();
+copyToClipboard("Hello world!");
 ```
 
 ## Notes
