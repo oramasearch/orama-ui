@@ -11,6 +11,30 @@ export type ChatContextProps = {
   isStreaming?: boolean;
 };
 
+export type ChatAction =
+  | { type: "SET_CLIENT"; payload: { client: CollectionManager | null } }
+  | { type: "SET_INITIAL_USER_PROMPT"; payload: { initialUserPrompt: string } }
+  | {
+      type: "SET_ANSWER_SESSION";
+      payload: { answerSession: AnswerSession | null };
+    }
+  | {
+      type: "ADD_INTERACTION";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | {
+      type: "SET_INTERACTIONS";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | { type: "CLEAR_INTERACTIONS" }
+  | { type: "SET_USER_PROMPT"; payload: { userPrompt: string } }
+  | { type: "CLEAR_USER_PROMPT" }
+  | { type: "CLEAR_INITIAL_USER_PROMPT" }
+  | {
+      type: "SET_SCROLL_TO_LAST_INTERACTION";
+      payload: { scrollToLastInteraction: boolean };
+    };
+
 export const initialChatState: ChatContextProps = {
   client: null,
   initialUserPrompt: "",
@@ -22,10 +46,8 @@ export const initialChatState: ChatContextProps = {
 };
 
 export const ChatContext = createContext<ChatContextProps>(initialChatState);
-export const ChatDispatchContext = createContext<React.Dispatch<{
-  type: string;
-  payload?: Partial<ChatContextProps>;
-}> | null>(null);
+export const ChatDispatchContext =
+  createContext<React.Dispatch<ChatAction> | null>(null);
 
 export const useChatContext = () => {
   const context = useContext(ChatContext);
@@ -55,10 +77,7 @@ export const useChatDispatch = () => {
  * @param action - An object containing the action type and optional payload to update the state.
  * @returns The updated chat contexts state based on the action type.
  */
-export const chatReducer = (
-  state: ChatContextProps,
-  action: { type: string; payload?: Partial<ChatContextProps> },
-) => {
+export const chatReducer = (state: ChatContextProps, action: ChatAction) => {
   switch (action.type) {
     case "SET_CLIENT":
       return { ...state, client: action.payload?.client || null };

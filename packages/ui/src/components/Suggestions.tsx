@@ -37,7 +37,7 @@ interface SuggestionsItemProps
  *
  * @remarks
  * When the button is clicked, it triggers the `onClick` handler if provided,
- * and then calls the `onAsk` function from the `useChat` hook with the button's text content as the user prompt.
+ * and then calls the `ask` function from the `useChat` hook with the button's text content as the user prompt.
  */
 const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
@@ -46,7 +46,7 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   askOptions = {},
   ...rest
 }) => {
-  const { onAsk } = useChat();
+  const { ask } = useChat();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -54,7 +54,7 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
     if (onClick) {
       onClick(event);
     }
-    onAsk({
+    ask({
       query: event.currentTarget.textContent || "",
       ...askOptions,
     });

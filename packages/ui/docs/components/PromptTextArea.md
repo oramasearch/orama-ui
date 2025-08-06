@@ -55,7 +55,7 @@ import { PromptTextArea } from "@orama/ui";
 ### 3. `<PromptTextArea.Button>`
 
 - **Props:**
-  - `onAsk`: Callback after ask action.
+  - `ask`: Callback after ask action.
   - `disabled`: Disable button.
   - `isLoading`: Show loading state.
   - `buttonText`: Button label.

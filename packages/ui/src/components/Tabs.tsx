@@ -360,15 +360,15 @@ const TabsDynamicPanel: React.FC<TabsPanelProps> = ({
   className = "",
 }) => {
   const { activeTab, prompt, setPrompt } = useTabsContext();
-  const { onAsk, dispatch } = useChat();
+  const { ask, dispatch } = useChat();
   const isActive = activeTab === tabId;
   const processedPromptRef = React.useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (isActive && prompt && processedPromptRef.current !== prompt) {
       dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt: prompt } });
-      if (onAsk) {
-        onAsk({ query: prompt, ...askOptions });
+      if (ask) {
+        ask({ query: prompt, ...askOptions });
       }
       setPrompt?.(undefined);
       dispatch({ type: "CLEAR_USER_PROMPT" });
