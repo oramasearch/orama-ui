@@ -17,6 +17,14 @@ export type SearchContextProps = {
   count?: number;
 };
 
+export type SearchAction =
+  | { type: "SET_CLIENT"; payload: { client: CollectionManager | null } }
+  | { type: "SET_SEARCH_TERM"; payload: { searchTerm: string } }
+  | { type: "SET_RESULTS"; payload: { results: Hit[] | null } }
+  | { type: "SET_GROUPS_COUNT"; payload: { groupsCount: GroupsCount | null } }
+  | { type: "SET_SELECTED_FACET"; payload: { selectedFacet: string | null } }
+  | { type: "SET_COUNT"; payload: { count: number } };
+
 export const initialSearchState: SearchContextProps = {
   client: null,
   searchTerm: "",
@@ -28,10 +36,8 @@ export const initialSearchState: SearchContextProps = {
 
 export const SearchContext =
   createContext<SearchContextProps>(initialSearchState);
-export const SearchDispatchContext = createContext<React.Dispatch<{
-  type: string;
-  payload?: Partial<SearchContextProps>;
-}> | null>(null);
+export const SearchDispatchContext =
+  createContext<React.Dispatch<SearchAction> | null>(null);
 
 export const useSearchContext = () => {
   const context = useContext(SearchContext);
@@ -63,7 +69,7 @@ export const useSearchDispatch = () => {
  */
 export const searchReducer = (
   state: SearchContextProps,
-  action: { type: string; payload?: Partial<SearchContextProps> },
+  action: SearchAction,
 ) => {
   switch (action.type) {
     case "SET_CLIENT":

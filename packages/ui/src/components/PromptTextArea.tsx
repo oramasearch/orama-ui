@@ -35,7 +35,7 @@ interface PromptTextAreaFieldProps
 
 interface PromptTextAreaButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onAsk?: (prompt: string) => void;
+  ask?: (prompt: string) => void;
   disabled?: boolean;
   isLoading?: boolean;
   buttonText?: string;
@@ -56,7 +56,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   askOptions = {},
   ...props
 }) => {
-  const { onAsk } = useChat();
+  const { ask } = useChat();
   const { userPrompt } = useChatContext();
   const dispatch = useChatDispatch();
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -67,8 +67,8 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
       const userPrompt = e.currentTarget.value.trim();
       if (userPrompt) {
         dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
-        if (onAsk) {
-          onAsk({ query: userPrompt, ...askOptions });
+        if (ask) {
+          ask({ query: userPrompt, ...askOptions });
         }
         e.currentTarget.value = "";
         dispatch({ type: "CLEAR_USER_PROMPT" });
@@ -108,7 +108,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
 };
 
 export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
-  onAsk: onButtonAsk,
+  ask: onButtask,
   disabled = false,
   abortContent,
   onClick,
@@ -117,7 +117,7 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   ...props
 }) => {
   const { userPrompt } = useChatContext();
-  const { onAsk, abort } = useChat();
+  const { ask, abort } = useChat();
   const { interactions } = useChatContext();
 
   const isStreaming = useMemo(
@@ -139,14 +139,14 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!userPrompt) return;
       try {
-        await onAsk({ query: userPrompt, ...askOptions });
-        onButtonAsk?.(userPrompt);
+        await ask({ query: userPrompt, ...askOptions });
+        onButtask?.(userPrompt);
         onClick?.(e);
       } catch (error) {
         console.error("Error in ask method:", error);
       }
     },
-    [userPrompt, onAsk, onButtonAsk, onClick, askOptions],
+    [userPrompt, ask, onButtask, onClick, askOptions],
   );
 
   const handleAbort = useCallback(

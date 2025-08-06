@@ -14,7 +14,7 @@ import Highlight, {
   PrismTheme,
 } from "prism-react-renderer";
 import theme from "prism-react-renderer/themes/vsDark";
-import { useChat, useLastInteractionMinHeight } from "../hooks";
+import { useChat, useClipboard, useLastInteractionMinHeight } from "../hooks";
 import { useChatContext, useChatDispatch } from "../contexts";
 
 export interface ChatInteractionsWrapperProps
@@ -458,7 +458,7 @@ const CopyMessage: React.FC<CopyMessageProps> = ({
   interaction,
   ...rest
 }) => {
-  const { copyToClipboard, copiedMessage } = useChat();
+  const { copyToClipboard, copied: copiedMessage } = useClipboard();
   const [copied, setCopied] = useState(false);
   const isStreaming = interaction.loading && interaction.response;
 

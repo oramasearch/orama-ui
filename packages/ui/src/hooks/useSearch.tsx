@@ -74,7 +74,9 @@ export function useSearch(): useSearchReturn {
 
       dispatch({
         type: "SET_SEARCH_TERM",
-        payload: { searchTerm: options.term || initialSearchState.searchTerm },
+        payload: {
+          searchTerm: options.term || initialSearchState.searchTerm || "",
+        },
       });
       setLoading(true);
       setError(null);
@@ -151,7 +153,7 @@ export function useSearch(): useSearchReturn {
               ]
             : null;
           dispatch({
-            type: "SET_GROUPES_COUNT",
+            type: "SET_GROUPS_COUNT",
             payload: { groupsCount: grouped },
           });
         }

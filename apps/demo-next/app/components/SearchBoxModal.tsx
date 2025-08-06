@@ -270,7 +270,7 @@ export const InnerSearchBox = () => {
                 {/* on click focus on the text area */}
                 <div className="flex justify-end items-center gap-2">
                   <PromptTextArea.Button
-                    onAsk={(prompt) => {
+                    ask={(prompt) => {
                       console.log("Asking with prompt:", prompt);
                     }}
                     className="inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-200 hover:from-pink-100 hover:to-purple-300 text-slate-800 dark:text-slate-200 rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-pink-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"

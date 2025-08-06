@@ -3,42 +3,57 @@ import { useChatContext, useChatDispatch } from "../contexts";
 import { AnswerConfig, AnswerSession } from "@orama/core";
 
 /**
- * Custom React hook for managing chat interactions, including sending prompts,
- * handling streaming answers, aborting and regenerating responses, copying messages
- * to clipboard, and resetting the chat session.
+ * Custom React hook for managing chat interactions.
  *
- * @returns {object} An object containing:
- * - `onAsk`: Function to send a user prompt and handle the answer stream.
- * - `abort`: Function to abort the current answer stream.
- * - `regenerateLatest`: Function to regenerate the latest answer.
- * - `copyToClipboard`: Function to copy a message to the clipboard.
- * - `copiedMessage`: The last message successfully copied to the clipboard.
- * - `reset`: Function to reset the chat session and clear interactions.
- * - `context`: The chat context containing client and session information.
- * - `dispatch`: Function to dispatch actions to the chat state.
- * - `loading`: Boolean indicating if a request is in progress.
- * - `error`: Error object if an error occurred, otherwise `null`.
+ * Features:
+ * - Send prompts and handle streaming answers.
+ * - Abort the current answer stream.
+ * - Regenerate the latest answer.
+ * - Reset the chat session and clear interactions.
+ * - Provides loading and error state.
+ * - Supports lifecycle callbacks for ask events.
+ *
+ * @param {UseChatCallbacks} [callbacks] - Optional callbacks for ask lifecycle:
+ *   - `onAskStart(options)`: Called when ask starts, receives the prompt options.
+ *   - `onAskComplete()`: Called when ask completes successfully.
+ *   - `onAskError(error)`: Called when ask fails, receives the error.
+ *
+ * @returns {useChatProps} An object containing:
+ *   - `ask`: Function to send a user prompt and handle the answer stream.
+ *   - `abort`: Function to abort the current answer stream.
+ *   - `regenerateLatest`: Function to regenerate the latest answer.
+ *   - `reset`: Function to reset the chat session and clear interactions.
+ *   - `context`: The chat context containing client and session information.
+ *   - `dispatch`: Function to dispatch actions to the chat state.
+ *   - `loading`: Boolean indicating if a request is in progress.
+ *   - `error`: Error object if an error occurred, otherwise `null`.
  *
  * @throws Will throw errors if required dependencies (like answer session or client) are not initialized.
  *
  * @example
  * const {
- *   onAsk,
+ *   ask,
  *   abort,
  *   regenerateLatest,
- *   copyToClipboard,
- *   copiedMessage,
  *   reset,
  *   loading,
  *   error,
- * } = useChat();
+ * } = useChat({
+ *   onAskStart: (options) => { // custom logic },
+ *   onAskComplete: () => { // custom logic },
+ *   onAskError: (error) => { // custom error handling }
+ * });
  */
+export interface UseChatCallbacks {
+  onAskStart?: (options: AnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
+}
+
 export interface useChatProps {
-  onAsk: (options: AnswerConfig) => Promise<void>;
+  ask: (options: AnswerConfig) => Promise<void>;
   abort: () => void;
   regenerateLatest: () => void;
-  copyToClipboard: (message: string) => void;
-  copiedMessage: string;
   reset: () => void;
   context: ReturnType<typeof useChatContext>;
   dispatch: ReturnType<typeof useChatDispatch>;
@@ -46,13 +61,12 @@ export interface useChatProps {
   error: Error | null;
 }
 
-export function useChat(): useChatProps {
+export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
   const context = useChatContext();
   const dispatch = useChatDispatch();
   const { client, interactions, answerSession } = context;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [copied, setCopied] = useState("");
 
   const streamAnswer = useCallback(
     async (session: AnswerSession | null, options: AnswerConfig) => {
@@ -79,21 +93,26 @@ export function useChat(): useChatProps {
     [dispatch],
   );
 
-  const onAsk = useCallback(
+  const ask = useCallback(
     async (options: AnswerConfig) => {
       setLoading(true);
       setError(null);
+      callbacks.onAskStart?.(options);
 
       const { query: userPrompt } = options || {};
 
       if (!userPrompt) {
-        setError(new Error("User prompt cannot be empty"));
+        const err = new Error("User prompt cannot be empty");
+        setError(err);
         setLoading(false);
+        callbacks.onAskError?.(err);
         return;
       }
       if (!client) {
-        setError(new Error("Client is not initialized"));
+        const err = new Error("Client is not initialized");
+        setError(err);
         setLoading(false);
+        callbacks.onAskError?.(err);
         return;
       }
 
@@ -123,12 +142,14 @@ export function useChat(): useChatProps {
           });
         }
         await streamAnswer(session, options);
+        callbacks.onAskComplete?.();
       } catch (err) {
         setError(err as Error);
         setLoading(false);
+        callbacks.onAskError?.(err as Error);
       }
     },
-    [client, answerSession, interactions, dispatch, streamAnswer],
+    [client, answerSession, interactions, dispatch, streamAnswer, callbacks],
   );
 
   const abort = useCallback(() => {
@@ -136,7 +157,6 @@ export function useChat(): useChatProps {
     try {
       console.log("Aborting answer session");
       answerSession.abort();
-      // Optionally: setLoading(false);
     } catch (error) {
       console.error("Error aborting answer:", error);
     }
@@ -160,28 +180,10 @@ export function useChat(): useChatProps {
     dispatch({ type: "CLEAR_INITIAL_USER_PROMPT" });
   }, [answerSession, interactions, abort, dispatch]);
 
-  const copyToClipboard = useCallback((message: string) => {
-    setError(null);
-    setCopied("");
-    if (!navigator.clipboard) {
-      console.error("Clipboard API not supported");
-      return;
-    }
-    navigator.clipboard
-      .writeText(message)
-      .then(() => setCopied(message))
-      .catch((err) => {
-        console.error("Failed to copy message to clipboard", err);
-        setError(new Error("Failed to copy message to clipboard"));
-      });
-  }, []);
-
   return {
-    onAsk,
+    ask,
     abort,
     regenerateLatest,
-    copyToClipboard,
-    copiedMessage: copied,
     reset,
     loading,
     context,

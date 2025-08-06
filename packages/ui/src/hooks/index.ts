@@ -3,3 +3,4 @@ export { useChat } from "./useChat";
 export { useSearch } from "./useSearch";
 export { useLastInteractionMinHeight } from "./useLastInteractionMinHeight";
 export { useScrollableContainer } from "./useScrollableContainer";
+export { useClipboard } from "./useClipboard";

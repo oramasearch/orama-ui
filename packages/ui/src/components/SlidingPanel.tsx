@@ -26,11 +26,11 @@ interface TriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 function Trigger({ initialPrompt, onClick, children, ...rest }: TriggerProps) {
-  const { onAsk } = useChat();
+  const { ask } = useChat();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (initialPrompt) {
-      onAsk({ query: initialPrompt });
+      ask({ query: initialPrompt });
     }
 
     onClick?.(e);
