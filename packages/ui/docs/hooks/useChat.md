@@ -26,7 +26,7 @@ function MyChatComponent() {
 | Name               | Type                                       | Description                                            |
 | ------------------ | ------------------------------------------ | ------------------------------------------------------ |
 | `onAsk`            | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
-| `abort`      | `() => void`                               | Aborts the current answer stream.                      |
+| `abort`            | `() => void`                               | Aborts the current answer stream.                      |
 | `regenerateLatest` | `() => void`                               | Regenerates the latest answer.                         |
 | `copyToClipboard`  | `(message: string) => void`                | Copies a message to the clipboard.                     |
 | `copiedMessage`    | `string`                                   | The last message successfully copied to the clipboard. |
