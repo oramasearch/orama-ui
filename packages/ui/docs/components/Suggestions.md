@@ -46,14 +46,14 @@ import { Suggestions } from "@orama/ui";
 | onClick    | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                          |
 | children   | `ReactNode`                                            |         | Content to display inside the suggestion button                           |
 | className  | `string`                                               | `""`    | Optional CSS class for the `<button>` element                             |
-| askOptions | `Omit<AnswerConfig, "query">`                          | `{}`    | Additional options passed to the `onAsk` function from the `useChat` hook |
+| askOptions | `Omit<AnswerConfig, "query">`                          | `{}`    | Additional options passed to the `ask` function from the `useChat` hook |
 
 **Behavior:**
 
 - Renders a `<button>` for each suggestion.
 - When the button is clicked:
   - Calls the optional `onClick` handler.
-  - Calls `onAsk` from the `useChat` hook with the button's text content as the `query` and any additional `askOptions`.
+  - Calls `ask` from the `useChat` hook with the button's text content as the `query` and any additional `askOptions`.
 
 ---
 

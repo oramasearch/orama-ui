@@ -10,10 +10,10 @@ The `useChat` hook provides a set of utilities for managing chat interactions in
 import { useChat } from "@orama/ui/hooks";
 
 function MyChatComponent() {
-  const { onAsk, loading, error, context, dispatch } = useChat();
+  const { ask, loading, error, context, dispatch } = useChat();
 
   // Example usage
-  // onAsk({ query: "Hello, Orama!" });
+  // ask({ query: "Hello, Orama!" });
 }
 ```
 
@@ -25,11 +25,9 @@ function MyChatComponent() {
 
 | Name               | Type                                       | Description                                            |
 | ------------------ | ------------------------------------------ | ------------------------------------------------------ |
-| `onAsk`            | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
+| `ask`            | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.     |
 | `abort`            | `() => void`                               | Aborts the current answer stream.                      |
 | `regenerateLatest` | `() => void`                               | Regenerates the latest answer.                         |
-| `copyToClipboard`  | `(message: string) => void`                | Copies a message to the clipboard.                     |
-| `copiedMessage`    | `string`                                   | The last message successfully copied to the clipboard. |
 | `reset`            | `() => void`                               | Resets the chat session and clears interactions.       |
 | `context`          | `ReturnType<typeof useChatContext>`        | The chat context containing client and session info.   |
 | `dispatch`         | `ReturnType<typeof useChatDispatch>`       | Function to dispatch actions to the chat state.        |
