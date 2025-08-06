@@ -1,6 +1,6 @@
 # `useChat` hook
 
-The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, copying messages to the clipboard, resetting the chat session, and gives access to the chat context and dispatch function.
+The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, resetting the chat session, and gives access to the chat context and dispatch function.
 
 ---
 
@@ -10,7 +10,17 @@ The `useChat` hook provides a set of utilities for managing chat interactions in
 import { useChat } from "@orama/ui/hooks";
 
 function MyChatComponent() {
-  const { ask, loading, error, context, dispatch } = useChat();
+  const { ask, loading, error, context, dispatch } = useChat({
+    onAskStart: (options) => {
+      // Called when ask starts
+    },
+    onAskComplete: () => {
+      // Called when ask completes successfully
+    },
+    onAskError: (error) => {
+      // Called when ask fails
+    }
+  });
 
   // Example usage
   // ask({ query: "Hello, Orama!" });
@@ -20,6 +30,16 @@ function MyChatComponent() {
 ---
 
 ## API
+
+### Callbacks
+
+You can pass an optional callbacks object to `useChat` to hook into the ask lifecycle:
+
+| Name             | Type                                   | Description                                              |
+| ---------------- | -------------------------------------- | -------------------------------------------------------- |
+| `onAskStart`     | `(options: AnswerConfig) => void`      | Called when `ask` starts, receives the prompt options.   |
+| `onAskComplete`  | `() => void`                           | Called when `ask` completes successfully.                |
+| `onAskError`     | `(error: Error) => void`               | Called when `ask` fails, receives the error object.      |
 
 ### Returns
 
