@@ -14,7 +14,12 @@
     "@orama/ui": "workspace:*",
     "next": "^15.3.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "lucide-react": "^0.536.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx":"2.1.1",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.3.0",
