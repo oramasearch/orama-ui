@@ -14,6 +14,7 @@ export type ChatContextProps = {
   answerSession: AnswerSession | null
   scrollToLastInteraction?: boolean
   isStreaming?: boolean
+  askOptions?: Omit<AnswerConfig, 'query'>
   onAskStart?: (options: AnswerConfig) => void
   onAskComplete?: () => void
   onAskError?: (error: Error) => void
@@ -51,6 +52,7 @@ export const initialChatState: ChatContextProps = {
   answerSession: null,
   scrollToLastInteraction: false,
   isStreaming: false,
+  askOptions: {},
   onAskStart: undefined,
   onAskComplete: undefined,
   onAskError: undefined

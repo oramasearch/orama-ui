@@ -7,20 +7,65 @@ import {
 } from '../contexts/ChatContext'
 import { AnswerConfig, CollectionManager } from '@orama/core'
 
-/* ChatRoot component provides a contexts for managing chat state and actions.
- * It uses a reducer to manage the state and provides the contexts to its children.
- * The `client` prop allows passing a custom CollectionManager instance.
+/**
+ * ChatRoot component provides context for managing chat state and actions.
  *
- * Usage:
- * <ChatRoot client={myCollectionManager}>
+ * This component serves as the foundation for chat functionality, managing state through
+ * a reducer pattern and providing both state and dispatch contexts to child components.
+ * It supports lifecycle callbacks, default ask options, and can be nested for complex
+ * chat scenarios.
+ *
+ * @example
+ * // Basic usage
+ * <ChatRoot client={collectionManager}>
+ *   <ChatComponent />
+ * </ChatRoot>
+ *
+ * @example
+ * // With callbacks and options
+ * <ChatRoot
+ *   client={collectionManager}
+ *   onAskStart={(options) => console.log('Starting:', options)}
+ *   onAskComplete={() => console.log('Completed')}
+ *   onAskError={(error) => console.error('Error:', error)}
+ *   askOptions={{
+ *     related: {
+ *       enabled: true,
+ *       size: 3,
+ *       format: 'question'
+ *    },
+ *  }}
+ * >
  *   <ChatComponent />
  * </ChatRoot>
  */
 export interface ChatRootProps extends React.PropsWithChildren {
-  client: CollectionManager
+  /**
+   * The CollectionManager instance to manage chat interactions.
+   * This is required to perform operations like asking questions and managing answers.
+   * If not provided, will fall back to client from parent ChatRoot context.
+   */
+  client?: CollectionManager
+  /**
+   * Optional callbacks for ask lifecycle events.
+   * These callbacks will be used as fallbacks when useChat hook doesn't provide its own.
+   * Hook-level callbacks take precedence over ChatRoot-level callbacks.
+   */
   onAskStart?: (options: AnswerConfig) => void
+  /**
+   * Called when an ask operation completes successfully.
+   */
   onAskComplete?: () => void
+  /**
+   * Called when an ask operation fails.
+   * Receives the error object for custom error handling.
+   */
   onAskError?: (error: Error) => void
+  /**
+   * Default options to be merged with ask requests.
+   * These will be used as defaults for all ask operations within this ChatRoot.
+   */
+  askOptions?: Omit<AnswerConfig, 'query'>
 }
 
 export const ChatRoot = ({
@@ -28,15 +73,24 @@ export const ChatRoot = ({
   onAskStart,
   onAskComplete,
   onAskError,
+  askOptions = {},
   children
 }: ChatRootProps) => {
   const chatState = useChatContext()
+
+  if (typeof window !== 'undefined' && !client && !chatState.client) {
+    console.warn(
+      'ChatRoot: No client provided. Either pass a client prop or ensure a parent ChatRoot has a client.'
+    )
+  }
+
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
     client: client || chatState.client,
     onAskStart,
     onAskComplete,
-    onAskError
+    onAskError,
+    askOptions
   })
 
   return (

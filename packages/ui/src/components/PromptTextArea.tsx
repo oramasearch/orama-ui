@@ -28,7 +28,6 @@ interface PromptTextAreaFieldProps
   rows?: number
   className?: string
   buttonText?: string
-  askOptions?: Omit<AnswerConfig, 'query'>
   'aria-label'?: string
   'aria-describedby'?: string
 }
@@ -40,7 +39,6 @@ interface PromptTextAreaButtonProps
   isLoading?: boolean
   buttonText?: string
   abortContent?: React.ReactNode
-  askOptions?: Omit<AnswerConfig, 'query'>
   'aria-label'?: string
 }
 
@@ -53,12 +51,11 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   'aria-describedby': ariaDescribedBy,
   onChange,
   onKeyDown,
-  askOptions = {},
   ref,
   ...props
 }) => {
   const { ask, context, dispatch } = useChat()
-  const { userPrompt } = context
+  const { userPrompt, askOptions } = context
   const internalRef = React.useRef<HTMLTextAreaElement>(null)
   const textAreaRef = ref ?? internalRef
 
@@ -98,7 +95,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
     ) {
       textAreaRef.current.value = ''
     }
-  }, [userPrompt])
+  }, [userPrompt, textAreaRef])
 
   return (
     <textarea
@@ -123,11 +120,10 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   abortContent,
   onClick,
   children,
-  askOptions,
   ...props
 }) => {
   const { ask, abort, context } = useChat()
-  const { userPrompt, interactions } = context
+  const { userPrompt, interactions, askOptions } = context
 
   const isStreaming = useMemo(
     () =>

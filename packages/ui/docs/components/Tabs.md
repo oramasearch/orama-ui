@@ -69,7 +69,6 @@ Panel for tab content, shown only when active.
 - `tabId: string` – ID of the tab this panel belongs to.
 - `children: ReactNode` – Panel content.
 - `className?: string` – Custom class.
-- `askOptions?: Omit<AnswerConfig, 'query'>` – Options for chat integration (optional).
 
 ---
 
@@ -172,7 +171,6 @@ Panel for a dynamic/chat tab, with prompt handling.
 
 - `tabId: string` – Tab ID.
 - `children: ReactNode` – Panel content.
-- `askOptions?: Omit<AnswerConfig, 'query'>` – Options for chat integration.
 - `className?: string` – Custom class.
 
 ---

@@ -43,7 +43,6 @@ import { PromptTextArea } from "@orama/ui";
   - `maxLength`: Max character length.
   - `rows`: Number of rows (default: 4).
   - `className`: Optional CSS class.
-  - `askOptions`: Additional options for the ask action.
   - `aria-label`, `aria-describedby`: Accessibility attributes.
   - `ref`: Ref to the textarea element.
   - ...other standard textarea props.
@@ -64,7 +63,6 @@ import { PromptTextArea } from "@orama/ui";
   - `isLoading`: Show loading state.
   - `buttonText`: Button label.
   - `abortContent`: Content to show when aborting.
-  - `askOptions`: Additional options for the ask action.
   - `aria-label`: Accessibility label.
   - ...other standard button props.
 - **Behavior:**
