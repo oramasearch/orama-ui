@@ -143,7 +143,7 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
       try {
         let session = answerSession
         if (!session) {
-          session = client.createAISession({
+          session = client.ai.createAISession({
             events: {
               onStateChange: (state) => {
                 const normalizedState = state.filter((item) => !!item.query)
