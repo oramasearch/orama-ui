@@ -25,7 +25,7 @@ This context is typically used to wrap parts of your UI that require access to s
 
 ```ts
 type SearchContextProps = {
-  client: CollectionManager | null;
+  client: OramaCloud | null;
   onSearch?: (
     params: SearchParams & {
       groupBy?: string;
@@ -55,16 +55,16 @@ import {
   searchReducer,
   initialSearchState,
 } from "@orama/ui/contexts";
-import { CollectionManager } from "@orama/core";
+import { OramaCloud } from "@orama/core";
 
-const collectionManager = new CollectionManager({
+const orama = new OramaCloud({
   /* ...config... */
 });
 
 function SearchProvider({ children }) {
   const [state, dispatch] = React.useReducer(searchReducer, {
     ...initialSearchState,
-    client: collectionManager,
+    client: orama,
   });
 
   return (

@@ -5,14 +5,14 @@ import {
   searchReducer,
   useSearchContext,
 } from "../contexts";
-import { CollectionManager } from "@orama/core";
+import { OramaCloud } from "@orama/core";
 
 export interface SearchRootProps extends React.PropsWithChildren {
   /**
    * The Orama client instance to be used for search operations.
    * If not provided, it will use the client from the SearchContext.
    */
-  client?: CollectionManager;
+  client?: OramaCloud;
 }
 
 export const SearchRoot = ({ client, children }: SearchRootProps) => {

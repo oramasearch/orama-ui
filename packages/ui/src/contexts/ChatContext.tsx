@@ -1,13 +1,13 @@
 import type {
   AnswerConfig,
   AnswerSession,
-  CollectionManager,
+  OramaCloud,
   Interaction,
 } from "@orama/core";
 import { createContext, useContext } from "react";
 
 export type ChatContextProps = {
-  client: CollectionManager | null;
+  client: OramaCloud | null;
   initialUserPrompt?: string;
   userPrompt?: string;
   interactions?: (Interaction | undefined)[];
@@ -21,7 +21,7 @@ export type ChatContextProps = {
 };
 
 export type ChatAction =
-  | { type: "SET_CLIENT"; payload: { client: CollectionManager | null } }
+  | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
   | { type: "SET_INITIAL_USER_PROMPT"; payload: { initialUserPrompt: string } }
   | {
       type: "SET_ANSWER_SESSION";

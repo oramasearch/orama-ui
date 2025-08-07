@@ -25,7 +25,7 @@ The `ChatContext` provides a React context and reducer for managing chat-related
 
 ```ts
 type ChatContextProps = {
-  client: CollectionManager | null;
+  client: OramaCloud | null;
   initialUserPrompt?: string;
   userPrompt?: string;
   interactions?: (Interaction | undefined)[];

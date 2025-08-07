@@ -9,7 +9,7 @@ const examples = [
 
 export function MySearch() {
 return (
-  <SearchRoot client={oramaClient}>
+  <SearchRoot client={orama}>
     <SearchInput.Wrapper>
       <SearchInput.Input 
         placeholder="Search..."
@@ -38,8 +38,8 @@ return (
 
 export function SearchWithChat() {
 return (
-  <SearchRoot client={oramaClient}>
-    <ChatRoot client={oramaClient}>
+  <SearchRoot client={orama}>
+    <ChatRoot client={orama}>
       <div className="space-y-4">
         <SearchInput.Wrapper>
           <SearchInput.Input />
