@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   ChatContext,
   ChatDispatchContext,
   chatReducer,
-  useChatContext
-} from '../contexts/ChatContext'
-import { AnswerConfig, CollectionManager } from '@orama/core'
+  useChatContext,
+} from "../contexts/ChatContext";
+import { AnswerConfig, CollectionManager } from "@orama/core";
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -45,27 +45,27 @@ export interface ChatRootProps extends React.PropsWithChildren {
    * This is required to perform operations like asking questions and managing answers.
    * If not provided, will fall back to client from parent ChatRoot context.
    */
-  client?: CollectionManager
+  client?: CollectionManager;
   /**
    * Optional callbacks for ask lifecycle events.
    * These callbacks will be used as fallbacks when useChat hook doesn't provide its own.
    * Hook-level callbacks take precedence over ChatRoot-level callbacks.
    */
-  onAskStart?: (options: AnswerConfig) => void
+  onAskStart?: (options: AnswerConfig) => void;
   /**
    * Called when an ask operation completes successfully.
    */
-  onAskComplete?: () => void
+  onAskComplete?: () => void;
   /**
    * Called when an ask operation fails.
    * Receives the error object for custom error handling.
    */
-  onAskError?: (error: Error) => void
+  onAskError?: (error: Error) => void;
   /**
    * Default options to be merged with ask requests.
    * These will be used as defaults for all ask operations within this ChatRoot.
    */
-  askOptions?: Omit<AnswerConfig, 'query'>
+  askOptions?: Omit<AnswerConfig, "query">;
 }
 
 export const ChatRoot = ({
@@ -74,14 +74,14 @@ export const ChatRoot = ({
   onAskComplete,
   onAskError,
   askOptions = {},
-  children
+  children,
 }: ChatRootProps) => {
-  const chatState = useChatContext()
+  const chatState = useChatContext();
 
-  if (typeof window !== 'undefined' && !client && !chatState.client) {
+  if (typeof window !== "undefined" && !client && !chatState.client) {
     console.warn(
-      'ChatRoot: No client provided. Either pass a client prop or ensure a parent ChatRoot has a client.'
-    )
+      "ChatRoot: No client provided. Either pass a client prop or ensure a parent ChatRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
@@ -90,12 +90,12 @@ export const ChatRoot = ({
     onAskStart,
     onAskComplete,
     onAskError,
-    askOptions
-  })
+    askOptions,
+  });
 
   return (
     <ChatContext value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext>
-  )
-}
+  );
+};

@@ -80,28 +80,30 @@ The `PromptTextArea` components support custom callbacks that allow you to exten
 ### Field Callbacks
 
 #### `onChange`
+
 Called whenever the textarea value changes, before the internal state update.
 
 ```tsx
 <PromptTextArea.Field
   onChange={(e) => {
-    console.log('Value changed:', e.target.value);
+    console.log("Value changed:", e.target.value);
     // To prevent internal state update, call e.preventDefault()
   }}
 />
 ```
 
 #### `onKeyDown`
+
 Called on key press events, before the internal key handling (Enter to submit).
 
 ```tsx
 <PromptTextArea.Field
   onKeyDown={(e) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       e.target.blur();
     }
     // To prevent Enter submission, call e.preventDefault()
-    if (e.key === 'Enter' && e.ctrlKey) {
+    if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
       // Custom submit logic
     }
@@ -112,12 +114,13 @@ Called on key press events, before the internal key handling (Enter to submit).
 ### Button Callbacks
 
 #### `onClick`
+
 Called after the internal click handler (ask/abort action).
 
 ```tsx
 <PromptTextArea.Button
   onClick={(e) => {
-    console.log('Button clicked');
+    console.log("Button clicked");
     // Additional logic after ask/abort
   }}
 >
@@ -126,12 +129,13 @@ Called after the internal click handler (ask/abort action).
 ```
 
 #### `ask`
+
 Called after a successful ask action with the submitted prompt.
 
 ```tsx
 <PromptTextArea.Button
   ask={(prompt) => {
-    console.log('Prompt submitted:', prompt);
+    console.log("Prompt submitted:", prompt);
     // Track analytics, etc.
   }}
 >
@@ -154,7 +158,7 @@ You can prevent the default internal behavior by calling `preventDefault()` in y
   }}
   onKeyDown={(e) => {
     // Custom submission logic
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevents default Enter submission
       // Your custom submission logic here
     }
@@ -201,20 +205,23 @@ You can prevent the default internal behavior by calling `preventDefault()` in y
     }}
     onKeyDown={(e) => {
       // Allow Ctrl+Enter for new lines
-      if (e.key === 'Enter' && e.ctrlKey) {
+      if (e.key === "Enter" && e.ctrlKey) {
         e.preventDefault();
         const textarea = e.target;
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
-        textarea.value = textarea.value.substring(0, start) + '\n' + textarea.value.substring(end);
+        textarea.value =
+          textarea.value.substring(0, start) +
+          "\n" +
+          textarea.value.substring(end);
         textarea.selectionStart = textarea.selectionEnd = start + 1;
       }
       // Custom validation on Enter
-      if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
+      if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
         const value = e.target.value.trim();
         if (value.length < 10) {
           e.preventDefault();
-          setError('Message must be at least 10 characters');
+          setError("Message must be at least 10 characters");
         }
       }
     }}
@@ -223,7 +230,7 @@ You can prevent the default internal behavior by calling `preventDefault()` in y
   <PromptTextArea.Button
     ask={(prompt) => {
       // Analytics tracking
-      analytics.track('prompt_submitted', { length: prompt.length });
+      analytics.track("prompt_submitted", { length: prompt.length });
     }}
     onClick={() => {
       // Clear any validation errors

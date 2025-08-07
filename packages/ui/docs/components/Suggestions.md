@@ -41,11 +41,11 @@ import { Suggestions } from "@orama/ui";
 
 **Props:**
 
-| Name       | Type                                                   | Default | Description                                                             |
-| ---------- | ------------------------------------------------------ | ------- | ----------------------------------------------------------------------- |
-| onClick    | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button                        |
-| children   | `ReactNode`                                            |         | Content to display inside the suggestion button                         |
-| className  | `string`                                               | `""`    | Optional CSS class for the `<button>` element                           |
+| Name      | Type                                                   | Default | Description                                      |
+| --------- | ------------------------------------------------------ | ------- | ------------------------------------------------ |
+| onClick   | `(event: React.MouseEvent<HTMLButtonElement>) => void` |         | Optional click handler for the suggestion button |
+| children  | `ReactNode`                                            |         | Content to display inside the suggestion button  |
+| className | `string`                                               | `""`    | Optional CSS class for the `<button>` element    |
 
 **Behavior:**
 

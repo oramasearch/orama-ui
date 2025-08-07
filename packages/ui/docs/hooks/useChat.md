@@ -37,15 +37,15 @@ import { useChat } from "@orama/ui/hooks";
 function MyChatComponent() {
   const { ask, loading, error, context, dispatch } = useChat({
     onAskStart: (options) => {
-      console.log('Starting chat with query:', options.query);
+      console.log("Starting chat with query:", options.query);
       // Component-specific start logic
     },
     onAskComplete: () => {
-      console.log('Chat completed successfully');
+      console.log("Chat completed successfully");
       // Component-specific completion logic
     },
     onAskError: (error) => {
-      console.error('Chat failed:', error);
+      console.error("Chat failed:", error);
       // Component-specific error handling
     },
   });
@@ -118,19 +118,19 @@ function App() {
   });
 
   return (
-    <ChatRoot 
+    <ChatRoot
       client={collectionManager}
       onAskStart={(options) => {
         // Global analytics tracking
-        analytics.track('chat_question_started', { query: options.query });
+        analytics.track("chat_question_started", { query: options.query });
       }}
       onAskComplete={() => {
         // Global success tracking
-        analytics.track('chat_question_completed');
+        analytics.track("chat_question_completed");
       }}
       onAskError={(error) => {
         // Global error handling and logging
-        console.error('Chat error:', error);
+        console.error("Chat error:", error);
         errorService.log(error);
       }}
     >
@@ -142,12 +142,8 @@ function App() {
 function MyChatInterface() {
   // Uses ChatRoot-level callbacks automatically
   const { ask, loading, error } = useChat();
-  
-  return (
-    <div>
-      {/* Chat UI components */}
-    </div>
-  );
+
+  return <div>{/* Chat UI components */}</div>;
 }
 ```
 
@@ -176,11 +172,7 @@ function SpecialChatComponent() {
     },
   });
 
-  return (
-    <div>
-      {/* Special chat UI with custom behavior */}
-    </div>
-  );
+  return <div>{/* Special chat UI with custom behavior */}</div>;
 }
 ```
 
@@ -190,15 +182,17 @@ You can also use both approaches together. Hook-level callbacks will override Ch
 
 ```tsx
 // Global setup with ChatRoot callbacks for analytics
-<ChatRoot 
+<ChatRoot
   client={collectionManager}
-  onAskStart={(options) => analytics.track('chat_started', options)}
-  onAskComplete={() => analytics.track('chat_completed')}
-  onAskError={(error) => analytics.track('chat_error', { error: error.message })}
+  onAskStart={(options) => analytics.track("chat_started", options)}
+  onAskComplete={() => analytics.track("chat_completed")}
+  onAskError={(error) =>
+    analytics.track("chat_error", { error: error.message })
+  }
 >
   {/* Regular chat component uses global callbacks */}
   <RegularChatComponent />
-  
+
   {/* Special component overrides with its own callbacks */}
   <SpecialChatComponent />
 </ChatRoot>
