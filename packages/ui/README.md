@@ -21,7 +21,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    ```tsx
    import { SearchRoot } from "@orama/ui/components";
 
-   <SearchRoot client={clientInstance}>
+   <SearchRoot client={orama}>
      {/* Add Orama UI components and your own components here to compose your custom interface */}
    </SearchRoot>;
    ```

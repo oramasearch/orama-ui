@@ -110,16 +110,16 @@ Use callbacks at the `ChatRoot` level when you want consistent behavior across a
 
 ```tsx
 import { ChatRoot } from "@orama/ui/components";
-import { CollectionManager } from "@orama/core";
+import { OramaCloud } from "@orama/core";
 
 function App() {
-  const collectionManager = new CollectionManager({
+  const orama = new OramaCloud({
     /* ...config... */
   });
 
   return (
     <ChatRoot
-      client={collectionManager}
+      client={orama}
       onAskStart={(options) => {
         // Global analytics tracking
         analytics.track("chat_question_started", { query: options.query });
@@ -183,7 +183,7 @@ You can also use both approaches together. Hook-level callbacks will override Ch
 ```tsx
 // Global setup with ChatRoot callbacks for analytics
 <ChatRoot
-  client={collectionManager}
+  client={orama}
   onAskStart={(options) => analytics.track("chat_started", options)}
   onAskComplete={() => analytics.track("chat_completed")}
   onAskError={(error) =>

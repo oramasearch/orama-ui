@@ -8,12 +8,12 @@ This component is typically used to wrap parts of your UI that require access to
 
 | Name          | Type                                         | Description                                                                                     |
 | ------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| client        | `CollectionManager`                          | The Orama client instance to be used for chat operations.                                       |
+| client        | `OramaCloud`                                 | The Orama client instance to be used for chat operations.                                       |
 | children      | `React.ReactNode`                            | The child components that will have access to the chat context.                                 |
 | onAskStart    | `(options: AnswerConfig) => void` (optional) | Callback function triggered when a chat request starts. Receives the answer configuration.      |
 | onAskComplete | `() => void` (optional)                      | Callback function triggered when a chat request completes successfully.                         |
 | onAskError    | `(error: Error) => void` (optional)          | Callback function triggered when a chat request encounters an error. Receives the error object. |
-| askOptions    | `Omit<AnswerConfig, "query">` (optional)     | Options to pass to all ask requests within this ChatRoot context.                |
+| askOptions    | `Omit<AnswerConfig, "query">` (optional)     | Options to pass to all ask requests within this ChatRoot context.                               |
 
 > **Note**: The `AnswerConfig` type is imported from `@orama/core`. For the complete list of available options and their descriptions, please refer to the [OramaCore client documentation](hhttps://github.com/oramasearch/oramacore).
 
@@ -21,9 +21,9 @@ This component is typically used to wrap parts of your UI that require access to
 
 ```tsx
 import { ChatRoot } from "@orama/ui/components";
-import { CollectionManager } from "@orama/core";
+import { OramaCloud } from "@orama/core";
 
-const collectionManager = new CollectionManager({
+const orama = new OramaCloud({
   /* ...config... */
 });
 ```
@@ -31,16 +31,14 @@ const collectionManager = new CollectionManager({
 ### Basic Usage
 
 ```tsx
-<ChatRoot client={collectionManager}>
-  {/* Chat-related components go here */}
-</ChatRoot>
+<ChatRoot client={orama}>{/* Chat-related components go here */}</ChatRoot>
 ```
 
 ### With Event Handlers
 
 ```tsx
 <ChatRoot
-  client={collectionManager}
+  client={orama}
   onAskStart={(options) => {
     console.log("Chat request started with options:", options);
   }}
@@ -61,13 +59,13 @@ The `askOptions` prop allows you to set default configuration for all chat reque
 
 ```tsx
 <ChatRoot
-  client={collectionManager}
+  client={orama}
   askOptions={{
     related: {
       enabled: true,
       size: 3,
-      format: 'question'
-    }
+      format: "question",
+    },
   }}
 >
   {/* All ask requests will include the above options */}
@@ -78,7 +76,7 @@ The `askOptions` prop allows you to set default configuration for all chat reque
 
 ```tsx
 <ChatRoot
-  client={collectionManager}
+  client={orama}
   askOptions={{
     related: {
       enabled: true,
@@ -114,7 +112,7 @@ The `askOptions` prop allows you to set default configuration for all chat reque
       </>
     )}
   </ChatInteractions.Wrapper>
-  
+
   <PromptTextArea.Wrapper>
     <PromptTextArea.Field placeholder="Ask something..." />
     <PromptTextArea.Button>Send</PromptTextArea.Button>

@@ -14,10 +14,10 @@ The `SearchRoot` component provides the context and state management for Orama s
 
 ## Props
 
-| Name       | Type                | Default | Description                                             |
-| ---------- | ------------------- | ------- | ------------------------------------------------------- |
-| `client`   | `CollectionManager` | —       | (Optional) Orama client instance for search operations. |
-| `children` | `React.ReactNode`   | —       | Components that will have access to the search context. |
+| Name       | Type              | Default | Description                                             |
+| ---------- | ----------------- | ------- | ------------------------------------------------------- |
+| `client`   | `OramaCloud`      | —       | (Optional) Orama client instance for search operations. |
+| `children` | `React.ReactNode` | —       | Components that will have access to the search context. |
 
 ---
 
@@ -27,15 +27,15 @@ Wrap your search UI with `SearchRoot` to provide context:
 
 ```tsx
 import { SearchRoot, SearchInput } from "@orama/ui/components";
-import { CollectionManager } from "@orama/core";
+import { OramaCloud } from "@orama/core";
 
-const collectionManager = new CollectionManager({
+const orama = new OramaCloud({
   /* ...config... */
 });
 ```
 
 ```tsx
-<SearchRoot client={myOramaClient}>
+<SearchRoot client={orama}>
   <SearchInput.Wrapper>
     <SearchInput.Label htmlFor="search">Search</SearchInput.Label>
     <SearchInput.Input inputId="search" />

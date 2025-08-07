@@ -5,7 +5,7 @@ import {
   chatReducer,
   useChatContext,
 } from "../contexts/ChatContext";
-import { AnswerConfig, CollectionManager } from "@orama/core";
+import { AnswerConfig, OramaCloud } from "@orama/core";
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -17,14 +17,14 @@ import { AnswerConfig, CollectionManager } from "@orama/core";
  *
  * @example
  * // Basic usage
- * <ChatRoot client={collectionManager}>
+ * <ChatRoot client={orama}>
  *   <ChatComponent />
  * </ChatRoot>
  *
  * @example
  * // With callbacks and options
  * <ChatRoot
- *   client={collectionManager}
+ *   client={orama}
  *   onAskStart={(options) => console.log('Starting:', options)}
  *   onAskComplete={() => console.log('Completed')}
  *   onAskError={(error) => console.error('Error:', error)}
@@ -41,11 +41,11 @@ import { AnswerConfig, CollectionManager } from "@orama/core";
  */
 export interface ChatRootProps extends React.PropsWithChildren {
   /**
-   * The CollectionManager instance to manage chat interactions.
+   * The OramaCloud instance to manage chat interactions.
    * This is required to perform operations like asking questions and managing answers.
    * If not provided, will fall back to client from parent ChatRoot context.
    */
-  client?: CollectionManager;
+  client?: OramaCloud;
   /**
    * Optional callbacks for ask lifecycle events.
    * These callbacks will be used as fallbacks when useChat hook doesn't provide its own.

@@ -1,4 +1,4 @@
-import { type SearchParams } from "@orama/core";
+import { type CloudSearchParams } from "@orama/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   initialSearchState,
@@ -32,7 +32,7 @@ import { GroupsCount } from "@/types";
  */
 export interface useSearchReturn {
   onSearch: (
-    options: SearchParams & {
+    options: CloudSearchParams & {
       groupBy?: string;
       filterBy?: Record<string, string>[];
     },
@@ -61,7 +61,7 @@ export function useSearch(): useSearchReturn {
 
   const onSearch = useCallback(
     async (
-      options: SearchParams & {
+      options: CloudSearchParams & {
         groupBy?: string;
         filterBy?: Record<string, string>[];
       },
@@ -87,6 +87,7 @@ export function useSearch(): useSearchReturn {
           ...options,
           term: options.term,
           limit: options.limit || 10,
+          datasources: options.datasourceIDs || [],
           ...(groupBy ? { facets: { [groupBy]: {} } } : {}),
           ...(options.filterBy && options.filterBy.length > 0
             ? {
