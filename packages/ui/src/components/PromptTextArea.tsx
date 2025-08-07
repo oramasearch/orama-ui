@@ -1,5 +1,4 @@
 import { AnswerConfig } from '@orama/core'
-import { useChatContext, useChatDispatch } from '../contexts'
 import { useChat } from '../hooks'
 import React, { useCallback, useEffect, useMemo } from 'react'
 interface PromptTextAreaWrapperProps
@@ -46,13 +45,13 @@ interface PromptTextAreaButtonProps
 }
 
 export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
-  onChange,
   placeholder = 'Enter your prompt...',
   disabled = false,
   maxLength,
   rows = 4,
   'aria-label': ariaLabel = 'Prompt input',
   'aria-describedby': ariaDescribedBy,
+  onChange,
   onKeyDown,
   askOptions = {},
   ref,
@@ -127,9 +126,8 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   askOptions,
   ...props
 }) => {
-  const { userPrompt } = useChatContext()
-  const { ask, abort } = useChat()
-  const { interactions } = useChatContext()
+  const { ask, abort, context } = useChat()
+  const { userPrompt, interactions } = context
 
   const isStreaming = useMemo(
     () =>
