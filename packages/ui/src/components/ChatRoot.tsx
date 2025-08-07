@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   ChatContext,
   ChatDispatchContext,
   chatReducer,
   useChatContext,
-  type ChatContextProps
-} from '../contexts/ChatContext'
+  type ChatContextProps,
+} from "../contexts/ChatContext";
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -64,30 +64,30 @@ export interface ChatRootProps extends React.PropsWithChildren {
    * This allows you to configure the client, callbacks, options, and pre-populate
    * the chat with initial values like interactions, user prompts, or other state properties.
    */
-  initialState?: Partial<ChatContextProps>
+  initialState?: Partial<ChatContextProps>;
 }
 
 export const ChatRoot = ({ initialState = {}, children }: ChatRootProps) => {
-  const chatState = useChatContext()
+  const chatState = useChatContext();
 
   if (
-    typeof window !== 'undefined' &&
+    typeof window !== "undefined" &&
     !initialState.client &&
     !chatState.client
   ) {
     console.warn(
-      'ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.'
-    )
+      "ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
-    ...initialState
-  })
+    ...initialState,
+  });
 
   return (
     <ChatContext value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext>
-  )
-}
+  );
+};

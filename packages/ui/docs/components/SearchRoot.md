@@ -37,7 +37,7 @@ const orama = new OramaCloud({
 ```tsx
 <SearchRoot
   initialState={{
-    client: oramaDocsCollection
+    client: oramaDocsCollection,
   }}
 >
   <SearchInput.Wrapper>

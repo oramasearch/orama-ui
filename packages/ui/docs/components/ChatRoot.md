@@ -33,10 +33,10 @@ const orama = new OramaCloud({
 ```tsx
 <ChatRoot
   initialState={{
-    client: oramaDocsCollection
+    client: oramaDocsCollection,
   }}
 >
-    {/* Chat-related components go here */}
+  {/* Chat-related components go here */}
 </ChatRoot>
 ```
 

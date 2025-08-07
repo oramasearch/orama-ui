@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   SearchContext,
   SearchDispatchContext,
   searchReducer,
-  useSearchContext
-} from '../contexts'
-import { type SearchContextProps } from '../contexts/SearchContext'
+  useSearchContext,
+} from "../contexts";
+import { type SearchContextProps } from "../contexts/SearchContext";
 
 /**
  * SearchRoot component provides context for managing search state and actions.
@@ -43,33 +43,33 @@ export interface SearchRootProps extends React.PropsWithChildren {
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
-  initialState?: Partial<SearchContextProps>
+  initialState?: Partial<SearchContextProps>;
 }
 
 export const SearchRoot = ({
   initialState = {},
-  children
+  children,
 }: SearchRootProps) => {
-  const searchState = useSearchContext()
+  const searchState = useSearchContext();
 
   if (
-    typeof window !== 'undefined' &&
+    typeof window !== "undefined" &&
     !initialState.client &&
     !searchState.client
   ) {
     console.warn(
-      'SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.'
-    )
+      "SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
-    ...initialState
-  })
+    ...initialState,
+  });
 
   return (
     <SearchContext value={state}>
       <SearchDispatchContext value={dispatch}>{children}</SearchDispatchContext>
     </SearchContext>
-  )
-}
+  );
+};
