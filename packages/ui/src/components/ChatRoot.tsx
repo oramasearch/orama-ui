@@ -1,11 +1,11 @@
-import React, { useReducer } from "react";
+import React, { useReducer } from 'react'
 import {
   ChatContext,
   ChatDispatchContext,
   chatReducer,
   useChatContext,
-} from "../contexts/ChatContext";
-import { AnswerConfig, OramaCloud } from "@orama/core";
+  type ChatContextProps
+} from '../contexts/ChatContext'
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -17,85 +17,77 @@ import { AnswerConfig, OramaCloud } from "@orama/core";
  *
  * @example
  * // Basic usage
- * <ChatRoot client={orama}>
+ * <ChatRoot initialState={{ client: orama }}>
  *   <ChatComponent />
  * </ChatRoot>
  *
  * @example
  * // With callbacks and options
  * <ChatRoot
- *   client={orama}
- *   onAskStart={(options) => console.log('Starting:', options)}
- *   onAskComplete={() => console.log('Completed')}
- *   onAskError={(error) => console.error('Error:', error)}
- *   askOptions={{
- *     related: {
- *       enabled: true,
- *       size: 3,
- *       format: 'question'
- *    },
- *  }}
+ *   initialState={{
+ *     client: orama,
+ *     onAskStart: (options) => console.log('Starting:', options),
+ *     onAskComplete: () => console.log('Completed'),
+ *     onAskError: (error) => console.error('Error:', error),
+ *     askOptions: {
+ *       related: {
+ *         enabled: true,
+ *         size: 3,
+ *         format: 'question'
+ *       }
+ *     }
+ *   }}
+ * >
+ *   <ChatComponent />
+ * </ChatRoot>
+ *
+ * @example
+ * // With pre-populated chat state
+ * <ChatRoot
+ *   initialState={{
+ *     client: orama,
+ *     interactions: [
+ *       {
+ *         query: "Welcome message",
+ *         response: { text: "Hi there! I'm here to help you." },
+ *         interactionId: "welcome-1"
+ *       }
+ *     ]
+ *   }}
  * >
  *   <ChatComponent />
  * </ChatRoot>
  */
 export interface ChatRootProps extends React.PropsWithChildren {
   /**
-   * The OramaCloud instance to manage chat interactions.
-   * This is required to perform operations like asking questions and managing answers.
-   * If not provided, will fall back to client from parent ChatRoot context.
+   * Initial state for the chat context.
+   * This allows you to configure the client, callbacks, options, and pre-populate
+   * the chat with initial values like interactions, user prompts, or other state properties.
    */
-  client?: OramaCloud;
-  /**
-   * Optional callbacks for ask lifecycle events.
-   * These callbacks will be used as fallbacks when useChat hook doesn't provide its own.
-   * Hook-level callbacks take precedence over ChatRoot-level callbacks.
-   */
-  onAskStart?: (options: AnswerConfig) => void;
-  /**
-   * Called when an ask operation completes successfully.
-   */
-  onAskComplete?: () => void;
-  /**
-   * Called when an ask operation fails.
-   * Receives the error object for custom error handling.
-   */
-  onAskError?: (error: Error) => void;
-  /**
-   * Default options to be merged with ask requests.
-   * These will be used as defaults for all ask operations within this ChatRoot.
-   */
-  askOptions?: Omit<AnswerConfig, "query">;
+  initialState?: Partial<ChatContextProps>
 }
 
-export const ChatRoot = ({
-  client,
-  onAskStart,
-  onAskComplete,
-  onAskError,
-  askOptions = {},
-  children,
-}: ChatRootProps) => {
-  const chatState = useChatContext();
+export const ChatRoot = ({ initialState = {}, children }: ChatRootProps) => {
+  const chatState = useChatContext()
 
-  if (typeof window !== "undefined" && !client && !chatState.client) {
+  if (
+    typeof window !== 'undefined' &&
+    !initialState.client &&
+    !chatState.client
+  ) {
     console.warn(
-      "ChatRoot: No client provided. Either pass a client prop or ensure a parent ChatRoot has a client.",
-    );
+      'ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.'
+    )
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
-    client: client || chatState.client,
-    onAskStart,
-    onAskComplete,
-    onAskError,
-    askOptions,
-  });
+    ...initialState
+  })
 
   return (
     <ChatContext value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext>
-  );
-};
+  )
+}

@@ -31,7 +31,13 @@ const orama = new OramaCloud({
 ### Basic Usage
 
 ```tsx
-<ChatRoot client={orama}>{/* Chat-related components go here */}</ChatRoot>
+<ChatRoot
+  initialState={{
+    client: oramaDocsCollection
+  }}
+>
+    {/* Chat-related components go here */}
+</ChatRoot>
 ```
 
 ### With Event Handlers

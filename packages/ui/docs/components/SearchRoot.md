@@ -35,7 +35,11 @@ const orama = new OramaCloud({
 ```
 
 ```tsx
-<SearchRoot client={orama}>
+<SearchRoot
+  initialState={{
+    client: oramaDocsCollection
+  }}
+>
   <SearchInput.Wrapper>
     <SearchInput.Label htmlFor="search">Search</SearchInput.Label>
     <SearchInput.Input inputId="search" />

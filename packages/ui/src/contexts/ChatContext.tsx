@@ -2,83 +2,80 @@ import type {
   AnswerConfig,
   AnswerSession,
   OramaCloud,
-  Interaction,
-} from "@orama/core";
-import { createContext, useContext } from "react";
+  Interaction
+} from '@orama/core'
+import { createContext, useContext } from 'react'
 
 export type ChatContextProps = {
-  client: OramaCloud | null;
-  initialUserPrompt?: string;
-  userPrompt?: string;
-  interactions?: (Interaction | undefined)[];
-  answerSession: AnswerSession | null;
-  scrollToLastInteraction?: boolean;
-  isStreaming?: boolean;
-  askOptions?: Omit<AnswerConfig, "query">;
-  onAskStart?: (options: AnswerConfig) => void;
-  onAskComplete?: () => void;
-  onAskError?: (error: Error) => void;
-};
+  client: OramaCloud | null
+  userPrompt?: string
+  interactions?: (Interaction | undefined)[]
+  answerSession: AnswerSession | null
+  scrollToLastInteraction?: boolean
+  isStreaming?: boolean
+  askOptions?: Omit<AnswerConfig, 'query'>
+  onAskStart?: (options: AnswerConfig) => void
+  onAskComplete?: () => void
+  onAskError?: (error: Error) => void
+}
 
 export type ChatAction =
-  | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
-  | { type: "SET_INITIAL_USER_PROMPT"; payload: { initialUserPrompt: string } }
+  | { type: 'SET_CLIENT'; payload: { client: OramaCloud | null } }
   | {
-      type: "SET_ANSWER_SESSION";
-      payload: { answerSession: AnswerSession | null };
+      type: 'SET_ANSWER_SESSION'
+      payload: { answerSession: AnswerSession | null }
     }
   | {
-      type: "ADD_INTERACTION";
-      payload: { interactions: (Interaction | undefined)[] };
+      type: 'ADD_INTERACTION'
+      payload: { interactions: (Interaction | undefined)[] }
     }
   | {
-      type: "SET_INTERACTIONS";
-      payload: { interactions: (Interaction | undefined)[] };
+      type: 'SET_INTERACTIONS'
+      payload: { interactions: (Interaction | undefined)[] }
     }
-  | { type: "CLEAR_INTERACTIONS" }
-  | { type: "SET_USER_PROMPT"; payload: { userPrompt: string } }
-  | { type: "CLEAR_USER_PROMPT" }
-  | { type: "CLEAR_INITIAL_USER_PROMPT" }
+  | { type: 'CLEAR_INTERACTIONS' }
+  | { type: 'SET_USER_PROMPT'; payload: { userPrompt: string } }
+  | { type: 'CLEAR_USER_PROMPT' }
+  | { type: 'CLEAR_INITIAL_USER_PROMPT' }
   | {
-      type: "SET_SCROLL_TO_LAST_INTERACTION";
-      payload: { scrollToLastInteraction: boolean };
-    };
+      type: 'SET_SCROLL_TO_LAST_INTERACTION'
+      payload: { scrollToLastInteraction: boolean }
+    }
 
 export const initialChatState: ChatContextProps = {
   client: null,
-  initialUserPrompt: "",
   interactions: [],
-  userPrompt: "",
+  userPrompt: '',
   answerSession: null,
   scrollToLastInteraction: false,
   isStreaming: false,
   askOptions: {},
   onAskStart: undefined,
   onAskComplete: undefined,
-  onAskError: undefined,
-};
+  onAskError: undefined
+}
 
-export const ChatContext = createContext<ChatContextProps>(initialChatState);
+export const ChatContext = createContext<ChatContextProps>(initialChatState)
 export const ChatDispatchContext =
-  createContext<React.Dispatch<ChatAction> | null>(null);
+  createContext<React.Dispatch<ChatAction> | null>(null)
 
 export const useChatContext = () => {
-  const context = useContext(ChatContext);
+  const context = useContext(ChatContext)
   if (!context) {
-    throw new Error("useChat must be used within a ChatContext Provider");
+    throw new Error('useChat must be used within a ChatContext Provider')
   }
-  return context;
-};
+  return context
+}
 
 export const useChatDispatch = () => {
-  const dispatch = useContext(ChatDispatchContext);
+  const dispatch = useContext(ChatDispatchContext)
   if (!dispatch) {
     throw new Error(
-      "useChatDispatch must be used within a ChatDispatchContext Provider",
-    );
+      'useChatDispatch must be used within a ChatDispatchContext Provider'
+    )
   }
-  return dispatch;
-};
+  return dispatch
+}
 
 /**
  * Reducer function for managing chat contexts state.
@@ -92,55 +89,45 @@ export const useChatDispatch = () => {
  */
 export const chatReducer = (state: ChatContextProps, action: ChatAction) => {
   switch (action.type) {
-    case "SET_CLIENT":
-      return { ...state, client: action.payload?.client || null };
-    case "SET_INITIAL_USER_PROMPT":
-      return {
-        ...state,
-        initialUserPrompt: action.payload?.initialUserPrompt || "",
-      };
-    case "SET_ANSWER_SESSION":
-      return { ...state, answerSession: action.payload?.answerSession || null };
-    case "ADD_INTERACTION":
+    case 'SET_CLIENT':
+      return { ...state, client: action.payload?.client || null }
+    case 'SET_ANSWER_SESSION':
+      return { ...state, answerSession: action.payload?.answerSession || null }
+    case 'ADD_INTERACTION':
       return {
         ...state,
         interactions: [
           ...(state.interactions || []),
-          action.payload?.interactions?.[0],
-        ],
-      };
-    case "SET_INTERACTIONS":
+          action.payload?.interactions?.[0]
+        ]
+      }
+    case 'SET_INTERACTIONS':
       return {
         ...state,
-        interactions: action.payload?.interactions || [],
-      };
-    case "CLEAR_INTERACTIONS":
+        interactions: action.payload?.interactions || []
+      }
+    case 'CLEAR_INTERACTIONS':
       return {
         ...state,
-        interactions: [],
-      };
-    case "SET_USER_PROMPT":
+        interactions: []
+      }
+    case 'SET_USER_PROMPT':
       return {
         ...state,
-        userPrompt: action.payload?.userPrompt || "",
-      };
-    case "CLEAR_USER_PROMPT":
+        userPrompt: action.payload?.userPrompt || ''
+      }
+    case 'CLEAR_USER_PROMPT':
       return {
         ...state,
-        userPrompt: "",
-      };
-    case "CLEAR_INITIAL_USER_PROMPT":
-      return {
-        ...state,
-        initialUserPrompt: "",
-      };
-    case "SET_SCROLL_TO_LAST_INTERACTION":
+        userPrompt: ''
+      }
+    case 'SET_SCROLL_TO_LAST_INTERACTION':
       return {
         ...state,
         scrollToLastInteraction:
-          action.payload?.scrollToLastInteraction || false,
-      };
+          action.payload?.scrollToLastInteraction || false
+      }
     default:
-      return state;
+      return state
   }
-};
+}
