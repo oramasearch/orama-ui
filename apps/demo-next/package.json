@@ -21,7 +21,7 @@
     "clsx": "^2.1.1",
     "@radix-ui/react-slot": "^1.2.3",
     "tailwind-merge": "^3.3.0",
-    "@orama/core": "^1.0.0"
+    "@orama/core": "^1.2.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.3.0",

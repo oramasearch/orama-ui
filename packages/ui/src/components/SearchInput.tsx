@@ -45,6 +45,7 @@ export const SearchInputWrapper = <T extends ElementType = "div">({
 
 export interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
+  ref?: React.Ref<HTMLInputElement>;
   /**
    * The `id` attribute for the input field.
    * If not provided, a unique ID will be generated.
@@ -85,10 +86,12 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   ariaLabel,
   className,
   searchParams,
+  ref,
   ...rest
 }) => {
   const { onSearch, onReset } = useSearch();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const internalRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = ref || internalRef;
 
   const generatedId = useRef<string>(
     `search-input-${Math.random().toString(36).substring(2, 9)}`,

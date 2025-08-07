@@ -6,10 +6,13 @@ This component is typically used to wrap parts of your UI that require access to
 
 ## Props
 
-| Name     | Type                           | Description                                                                                       |
-| -------- | ------------------------------ | ------------------------------------------------------------------------------------------------- |
-| client   | `CollectionManager` (optional) | The Orama client instance to be used for chat operations. If not provided, uses context fallback. |
-| children | `React.ReactNode`              | The child components that will have access to the chat context.                                   |
+| Name          | Type                                         | Description                                                                                     |
+| ------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| client        | `CollectionManager`                          | The Orama client instance to be used for chat operations.                                       |
+| children      | `React.ReactNode`                            | The child components that will have access to the chat context.                                 |
+| onAskStart    | `(options: AnswerConfig) => void` (optional) | Callback function triggered when a chat request starts. Receives the answer configuration.      |
+| onAskComplete | `() => void` (optional)                      | Callback function triggered when a chat request completes successfully.                         |
+| onAskError    | `(error: Error) => void` (optional)          | Callback function triggered when a chat request encounters an error. Receives the error object. |
 
 ## Usage
 
@@ -22,8 +25,29 @@ const collectionManager = new CollectionManager({
 });
 ```
 
+### Basic Usage
+
 ```tsx
 <ChatRoot client={collectionManager}>
+  {/* Chat-related components go here */}
+</ChatRoot>
+```
+
+### With Event Handlers
+
+```tsx
+<ChatRoot
+  client={collectionManager}
+  onAskStart={(options) => {
+    console.log("Chat request started with options:", options);
+  }}
+  onAskComplete={() => {
+    console.log("Chat request completed successfully");
+  }}
+  onAskError={(error) => {
+    console.error("Chat request failed:", error);
+  }}
+>
   {/* Chat-related components go here */}
 </ChatRoot>
 ```
