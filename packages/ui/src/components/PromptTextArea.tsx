@@ -64,7 +64,9 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   const textAreaRef = ref ?? internalRef
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    onKeyDown?.(e)
+
+    if (!e.defaultPrevented && e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       const userPrompt = e.currentTarget.value.trim()
       if (userPrompt) {
@@ -76,14 +78,15 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
         dispatch({ type: 'CLEAR_USER_PROMPT' })
       }
     }
-
-    onKeyDown?.(e)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e)
-    const userPrompt = e.target.value.trim()
-    dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } })
+
+    if (!e.defaultPrevented) {
+      const userPrompt = e.target.value.trim()
+      dispatch({ type: 'SET_USER_PROMPT', payload: { userPrompt } })
+    }
   }
 
   useEffect(() => {
