@@ -9,7 +9,6 @@ Orama UI is a composable, unstyled React component library designed to provide f
 > **Prerequisites:** Orama UI is designed to work with [Orama Cloud](https://app.orama.com) projects. You'll need an active account and project set up on the Orama Cloud platform before using these components.
 
 1. **Create your Orama Cloud project:**
-   
    - Sign up or log in to [app.orama.com](https://app.orama.com)
    - Create a new project and upload your data
    - Get your project configuration (project ID and API key)
@@ -29,12 +28,12 @@ Orama UI is a composable, unstyled React component library designed to provide f
    Import the Orama JavaScript client and create your instance using your Cloud project configuration:
 
    ```tsx
-   import { OramaCloud } from '@orama/client'
+   import { OramaCloud } from "@orama/client";
 
    const orama = new OramaCloud({
-     projectId: 'your-project-id',
-     apiKey: 'your-api-key'
-   })
+     projectId: "your-project-id",
+     apiKey: "your-api-key",
+   });
    ```
 
 4. **Import and use the components:**
@@ -67,7 +66,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    </SearchRoot>
    ```
 
-3. **Style as you wish:**  
+5. **Style as you wish:**  
    All components are unstyled by default. Use your own CSS, Tailwind, styled-components, or any styling solution.
 
 ---
@@ -98,7 +97,6 @@ Orama UI follows these core principles:
 
 - **[`PromptTextArea`](./docs/components/PromptTextArea.md)** - Textarea for chat prompts
 - **[`SearchInput`](./docs/components/SearchInput.md)** - Input field for search queries with built-in search logic
-
 
 ### Navigation & Filtering
 
@@ -146,7 +144,7 @@ All components and hooks are fully typed with TypeScript. Import types for bette
 ```tsx
 // Create your own component using Orama UI hooks
 function CustomSearchBox() {
-  const [ query, setQuery ] = useState();
+  const [query, setQuery] = useState();
   const { search } = useSearch();
 
   const handleSearch = (event) => {
@@ -157,7 +155,6 @@ function CustomSearchBox() {
 
     // other code here...
   };
-
 
   return (
     <div className="custom-search">
@@ -172,4 +169,3 @@ function CustomSearchBox() {
   );
 }
 ```
-
