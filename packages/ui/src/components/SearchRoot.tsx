@@ -26,7 +26,7 @@ import { type SearchContextProps } from "../contexts/SearchContext";
  * <SearchRoot
  *.  client={orama}
  *   initialState={{
- *     onSearch: async (params) => {
+ *     search: async (params) => {
  *       console.log('Searching with:', params);
  *       // Custom search logic
  *     },

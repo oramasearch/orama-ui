@@ -4,7 +4,7 @@ import { GroupsCount } from "@/types";
 
 export type SearchContextProps = {
   client: OramaCloud | null;
-  onSearch?: (
+  search?: (
     params: SearchParams & {
       groupBy?: string;
       filterBy?: Record<string, string>[];

@@ -89,7 +89,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   ref,
   ...rest
 }) => {
-  const { onSearch, onReset } = useSearch();
+  const { search, reset } = useSearch();
   const internalRef = useRef<HTMLInputElement | null>(null);
   const inputRef = ref || internalRef;
 
@@ -107,11 +107,11 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
     const newValue = event.target.value.trim();
 
     if (newValue === "") {
-      onReset();
+      reset();
       return;
     }
 
-    onSearch({
+    search({
       term: newValue,
       limit: 10,
       ...searchParams,
