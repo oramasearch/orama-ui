@@ -31,7 +31,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    ```tsx
    <SearchRoot client={orama}>
      <div className="search-container">
-       <SearchInput placeholder="Search for anything..." />
+       <SearchInput.Input placeholder="Search for anything..." />
        <SearchResults.Wrapper>
          <SearchResults.List>
            {(result) => (
@@ -47,22 +47,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    ```
 
 3. **Style as you wish:**  
-   All components are unstyled by default. Use your own CSS, Tailwind, styled-components, or any styling solution:
-
-   ```tsx
-   // With Tailwind CSS
-   <SearchInput className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500" />
-
-   // With CSS Modules
-   <SearchInput className={styles.searchInput} />
-
-   // With styled-components
-   const StyledSearchInput = styled(SearchInput)`
-     padding: 12px;
-     border: 2px solid #e2e8f0;
-     border-radius: 8px;
-   `;
-   ```
+   All components are unstyled by default. Use your own CSS, Tailwind, styled-components, or any styling solution.
 
 ---
 
@@ -84,14 +69,15 @@ Orama UI follows these core principles:
 
 - **[`SearchRoot`](./docs/components/SearchRoot.md)** - Root provider for search functionality and state management
 - **[`ChatRoot`](./docs/components/ChatRoot.md)** - Root provider for chat/conversation interfaces
-- **[`SearchInput`](./docs/components/SearchInput.md)** - Input field for search queries with built-in search logic
 - **[`SearchResults`](./docs/components/SearchResults.md)** - Displays search results with customizable rendering
 - **[`ChatInteractions`](./docs/components/ChatInteractions.md)** - Renders chat messages and user actions
+- **[`Suggestions`](./docs/components/Suggestions.md)** - Displays prompt suggestions
 
 ### Input Components
 
 - **[`PromptTextArea`](./docs/components/PromptTextArea.md)** - Textarea for chat prompts
-- **[`Suggestions`](./docs/components/Suggestions.md)** - Displays prompt suggestions
+- **[`SearchInput`](./docs/components/SearchInput.md)** - Input field for search queries with built-in search logic
+
 
 ### Navigation & Filtering
 
@@ -130,87 +116,39 @@ Orama UI follows these core principles:
 
 ## TypeScript Support
 
-All components and hooks are fully typed with TypeScript. Import types for better development experience:
-
-```tsx
-import type { SearchResult, ChatMessage, FacetFilter } from "@orama/ui";
-
-// Use with your own interfaces
-interface MyDocument {
-  id: string;
-  title: string;
-  content: string;
-  category: string;
-}
-
-// Type your search results
-const results: SearchResult<MyDocument>[] = useSearch().results;
-```
+All components and hooks are fully typed with TypeScript. Import types for better development experience.
 
 ---
-
-## Customization
-
-### Custom Result Rendering
-
-```tsx
-<SearchResults
-  renderItem={({ item, index }) => (
-    <article className="result-card">
-      <h3>{item.title}</h3>
-      <p>{item.description}</p>
-      <span className="result-index">#{index + 1}</span>
-    </article>
-  )}
-/>
-```
-
-### Custom Chat Messages
-
-```tsx
-<ChatInteractions
-  renderMessage={({ message, isUser }) => (
-    <div className={`message ${isUser ? "user" : "assistant"}`}>
-      <div className="message-content">{message.content}</div>
-      <time className="message-time">{message.timestamp}</time>
-    </div>
-  )}
-/>
-```
 
 ### Extending Components
 
 ```tsx
 // Create your own component using Orama UI hooks
 function CustomSearchBox() {
-  const { query, setQuery, search } = useSearch();
+  const [ query, setQuery ] = useState();
+  const { search } = useSearch();
+
+  const handleSearch = (event) => {
+    search({
+      term: query,
+      limit: 10,
+    });
+
+    // other code here...
+  };
+
 
   return (
     <div className="custom-search">
       <input
+        type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && search()}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
       />
-      <button onClick={search}>Search</button>
+      <button onClick={handleSearch}>Search</button>
     </div>
   );
-}
-```
-
-### Integration with State Management
-
-```tsx
-// Use with Redux, Zustand, or other state management
-function SearchWithExternalState() {
-  const { results } = useSearch();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setSearchResults(results));
-  }, [results, dispatch]);
-
-  return <SearchInput />;
 }
 ```
 
@@ -220,8 +158,3 @@ function SearchWithExternalState() {
 
 We welcome contributions! Please see our [Contributing Guide](../../CONTRIBUTING.md) for details.
 
----
-
-## License
-
-MIT © [Orama](https://orama.com/)
