@@ -76,7 +76,11 @@ export const InnerSearchBox = () => {
 
 export const SearchBox = () => {
   return (
-    <SearchRoot client={oramaDocsCollection}>
+    <SearchRoot
+      initialState={{
+        client: oramaDocsCollection,
+      }}
+    >
       <InnerSearchBox />
     </SearchRoot>
   );

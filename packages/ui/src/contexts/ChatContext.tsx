@@ -8,7 +8,6 @@ import { createContext, useContext } from "react";
 
 export type ChatContextProps = {
   client: OramaCloud | null;
-  initialUserPrompt?: string;
   userPrompt?: string;
   interactions?: (Interaction | undefined)[];
   answerSession: AnswerSession | null;
@@ -22,7 +21,6 @@ export type ChatContextProps = {
 
 export type ChatAction =
   | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
-  | { type: "SET_INITIAL_USER_PROMPT"; payload: { initialUserPrompt: string } }
   | {
       type: "SET_ANSWER_SESSION";
       payload: { answerSession: AnswerSession | null };
@@ -46,7 +44,6 @@ export type ChatAction =
 
 export const initialChatState: ChatContextProps = {
   client: null,
-  initialUserPrompt: "",
   interactions: [],
   userPrompt: "",
   answerSession: null,
@@ -94,11 +91,6 @@ export const chatReducer = (state: ChatContextProps, action: ChatAction) => {
   switch (action.type) {
     case "SET_CLIENT":
       return { ...state, client: action.payload?.client || null };
-    case "SET_INITIAL_USER_PROMPT":
-      return {
-        ...state,
-        initialUserPrompt: action.payload?.initialUserPrompt || "",
-      };
     case "SET_ANSWER_SESSION":
       return { ...state, answerSession: action.payload?.answerSession || null };
     case "ADD_INTERACTION":
@@ -128,11 +120,6 @@ export const chatReducer = (state: ChatContextProps, action: ChatAction) => {
       return {
         ...state,
         userPrompt: "",
-      };
-    case "CLEAR_INITIAL_USER_PROMPT":
-      return {
-        ...state,
-        initialUserPrompt: "",
       };
     case "SET_SCROLL_TO_LAST_INTERACTION":
       return {

@@ -355,11 +355,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
 
   return (
     <SearchRoot client={oramaDocsCollection}>
-      <ChatRoot
-        client={oramaDocsCollection}
-        onAskStart={(options) => console.log("Ask started", options)}
-        onAskComplete={() => console.log("Ask completed")}
-      >
+      <ChatRoot client={oramaDocsCollection}>
         <section
           className={`p-6 transition-all duration-500 ${themeClasses.container}`}
           ref={ref}

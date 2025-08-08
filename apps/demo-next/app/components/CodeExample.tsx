@@ -9,7 +9,11 @@ const examples = [
 
 export function MySearch() {
 return (
-  <SearchRoot client={orama}>
+  <SearchRoot
+    initialState={{
+      client: oramaDocsCollection
+    }}
+  >
     <SearchInput.Wrapper>
       <SearchInput.Input 
         placeholder="Search..."
@@ -38,8 +42,12 @@ return (
 
 export function SearchWithChat() {
 return (
-  <SearchRoot client={orama}>
-    <ChatRoot client={orama}>
+  <SearchRoot
+    initialState={{
+      client: oramaDocsCollection
+    }}
+  >
+    <ChatRoot client={oramaDocsCollection}>
       <div className="space-y-4">
         <SearchInput.Wrapper>
           <SearchInput.Input />
@@ -76,7 +84,11 @@ result: "hover:bg-purple-50 border-l-4 border-purple-500"
 
 export function ThemedSearch() {
 return (
-  <SearchRoot>
+  <SearchRoot
+    initialState={{
+      client: oramaDocsCollection
+    }}
+  >
     <SearchInput.Wrapper>
       <SearchInput.Input 
         className={customTheme.input}
