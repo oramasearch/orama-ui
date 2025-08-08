@@ -16,11 +16,7 @@ export const ScrollableChatContainer = () => {
   } = useScrollableContainer();
 
   return (
-    <ChatRoot
-      initialState={{
-        client: oramaDocsCollection,
-      }}
-    >
+    <ChatRoot client={oramaDocsCollection}>
       <div className="flex flex-col h-[420px] w-full max-w-md mx-auto border rounded-md shadow">
         {/* TOP BLOCK */}
         <div className="p-4 border-b rounded-t-md">

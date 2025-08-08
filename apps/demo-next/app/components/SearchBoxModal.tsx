@@ -313,16 +313,8 @@ export const SearchBoxModal = () => {
       >
         <Modal.Inner className="flex max-w-lg h-120 m-auto bg-white">
           <Modal.Content>
-            <SearchRoot
-              initialState={{
-                client: oramaDocsCollection,
-              }}
-            >
-              <ChatRoot
-                initialState={{
-                  client: oramaDocsCollection,
-                }}
-              >
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>

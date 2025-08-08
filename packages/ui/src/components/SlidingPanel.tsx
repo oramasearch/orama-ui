@@ -29,11 +29,11 @@ function Trigger({ initialPrompt, onClick, children, ...rest }: TriggerProps) {
   const { ask } = useChat();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (initialPrompt) {
+    onClick?.(e);
+
+    if (initialPrompt && !e.defaultPrevented) {
       ask({ query: initialPrompt });
     }
-
-    onClick?.(e);
   };
 
   return (
@@ -123,17 +123,20 @@ function Wrapper({
     }
   }, [open]);
 
-  if (!panelRef || !open) return null;
-
   return (
     <SlidingPanelContext.Provider value={{ open, onClose, panelRef }}>
       <div
         ref={panelRef}
         tabIndex={open ? 0 : -1}
-        aria-modal="true"
+        aria-modal={open ? "true" : "false"}
         role="dialog"
         aria-hidden={!open}
+        {...(!open && { inert: true })}
         className={`fixed right-0 top-0 bottom-0 z-50 h-full w-full overflow-hidden ${className || ""}`}
+        style={{
+          visibility: open ? "visible" : "hidden",
+          pointerEvents: open ? "auto" : "none",
+        }}
         {...rest}
       >
         {children}
@@ -168,6 +171,8 @@ function Content({
       setTimeout(() => setIsAnimating(true), 100);
     } else {
       setIsAnimating(false);
+      // Keep content visible during animation, then hide after transition
+      setTimeout(() => setIsVisible(false), 300); // Adjust timing based on your transition duration
     }
   }, [open]);
 
@@ -193,8 +198,6 @@ function Content({
       break;
   }
 
-  if (!isVisible) return null;
-
   return (
     <div
       className={`w-full fixed transition-transform z-50 ${className || ""}`}
@@ -204,7 +207,10 @@ function Content({
         left: position === "left" ? 0 : "auto",
         right: position === "right" ? 0 : "auto",
         top: position === "top" ? 0 : "auto",
+        visibility: isVisible ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
       }}
+      {...(!open && { inert: true })}
       {...rest}
     >
       {children}
@@ -218,11 +224,10 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
     throw new Error(
       "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper",
     );
-  if (!ctx.open) return null;
 
   return (
     <div
-      onClick={ctx.onClose}
+      onClick={ctx.open ? ctx.onClose : undefined}
       className={`z-40 ${className || ""}`}
       style={{
         position: "fixed",
@@ -231,8 +236,11 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
         bottom: 0,
         width: "100%",
         height: "100%",
+        visibility: ctx.open ? "visible" : "hidden",
+        pointerEvents: ctx.open ? "auto" : "none",
       }}
       aria-hidden={!ctx.open}
+      {...(!ctx.open && { inert: true })}
       {...rest}
     />
   );

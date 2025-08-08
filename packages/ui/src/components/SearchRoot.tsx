@@ -24,8 +24,8 @@ import { type SearchContextProps } from "../contexts/SearchContext";
  * @example
  * // With search callback and pre-populated state
  * <SearchRoot
+ *.  client={orama}
  *   initialState={{
- *     client: orama,
  *     onSearch: async (params) => {
  *       console.log('Searching with:', params);
  *       // Custom search logic
@@ -39,24 +39,26 @@ import { type SearchContextProps } from "../contexts/SearchContext";
  */
 export interface SearchRootProps extends React.PropsWithChildren {
   /**
+   * Required Orama client to be used for search operations.
+   * This client is essential for executing search queries and managing results.
+   */
+  client: SearchContextProps["client"];
+  /**
    * Initial state for the search context.
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
-  initialState?: Partial<SearchContextProps>;
+  initialState?: Partial<Omit<SearchContextProps, "client">>;
 }
 
 export const SearchRoot = ({
+  client,
   initialState = {},
   children,
 }: SearchRootProps) => {
   const searchState = useSearchContext();
 
-  if (
-    typeof window !== "undefined" &&
-    !initialState.client &&
-    !searchState.client
-  ) {
+  if (typeof window !== "undefined" && !client && !searchState.client) {
     console.warn(
       "SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.",
     );
@@ -64,6 +66,7 @@ export const SearchRoot = ({
 
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
+    client: client || searchState.client,
     ...initialState,
   });
 

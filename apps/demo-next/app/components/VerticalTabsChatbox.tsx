@@ -132,11 +132,7 @@ export const VerticalTabsChatbox: React.FC = () => {
             </Tabs.Panel>
             <Tabs.DynamicPanels>
               {(item, chatTabs, setChatTabs) => (
-                <ChatRoot
-                  initialState={{
-                    client: oramaDocsCollection,
-                  }}
-                >
+                <ChatRoot client={oramaDocsCollection}>
                   <Tabs.DynamicPanel tabId={item.id} className="h-full">
                     <div className="flex flex-col h-full">
                       {/* SCROLLABLE BLOCK */}

@@ -354,16 +354,8 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
   } = useScrollableContainer();
 
   return (
-    <SearchRoot
-      initialState={{
-        client: oramaDocsCollection,
-      }}
-    >
-      <ChatRoot
-        initialState={{
-          client: oramaDocsCollection,
-        }}
-      >
+    <SearchRoot client={oramaDocsCollection}>
+      <ChatRoot client={oramaDocsCollection}>
         <section
           className={`p-6 transition-all duration-500 ${themeClasses.container}`}
           ref={ref}

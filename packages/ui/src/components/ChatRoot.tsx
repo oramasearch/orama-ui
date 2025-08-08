@@ -17,15 +17,15 @@ import {
  *
  * @example
  * // Basic usage
- * <ChatRoot initialState={{ client: orama }}>
+ * <ChatRoot client={orama}>
  *   <ChatComponent />
  * </ChatRoot>
  *
  * @example
  * // With callbacks and options
  * <ChatRoot
+ *   client={orama}
  *   initialState={{
- *     client: orama,
  *     onAskStart: (options) => console.log('Starting:', options),
  *     onAskComplete: () => console.log('Completed'),
  *     onAskError: (error) => console.error('Error:', error),
@@ -44,8 +44,8 @@ import {
  * @example
  * // With pre-populated chat state
  * <ChatRoot
+ *   client={orama}
  *   initialState={{
- *     client: orama,
  *     interactions: [
  *       {
  *         query: "Welcome message",
@@ -60,21 +60,26 @@ import {
  */
 export interface ChatRootProps extends React.PropsWithChildren {
   /**
+   * Required Orama client to be used for chat operations.
+   * This client is essential for executing chat queries and managing interactions.
+   */
+  client: ChatContextProps["client"];
+  /**
    * Initial state for the chat context.
    * This allows you to configure the client, callbacks, options, and pre-populate
    * the chat with initial values like interactions, user prompts, or other state properties.
    */
-  initialState?: Partial<ChatContextProps>;
+  initialState?: Partial<Omit<ChatContextProps, "client">>;
 }
 
-export const ChatRoot = ({ initialState = {}, children }: ChatRootProps) => {
+export const ChatRoot = ({
+  client,
+  initialState = {},
+  children,
+}: ChatRootProps) => {
   const chatState = useChatContext();
 
-  if (
-    typeof window !== "undefined" &&
-    !initialState.client &&
-    !chatState.client
-  ) {
+  if (typeof window !== "undefined" && !client && !chatState.client) {
     console.warn(
       "ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.",
     );
@@ -82,6 +87,7 @@ export const ChatRoot = ({ initialState = {}, children }: ChatRootProps) => {
 
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
+    client: client || chatState.client,
     ...initialState,
   });
 

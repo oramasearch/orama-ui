@@ -47,16 +47,8 @@ const Header: React.FC = () => {
       >
         <Modal.Inner>
           <Modal.Content>
-            <SearchRoot
-              initialState={{
-                client: oramaDocsCollection,
-              }}
-            >
-              <ChatRoot
-                initialState={{
-                  client: oramaDocsCollection,
-                }}
-              >
+            <SearchRoot client={oramaDocsCollection}>
+              <ChatRoot client={oramaDocsCollection}>
                 <InnerSearchBox />
               </ChatRoot>
             </SearchRoot>

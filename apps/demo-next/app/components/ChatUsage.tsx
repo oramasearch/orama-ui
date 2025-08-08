@@ -59,11 +59,7 @@ export const InnerChat = () => {
 
 export const MyChat = () => {
   return (
-    <ChatRoot
-      initialState={{
-        client: oramaDocsCollection,
-      }}
-    >
+    <ChatRoot client={oramaDocsCollection}>
       <InnerChat />
     </ChatRoot>
   );

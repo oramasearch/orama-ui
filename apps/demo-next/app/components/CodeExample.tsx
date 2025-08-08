@@ -47,11 +47,7 @@ return (
       client: oramaDocsCollection
     }}
   >
-    <ChatRoot
-      initialState={{
-        client: oramaDocsCollection
-      }}
-    >
+    <ChatRoot client={oramaDocsCollection}>
       <div className="space-y-4">
         <SearchInput.Wrapper>
           <SearchInput.Input />
