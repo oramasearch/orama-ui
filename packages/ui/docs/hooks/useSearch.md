@@ -9,9 +9,9 @@ The `useSearch` hook provides a simple interface for executing searches, managin
 ```tsx
 import { useSearch } from "@orama/ui/hooks";
 
-const { onSearch, onReset, loading, error, context, dispatch } = useSearch();
+const { search, reset, loading, error, context, dispatch } = useSearch();
 
-onSearch({ term: "example", groupBy: "category" });
+search({ term: "example", groupBy: "category" });
 ```
 
 ---
@@ -24,8 +24,8 @@ The hook returns an object with the following properties:
 
 | Name     | Type                                                                                                   | Description                                                                  |
 | -------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| onSearch | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters.                             |
-| onReset  | `() => void`                                                                                           | Resets the search state to its initial values.                               |
+| search   | `(options: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Executes a search with the specified parameters.                             |
+| reset    | `() => void`                                                                                           | Resets the search state to its initial values.                               |
 | context  | `ReturnType<typeof useSearchContext>`                                                                  | The current search context, providing access to the search client and state. |
 | dispatch | `ReturnType<typeof useSearchDispatch>`                                                                 | Function to dispatch actions to the search state management.                 |
 | loading  | `boolean`                                                                                              | Indicates if a search operation is in progress.                              |
@@ -33,11 +33,11 @@ The hook returns an object with the following properties:
 
 ---
 
-### `onSearch(options)`
+### `search(options)`
 
 Executes a search with the provided options.
 
-> **Note:** If you are using the `SearchInput` component from Orama UI, it already integrates and calls this `onSearch` function for you. You only need to use `onSearch` directly if you are building a custom search UI.
+> **Note:** If you are using the `SearchInput` component from Orama UI, it already integrates and calls this `search` function for you. You only need to use `search` directly if you are building a custom search UI.
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Executes a search with the provided options.
 #### Example
 
 ```tsx
-onSearch({
+search({
   term: "react",
   groupBy: "category",
   filterBy: [{ status: "active" }],
@@ -60,7 +60,7 @@ onSearch({
 
 ---
 
-### `onReset()`
+### `reset()`
 
 Resets the search state, clearing results, filters, and errors.
 
@@ -102,10 +102,10 @@ An `Error` object or `null` representing the current error state.
 ## Example
 
 ```tsx
-const { onSearch, onReset, loading, error, context, dispatch } = useSearch();
+const { search, reset, loading, error, context, dispatch } = useSearch();
 
 const handleSearch = () => {
-  onSearch({ term: "example", groupBy: "category" });
+  search({ term: "example", groupBy: "category" });
 };
 
 return (
@@ -114,7 +114,7 @@ return (
       Search
     </button>
     {error && <span>{error.message}</span>}
-    <button onClick={onReset}>Reset</button>
+    <button onClick={reset}>Reset</button>
   </div>
 );
 ```

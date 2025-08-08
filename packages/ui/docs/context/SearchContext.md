@@ -26,7 +26,7 @@ This context is typically used to wrap parts of your UI that require access to s
 ```ts
 type SearchContextProps = {
   client: OramaCloud | null;
-  onSearch?: (
+  search?: (
     params: SearchParams & {
       groupBy?: string;
       filterBy?: Record<string, string>[];

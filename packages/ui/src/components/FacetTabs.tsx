@@ -89,13 +89,13 @@ const Item: React.FC<ItemProps> = ({
   disabled = false,
   ...props
 }) => {
-  const { onSearch } = useSearch();
+  const { search } = useSearch();
   const { searchTerm } = useSearchContext();
   const dispatch = useSearchDispatch();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!disabled) {
-      onSearch({
+      search({
         ...(searchParams ? { ...searchParams } : {}),
         term: searchParams?.term || searchTerm || "",
         limit: searchParams?.limit || 10,

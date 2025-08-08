@@ -26,7 +26,7 @@ The `initialState` prop accepts a partial `SearchContextProps` object with the f
 
 | Property        | Type                                                                                                  | Description                                                         |
 | --------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `onSearch`      | `(params: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Custom search callback function to handle search operations.        |
+| `search`        | `(params: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Custom search callback function to handle search operations.        |
 | `searchTerm`    | `string`                                                                                              | Initial search term to pre-populate the search input.               |
 | `results`       | `Hit[] \| null`                                                                                       | Array of search results to pre-populate the search results display. |
 | `selectedFacet` | `string \| null`                                                                                      | Initially selected facet/filter.                                    |
@@ -66,7 +66,7 @@ const orama = new OramaCloud({
 <SearchRoot
   client={orama}
   initialState={{
-    onSearch: async (params) => {
+    search: async (params) => {
       console.log("Searching with params:", params);
       // Custom search logic here
       // You can modify params, add analytics, etc.
@@ -115,7 +115,7 @@ You can use `initialState` to pre-populate the search with existing data:
 <SearchRoot
   client={orama}
   initialState={{
-    onSearch: async (params) => {
+    search: async (params) => {
       // Analytics tracking
       analytics.track("search_performed", {
         query: params.term,
@@ -163,7 +163,7 @@ You can use `initialState` to pre-populate the search with existing data:
 
 1. **Flexible Configuration**: The `initialState` prop allows you to configure any aspect of the search context in a single object.
 
-2. **Custom Search Handlers**: You can provide custom `onSearch` callbacks to modify search behavior, add analytics, or integrate with external systems.
+2. **Custom Search Handlers**: You can provide custom `search` callbacks to modify search behavior, add analytics, or integrate with external systems.
 
 3. **Context Inheritance**: All child components automatically inherit the configuration through the search context.
 
