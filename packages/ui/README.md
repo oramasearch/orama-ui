@@ -6,17 +6,38 @@ Orama UI is a composable, unstyled React component library designed to provide f
 
 ## Getting Started
 
-1. **Install the package:**
+> **Prerequisites:** Orama UI is designed to work with [Orama Cloud](https://app.orama.com) projects. You'll need an active account and project set up on the Orama Cloud platform before using these components.
+
+1. **Create your Orama Cloud project:**
+   
+   - Sign up or log in to [app.orama.com](https://app.orama.com)
+   - Create a new project and upload your data
+   - Get your project configuration (project ID and API key)
+
+2. **Install the required packages:**
 
    ```bash
-   npm install @orama/ui
+   npm install @orama/ui @orama/client
    # or
-   pnpm install @orama/ui
+   pnpm install @orama/ui @orama/client
    # or
-   yarn add @orama/ui
+   yarn add @orama/ui @orama/client
    ```
 
-2. **Import and use the components:**
+3. **Set up your Orama client:**
+
+   Import the Orama JavaScript client and create your instance using your Cloud project configuration:
+
+   ```tsx
+   import { OramaCloud } from '@orama/client'
+
+   const orama = new OramaCloud({
+     projectId: 'your-project-id',
+     apiKey: 'your-api-key'
+   })
+   ```
+
+4. **Import and use the components:**
 
    ```tsx
    import {
@@ -26,7 +47,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    } from "@orama/ui/components";
    ```
 
-   Create your Orama client instance and wrap your application with the SearchRoot provider and compose your search interface:
+   Wrap your application with the SearchRoot provider and compose your search interface:
 
    ```tsx
    <SearchRoot client={orama}>
