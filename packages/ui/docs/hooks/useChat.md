@@ -70,7 +70,7 @@ function MyChatComponent() {
 
 ### Callbacks
 
-You can pass an optional callbacks object to `useChat` to hook into the ask lifecycle. These callbacks have a priority system with callbacks passed to the `ChatRoot` component:
+You can pass an optional callbacks object to `useChat` to hook into the ask lifecycle. These callbacks have a priority system with callbacks passed to the `ChatRoot` component's `initialState`:
 
 | Name            | Type                              | Description                                            |
 | --------------- | --------------------------------- | ------------------------------------------------------ |
@@ -83,7 +83,7 @@ You can pass an optional callbacks object to `useChat` to hook into the ask life
 The `useChat` hook implements a callback priority system:
 
 1. **Hook-level callbacks** (passed directly to `useChat`) take precedence
-2. **ChatRoot-level callbacks** (passed to `ChatRoot` component) are used as fallbacks
+2. **ChatRoot-level callbacks** (passed to `ChatRoot` component's `initialState`) are used as fallbacks
 
 This means if you provide both hook-level and ChatRoot-level callbacks, only the hook-level callbacks will be executed.
 
@@ -113,25 +113,28 @@ import { ChatRoot } from "@orama/ui/components";
 import { OramaCloud } from "@orama/core";
 
 function App() {
-  const orama = new OramaCloud({
-    /* ...config... */
+  const orama = new OramaClud({
+    projectId: 'your-project-id',
+    apiKey: 'your-api-key'
   });
 
   return (
     <ChatRoot
       client={orama}
-      onAskStart={(options) => {
-        // Global analytics tracking
-        analytics.track("chat_question_started", { query: options.query });
-      }}
-      onAskComplete={() => {
-        // Global success tracking
-        analytics.track("chat_question_completed");
-      }}
-      onAskError={(error) => {
-        // Global error handling and logging
-        console.error("Chat error:", error);
-        errorService.log(error);
+      initialState={{
+        onAskStart: (options) => {
+          // Global analytics tracking
+          analytics.track("chat_question_started", { query: options.query });
+        },
+        onAskComplete: () => {
+          // Global success tracking
+          analytics.track("chat_question_completed");
+        },
+        onAskError: (error) => {
+          // Global error handling and logging
+          console.error("Chat error:", error);
+          errorService.log(error);
+        },
       }}
     >
       <MyChatInterface />
@@ -184,11 +187,12 @@ You can also use both approaches together. Hook-level callbacks will override Ch
 // Global setup with ChatRoot callbacks for analytics
 <ChatRoot
   client={orama}
-  onAskStart={(options) => analytics.track("chat_started", options)}
-  onAskComplete={() => analytics.track("chat_completed")}
-  onAskError={(error) =>
-    analytics.track("chat_error", { error: error.message })
-  }
+  initialState={{
+    onAskStart: (options) => analytics.track("chat_started", options),
+    onAskComplete: () => analytics.track("chat_completed"),
+    onAskError: (error) =>
+      analytics.track("chat_error", { error: error.message }),
+  }}
 >
   {/* Regular chat component uses global callbacks */}
   <RegularChatComponent />
