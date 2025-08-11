@@ -6,7 +6,7 @@ The `useChat` hook provides a set of utilities for managing chat interactions in
 
 ## Usage
 
-### Basic Usage (Using ChatRoot Callbacks)
+### Basic usage (using `ChatRoot` callbacks)
 
 ```tsx
 import { useChat } from "@orama/ui/hooks";
@@ -29,7 +29,7 @@ function MyChatComponent() {
 }
 ```
 
-### Advanced Usage (With Hook-Level Callbacks)
+### Advanced usage (with hook-level callbacks)
 
 ```tsx
 import { useChat } from "@orama/ui/hooks";
@@ -78,7 +78,7 @@ You can pass an optional callbacks object to `useChat` to hook into the ask life
 | `onAskComplete` | `() => void`                      | Called when `ask` completes successfully.              |
 | `onAskError`    | `(error: Error) => void`          | Called when `ask` fails, receives the error object.    |
 
-#### Callback Priority
+#### Callback priority
 
 The `useChat` hook implements a callback priority system:
 
@@ -102,9 +102,9 @@ This means if you provide both hook-level and ChatRoot-level callbacks, only the
 
 ---
 
-## When to Use Callbacks
+## When to use callbacks
 
-### ChatRoot-level Callbacks (Recommended for Global Behavior)
+### ChatRoot-level callbacks (recommended for global behavior)
 
 Use callbacks at the `ChatRoot` level when you want consistent behavior across all chat interactions in your application:
 
@@ -113,9 +113,9 @@ import { ChatRoot } from "@orama/ui/components";
 import { OramaCloud } from "@orama/core";
 
 function App() {
-  const orama = new OramaClud({
-    projectId: 'your-project-id',
-    apiKey: 'your-api-key'
+  const orama = new OramaCloud({
+    projectId: "your-project-id",
+    apiKey: "your-api-key",
   });
 
   return (
@@ -150,7 +150,7 @@ function MyChatInterface() {
 }
 ```
 
-### Hook-level Callbacks (For Component-Specific Behavior)
+### Hook-level callbacks (for component-specific behavior)
 
 Use callbacks at the hook level when you need specific behavior for individual components or want to override global behavior:
 
@@ -179,7 +179,7 @@ function SpecialChatComponent() {
 }
 ```
 
-### Mixed Approach
+### Mixed approach
 
 You can also use both approaches together. Hook-level callbacks will override ChatRoot-level callbacks, allowing you to have global defaults with component-specific overrides:
 
@@ -202,7 +202,7 @@ You can also use both approaches together. Hook-level callbacks will override Ch
 </ChatRoot>
 ```
 
-### Best Practices
+### Best practices
 
 - **Use ChatRoot callbacks** for:
   - Analytics and tracking

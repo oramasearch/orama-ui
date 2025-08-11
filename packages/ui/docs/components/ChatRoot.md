@@ -37,7 +37,8 @@ import { ChatRoot } from "@orama/ui/components";
 import { OramaCloud } from "@orama/core";
 
 const orama = new OramaCloud({
-  /* ...config... */
+  projectId: "your-project-id",
+  apiKey: "your-api-key",
 });
 ```
 
