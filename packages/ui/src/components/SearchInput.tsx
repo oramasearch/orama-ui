@@ -87,6 +87,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   className,
   searchParams,
   ref,
+  onChange,
   ...rest
 }) => {
   const { search, reset } = useSearch();
@@ -104,6 +105,12 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
    * @param event The input change event.
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    onChange?.(event);
+
+    if (event.defaultPrevented) {
+      return;
+    }
+
     const newValue = event.target.value.trim();
 
     if (newValue === "") {
@@ -116,8 +123,6 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
       limit: 10,
       ...searchParams,
     });
-
-    rest.onChange?.(event);
   };
 
   return (
