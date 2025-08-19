@@ -61,7 +61,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     if (!modalRef.current) return;
 
     const focusableElements = modalRef.current.querySelectorAll(
-      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
     const focusableArray = (
       Array.from(focusableElements) as HTMLElement[]
@@ -73,7 +73,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         focusableArray[focusableArray.length - 1] ?? null;
 
       const focusedElement = modalRef.current.querySelector(
-        ":focus",
+        ":focus"
       ) as HTMLElement;
 
       if (
@@ -96,7 +96,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     if (!modalRef.current) return;
 
     const focusableElements = modalRef.current.querySelectorAll(
-      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
     const focusableArray = (
       Array.from(focusableElements) as HTMLElement[]
@@ -122,7 +122,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
           break;
       }
     },
-    [closeOnEscape, onModalClosed, trapFocus],
+    [closeOnEscape, onModalClosed, trapFocus]
   );
 
   const handleClick = useCallback(
@@ -137,7 +137,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         onModalClosed();
       }
     },
-    [closeOnOutsideClick, onModalClosed],
+    [closeOnOutsideClick, onModalClosed]
   );
 
   useEffect(() => {
@@ -190,7 +190,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         aria-describedby="modalContent"
         onKeyDown={handleKeyDown}
         onClick={handleClick}
-        className={`fixed left-0 right-0 bg-gray-500 bg-opacity-50 w-full h-full inset-0 border-none m-0 p-0 flex z-50 ${className || ""}`}
+        className={`orama:fixed orama:left-0 orama:right-0 orama:bg-gray-500 orama:bg-opacity-50 orama:w-full orama:h-full orama:inset-0 orama:border-none orama:m-0 orama:p-0 orama:flex orama:z-50 ${className || ""}`}
         {...rest}
       >
         {children}
@@ -219,12 +219,12 @@ const ModalInner: React.FC<ModalInnerProps> = ({
     <div
       ref={innerModalRef}
       onKeyDown={handleKeyDown}
-      className={`rounded-lg shadow-lg m-auto max-w-3xl w-full relative ${className}`}
+      className={`orama:rounded-lg orama:shadow-lg orama:m-auto orama:max-w-3xl orama:w-full orama:relative ${className}`}
       role="dialog"
       aria-modal="true"
       {...rest}
     >
-      <section ref={ref} className="w-full relative">
+      <section ref={ref} className="orama:w-full orama:relative">
         {children}
       </section>
     </div>
@@ -241,7 +241,11 @@ const ModalContent: React.FC<ModalContentProps> = ({
   ...rest
 }) => {
   return (
-    <div id="modalContent" className={`w-full h-full ${className}`} {...rest}>
+    <div
+      id="modalContent"
+      className={`orama:w-full orama:h-full ${className}`}
+      {...rest}
+    >
       {children}
     </div>
   );
