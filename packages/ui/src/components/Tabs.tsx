@@ -395,7 +395,7 @@ interface TabsDynamicPanelsProps {
   children: (
     item: ChatTabItem,
     chatTabs?: ChatTabItem[],
-    setChatTabs?: (tabs: ChatTabItem[]) => void,
+    setChatTabs?: (tabs: ChatTabItem[]) => void
   ) => React.ReactNode;
 }
 

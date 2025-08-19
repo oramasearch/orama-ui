@@ -17,7 +17,7 @@ interface SlidingPanelContextProps {
 }
 
 const SlidingPanelContext = createContext<SlidingPanelContextProps | undefined>(
-  undefined,
+  undefined
 );
 
 interface TriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -62,10 +62,10 @@ function Wrapper({
   const trapFocus = useCallback((event: KeyboardEvent) => {
     if (!panelRef.current) return;
     const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
     const focusable = Array.from(focusableElements).filter(
-      (el) => el.tabIndex !== -1,
+      (el) => el.tabIndex !== -1
     );
     if (focusable.length === 0) return;
 
@@ -103,7 +103,7 @@ function Wrapper({
     if (open && panelRef.current) {
       // Focus the first focusable element or the panel itself
       const focusable = panelRef.current.querySelector<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
       );
       if (focusable) {
         focusable.focus();
@@ -131,7 +131,7 @@ function Wrapper({
         aria-modal={open ? "true" : "false"}
         role="dialog"
         {...(!open && { inert: true })}
-        className={`fixed right-0 top-0 bottom-0 z-50 h-full w-full overflow-hidden ${className || ""}`}
+        className={`orama:fixed orama:right-0 orama:top-0 orama:bottom-0 orama:z-50 orama:h-full orama:w-full orama:overflow-hidden ${className || ""}`}
         style={{
           visibility: open ? "visible" : "hidden",
           pointerEvents: open ? "auto" : "none",
@@ -159,7 +159,7 @@ function Content({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Content must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Content must be used within SlidingPanel.Wrapper"
     );
 
   const { open } = ctx;
@@ -206,7 +206,7 @@ function Content({
 
   return (
     <div
-      className={`w-full fixed transition-transform z-50 ${className || ""}`}
+      className={`orama:w-full orama:fixed orama:transition-transform orama:z-50 ${className || ""}`}
       style={{
         transform: isAnimating ? translateOpen : translateClosed,
         bottom: position === "top" ? "auto" : 0,
@@ -228,13 +228,13 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper"
     );
 
   return (
     <div
       onClick={ctx.open ? ctx.onClose : undefined}
-      className={`z-40 ${className || ""}`}
+      className={`orama:z-40 ${className || ""}`}
       style={{
         position: "fixed",
         right: 0,
@@ -259,7 +259,7 @@ function Close({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Close must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Close must be used within SlidingPanel.Wrapper"
     );
   return (
     <button

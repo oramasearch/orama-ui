@@ -22,7 +22,7 @@ export interface ChatInteractionsWrapperProps
   children: (
     interaction: Interaction,
     index?: number,
-    totalInteractions?: number,
+    totalInteractions?: number
   ) => ReactNode;
   className?: string;
   "aria-label"?: string;
@@ -78,10 +78,10 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
 }) => {
   const { interactions } = useChatContext();
   const [lastInteraction, setLastInteraction] = useState<number | undefined>(
-    undefined,
+    undefined
   );
   const { containerRef, minHeight } = useLastInteractionMinHeight(
-    interactions?.length ?? 0,
+    interactions?.length ?? 0
   );
 
   useEffect(() => {
@@ -543,7 +543,9 @@ const Error: React.FC<ErrorProps> = ({
   if (!interaction.error) return null;
   return (
     <div className={className} {...rest}>
-      {children || <span className="text-red-500">Something went wrong.</span>}
+      {children || (
+        <span className="orama:text-red-500">Something went wrong.</span>
+      )}
     </div>
   );
 };
