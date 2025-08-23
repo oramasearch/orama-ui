@@ -122,6 +122,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
       term: newValue,
       limit: 10,
       ...searchParams,
+      boost: searchParams?.boost ?? {},
     });
   };
 

@@ -97,6 +97,7 @@ const Item: React.FC<ItemProps> = ({
     if (!disabled) {
       search({
         ...(searchParams ? { ...searchParams } : {}),
+        boost: searchParams?.boost ?? {},
         term: searchParams?.term || searchTerm || "",
         limit: searchParams?.limit || 10,
         filterBy: [{ [filterBy]: group.name }],

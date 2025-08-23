@@ -165,8 +165,8 @@ function Content({
   const { open } = ctx;
 
   useEffect(() => {
-    let animationTimeout: number;
-    let visibilityTimeout: number;
+  let animationTimeout: ReturnType<typeof setTimeout>;
+  let visibilityTimeout: ReturnType<typeof setTimeout>;
 
     if (open) {
       setIsVisible(true);
