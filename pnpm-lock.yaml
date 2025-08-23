@@ -214,8 +214,8 @@ importers:
   packages/ui:
     dependencies:
       '@orama/core':
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.2.4
+        version: 1.2.4
       prism-react-renderer:
         specifier: ^1.3.5
         version: 1.3.5(react@19.1.0)
@@ -539,6 +539,9 @@ packages:
 
   '@orama/core@1.2.0':
     resolution: {integrity: sha512-4wq+oSPnBjMuUHk0IOGDXWFDBk6QkvmlF76QVStMGVSzKTPsWw98VIh4TlNiDbwj7Qtvuh9gzWHkaVmLFG2ILw==}
+
+  '@orama/core@1.2.4':
+    resolution: {integrity: sha512-5brTvDTV8Kufxnku2Orw+RhQRrLklGMAVhBKvx3KflXLg4Bu6nhXC5fVj7BJgAEwzikqkh8tuzGvZp124C8eHQ==}
 
   '@orama/cuid2@2.2.3':
     resolution: {integrity: sha512-Lcak3chblMejdlSHgYU2lS2cdOhDpU6vkfIJH4m+YKvqQyLqs1bB8+w6NT1MG5bO12NUK2GFc34Mn2xshMIQ1g==}
@@ -2659,6 +2662,13 @@ snapshots:
       fastq: 1.19.1
 
   '@orama/core@1.2.0':
+    dependencies:
+      '@orama/cuid2': 2.2.3
+      '@orama/oramacore-events-parser': 0.0.5
+      zod: 3.24.3
+      zod-to-json-schema: 3.24.5(zod@3.24.3)
+
+  '@orama/core@1.2.4':
     dependencies:
       '@orama/cuid2': 2.2.3
       '@orama/oramacore-events-parser': 0.0.5
