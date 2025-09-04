@@ -16,11 +16,11 @@ Orama UI is a composable, unstyled React component library designed to provide f
 2. **Install the required packages:**
 
    ```bash
-   npm install @orama/ui @orama/client
+   npm install @orama/ui @orama/core
    # or
-   pnpm install @orama/ui @orama/client
+   pnpm install @orama/ui @orama/core
    # or
-   yarn add @orama/ui @orama/client
+   yarn add @orama/ui @orama/core
    ```
 
 3. **Set up your Orama client:**
@@ -28,7 +28,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
    Import the Orama JavaScript client and create your instance using your Cloud project configuration:
 
    ```tsx
-   import { OramaCloud } from "@orama/client";
+   import { OramaCloud } from "@orama/core";
 
    const orama = new OramaCloud({
      projectId: "your-project-id",
