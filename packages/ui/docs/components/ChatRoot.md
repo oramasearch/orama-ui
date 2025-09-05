@@ -17,11 +17,11 @@ This component is typically used to wrap parts of your UI that require access to
 The `initialState` prop accepts a partial `ChatContextProps` object with the following optional properties:
 
 | Property                | Type                              | Description                                                                                     |
-| ----------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- | --- |
+| ----------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
 | onAskStart              | `(options: AnswerConfig) => void` | Callback function triggered when a chat request starts. Receives the answer configuration.      |
 | onAskComplete           | `() => void`                      | Callback function triggered when a chat request completes successfully.                         |
 | onAskError              | `(error: Error) => void`          | Callback function triggered when a chat request encounters an error. Receives the error object. |
-| askOptions              | `Omit<AnswerConfig, "query">`     | Default options to pass to all ask requests within this ChatRoot context.                       |     |
+| askOptions              | `Omit<AnswerConfig, "query">`     | Default options to pass to all ask requests within this ChatRoot context.                       |
 | userPrompt              | `string`                          | Current user prompt text.                                                                       |
 | interactions            | `(Interaction \| undefined)[]`    | Array of previous chat interactions to pre-populate the chat history.                           |
 | answerSession           | `AnswerSession \| null`           | Current answer session object from Orama.                                                       |
