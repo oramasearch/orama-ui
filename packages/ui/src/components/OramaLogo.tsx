@@ -9,11 +9,7 @@ export interface OramaLogoProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-const OramaLogo: React.FC<OramaLogoProps> = ({
-  theme,
-  className = "",
-  ...props
-}) => {
+const OramaLogo = ({ theme, className = "", ...props }: OramaLogoProps) => {
   if (theme === "dark") {
     return (
       <svg

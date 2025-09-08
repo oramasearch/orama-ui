@@ -5,11 +5,11 @@ interface PromptTextAreaWrapperProps
   className?: string;
 }
 
-export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
+export const PromptTextAreaWrapper = ({
   children,
   className = "",
   ...rest
-}) => {
+}: PromptTextAreaWrapperProps) => {
   return (
     <div className={className} {...rest}>
       {children}
@@ -41,7 +41,7 @@ interface PromptTextAreaButtonProps
   "aria-label"?: string;
 }
 
-export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
+export const PromptTextAreaField = ({
   placeholder = "Enter your prompt...",
   disabled = false,
   maxLength,
@@ -52,7 +52,7 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   onKeyDown,
   ref,
   ...props
-}) => {
+}: PromptTextAreaFieldProps) => {
   const { ask, context, dispatch } = useChat();
   const { userPrompt, askOptions } = context;
   const internalRef = React.useRef<HTMLTextAreaElement>(null);
@@ -113,14 +113,14 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
   );
 };
 
-export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
+export const PromptTextAreaButton = ({
   ask: onButtask,
   disabled = false,
   abortContent,
   onClick,
   children,
   ...props
-}) => {
+}: PromptTextAreaButtonProps) => {
   const { ask, abort, context } = useChat();
   const { userPrompt, interactions, askOptions } = context;
 

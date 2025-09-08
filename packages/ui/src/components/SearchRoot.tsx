@@ -71,8 +71,10 @@ export const SearchRoot = ({
   });
 
   return (
-    <SearchContext value={state}>
-      <SearchDispatchContext value={dispatch}>{children}</SearchDispatchContext>
-    </SearchContext>
+    <SearchContext.Provider value={state}>
+      <SearchDispatchContext.Provider value={dispatch}>
+        {children}
+      </SearchDispatchContext.Provider>
+    </SearchContext.Provider>
   );
 };

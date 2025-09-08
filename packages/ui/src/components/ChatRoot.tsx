@@ -92,8 +92,8 @@ export const ChatRoot = ({
   });
 
   return (
-    <ChatContext value={state}>
+    <ChatContext.Provider value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
-    </ChatContext>
+    </ChatContext.Provider>
   );
 };

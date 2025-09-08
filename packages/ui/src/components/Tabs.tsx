@@ -87,13 +87,13 @@ export const useTabsContext = () => {
   return context;
 };
 
-const TabsWrapper: React.FC<TabsWrapperProps> = ({
+const TabsWrapper = ({
   children,
   defaultTab,
   onTabChange,
   orientation = "vertical",
   className = "",
-}) => {
+}: TabsWrapperProps) => {
   const [tabs, setTabs] = useState<string[]>([]);
   const [activeTab, setActiveTabState] = useState<string>("");
   const [prompt, setPrompt] = useState<string | undefined>(undefined);
@@ -170,19 +170,16 @@ const TabsWrapper: React.FC<TabsWrapperProps> = ({
   );
 };
 
-const TabsCounter: React.FC<TabsCounterProps> = ({ children }) => {
+const TabsCounter = ({ children }: TabsCounterProps) => {
   const { chatTabs } = useTabsContext();
   return <React.Fragment>{children(chatTabs?.length ?? 0)}</React.Fragment>;
 };
 
-const TabsList: React.FC<TabsListProps> = ({ children, ...rest }) => {
+const TabsList = ({ children, ...rest }: TabsListProps) => {
   return <div {...rest}>{children}</div>;
 };
 
-const TabsDynamicList: React.FC<TabsDynamicListProps> = ({
-  children,
-  ...rest
-}) => {
+const TabsDynamicList = ({ children, ...rest }: TabsDynamicListProps) => {
   const { chatTabs } = useTabsContext();
 
   if (!chatTabs) return null;
@@ -196,12 +193,12 @@ const TabsDynamicList: React.FC<TabsDynamicListProps> = ({
   );
 };
 
-const TabsButton: React.FC<TabsButtonProps> = ({
+const TabsButton = ({
   tabId,
   children,
   className = "",
   disabled = false,
-}) => {
+}: TabsButtonProps) => {
   const { activeTab, setActiveTab, registerTab, unregisterTab } =
     useTabsContext();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -240,7 +237,7 @@ const TabsButton: React.FC<TabsButtonProps> = ({
   );
 };
 
-const TabsClose: React.FC<TabCloseProps> = ({ tabId, children, ...rest }) => {
+const TabsClose = ({ tabId, children, ...rest }: TabCloseProps) => {
   const { setChatTabs, chatTabs, unregisterTab, activeTab, setActiveTab } =
     useTabsContext();
   const handleClose = (e: React.MouseEvent) => {
@@ -274,7 +271,7 @@ const TabsClose: React.FC<TabCloseProps> = ({ tabId, children, ...rest }) => {
   );
 };
 
-const TabsTrigger: React.FC<TabsTriggerProps> = ({
+const TabsTrigger = ({
   tabId,
   children,
   className = "",
@@ -282,7 +279,7 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
   onClick,
   prompt,
   ...rest
-}) => {
+}: TabsTriggerProps) => {
   const { registerTab, setPrompt, setActiveTab, setChatTabs, chatTabs } =
     useTabsContext();
 
@@ -327,11 +324,7 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({
   );
 };
 
-const TabsPanel: React.FC<TabsPanelProps> = ({
-  tabId,
-  children,
-  className = "",
-}) => {
+const TabsPanel = ({ tabId, children, className = "" }: TabsPanelProps) => {
   const { activeTab } = useTabsContext();
   const isActive = activeTab === tabId;
 
@@ -351,11 +344,11 @@ const TabsPanel: React.FC<TabsPanelProps> = ({
   );
 };
 
-const TabsDynamicPanel: React.FC<TabsPanelProps> = ({
+const TabsDynamicPanel = ({
   tabId,
   children,
   className = "",
-}) => {
+}: TabsPanelProps) => {
   const { activeTab, prompt, setPrompt } = useTabsContext();
   const { ask, dispatch, context } = useChat();
   const { askOptions } = context;
@@ -395,11 +388,11 @@ interface TabsDynamicPanelsProps {
   children: (
     item: ChatTabItem,
     chatTabs?: ChatTabItem[],
-    setChatTabs?: (tabs: ChatTabItem[]) => void
+    setChatTabs?: (tabs: ChatTabItem[]) => void,
   ) => React.ReactNode;
 }
 
-const TabsDynamicPanels: React.FC<TabsDynamicPanelsProps> = ({ children }) => {
+const TabsDynamicPanels = ({ children }: TabsDynamicPanelsProps) => {
   const { chatTabs, setChatTabs } = useTabsContext();
 
   if (!chatTabs) return null;

@@ -41,7 +41,7 @@ interface ModalWrapperProps extends React.HTMLAttributes<HTMLDialogElement> {
   className?: string;
 }
 
-const ModalWrapper: React.FC<ModalWrapperProps> = ({
+const ModalWrapper = ({
   closeOnEscape = true,
   closeOnOutsideClick = true,
   onModalClosed,
@@ -49,7 +49,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   className,
   open = false,
   ...rest
-}) => {
+}: ModalWrapperProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const innerModalRef = useRef<HTMLDivElement>(null);
   const activeElementRef = useRef<HTMLElement | null>(null);
@@ -61,7 +61,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     if (!modalRef.current) return;
 
     const focusableElements = modalRef.current.querySelectorAll(
-      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
     );
     const focusableArray = (
       Array.from(focusableElements) as HTMLElement[]
@@ -73,7 +73,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         focusableArray[focusableArray.length - 1] ?? null;
 
       const focusedElement = modalRef.current.querySelector(
-        ":focus"
+        ":focus",
       ) as HTMLElement;
 
       if (
@@ -96,7 +96,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     if (!modalRef.current) return;
 
     const focusableElements = modalRef.current.querySelectorAll(
-      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
     );
     const focusableArray = (
       Array.from(focusableElements) as HTMLElement[]
@@ -122,7 +122,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
           break;
       }
     },
-    [closeOnEscape, onModalClosed, trapFocus]
+    [closeOnEscape, onModalClosed, trapFocus],
   );
 
   const handleClick = useCallback(
@@ -137,7 +137,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         onModalClosed();
       }
     },
-    [closeOnOutsideClick, onModalClosed]
+    [closeOnOutsideClick, onModalClosed],
   );
 
   useEffect(() => {
@@ -203,11 +203,7 @@ interface ModalInnerProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const ModalInner: React.FC<ModalInnerProps> = ({
-  className = "",
-  children,
-  ...rest
-}) => {
+const ModalInner = ({ className = "", children, ...rest }: ModalInnerProps) => {
   const { innerModalRef } = useModalContext();
   const { ref, onKeyDown } = useArrowKeysNavigation();
 
@@ -235,11 +231,11 @@ interface ModalContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const ModalContent: React.FC<ModalContentProps> = ({
+const ModalContent = ({
   className = "",
   children,
   ...rest
-}) => {
+}: ModalContentProps) => {
   return (
     <div
       id="modalContent"
@@ -256,11 +252,11 @@ interface ModalCloseProps
   className?: string;
 }
 
-const ModalClose: React.FC<ModalCloseProps> = ({
+const ModalClose = ({
   className = "",
   children = "×",
   ...rest
-}) => {
+}: ModalCloseProps) => {
   const { onModalClosed } = useModalContext();
 
   const handleClick = useCallback(() => {

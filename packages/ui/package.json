@@ -12,6 +12,7 @@
     "url": "git+https://github.com/oramasearch/orama-ui.git",
     "directory": "packages/ui"
   },
+  "type": "module",
   "exports": {
     "./styles.css": "./dist/index.css",
     "./*": "./dist/*.js",
@@ -41,8 +42,7 @@
     "lint": "eslint src --max-warnings 0"
   },
   "peerDependencies": {
-    "@orama/core": "^1.2.4",
-    "react": "^19.0.0"
+    "@orama/core": "^1.2.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

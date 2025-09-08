@@ -55,7 +55,7 @@ export const InnerSearchBox = () => {
                 placeholder="Find your next favorite thing..."
                 className="flex-1 outline-none text-sm"
                 searchParams={{
-                  groupBy: "category",
+                  groupedBy: "category",
                 }}
               />
             </SearchInput.Wrapper>

@@ -39,7 +39,7 @@ export const InnerSearchBox = () => {
                 placeholder="Find your next favorite thing..."
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-pink-400 transition-colors"
                 searchParams={{
-                  groupBy: "category",
+                  groupedBy: "category",
                 }}
               />
             </SearchInput.Wrapper>

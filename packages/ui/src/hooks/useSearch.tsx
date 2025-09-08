@@ -31,18 +31,18 @@ import { GroupsCount } from "@/types";
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  search: (
-    options: CloudSearchParams & {
-      groupBy?: string;
-      filterBy?: Record<string, string>[];
-    },
-  ) => Promise<void>;
+  search: (options: SearchOptions) => Promise<void>;
   reset: () => void;
   context: ReturnType<typeof useSearchContext>;
   dispatch: ReturnType<typeof useSearchDispatch>;
   loading: boolean;
   error: Error | null;
 }
+
+type SearchOptions = CloudSearchParams & {
+  groupedBy?: string;
+  filterBy?: Record<string, string>[];
+};
 
 export function useSearch(): useSearchReturn {
   const context = useSearchContext();
@@ -60,12 +60,7 @@ export function useSearch(): useSearchReturn {
   }, []);
 
   const search = useCallback(
-    async (
-      options: CloudSearchParams & {
-        groupBy?: string;
-        filterBy?: Record<string, string>[];
-      },
-    ) => {
+    async (options: SearchOptions) => {
       if (!client) {
         setError(new Error("Client is not initialized"));
         setLoading(false);
@@ -80,7 +75,7 @@ export function useSearch(): useSearchReturn {
       });
       setLoading(true);
       setError(null);
-      const groupBy = options.groupBy || null;
+      const groupBy = options.groupedBy || null;
 
       try {
         const res = await client.search({

@@ -20,7 +20,7 @@ export const InnerSearchBox = () => {
           ariaLabel="Search for products"
           placeholder="Find your next favorite thing..."
           searchParams={{
-            groupBy: "category",
+            groupedBy: "category",
           }}
         />
       </SearchInput.Wrapper>
@@ -76,11 +76,7 @@ export const InnerSearchBox = () => {
 
 export const SearchBox = () => {
   return (
-    <SearchRoot
-      initialState={{
-        client: oramaDocsCollection,
-      }}
-    >
+    <SearchRoot client={oramaDocsCollection}>
       <InnerSearchBox />
     </SearchRoot>
   );

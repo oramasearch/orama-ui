@@ -6,7 +6,7 @@ import {
   PromptTextArea,
   Tabs,
 } from "@orama/ui/components";
-import { ArrowDown, PenBoxIcon, X } from "lucide-react";
+import { ArrowDown, PenBoxIcon } from "lucide-react";
 import { oramaDocsCollection } from "@/data";
 import { useScrollableContainer } from "@orama/ui/hooks";
 import { Interaction } from "@orama/core";

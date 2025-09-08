@@ -3,13 +3,14 @@ import React from "react";
 
 interface SuggestionsWrapper extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
+  children: React.ReactNode;
 }
 
-const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
+const SuggestionsWrapper = ({
   className = "",
   children,
   ...rest
-}) => {
+}: SuggestionsWrapper) => {
   return (
     <div className={className} {...rest}>
       {children}
@@ -37,12 +38,12 @@ interface SuggestionsItemProps
  * When the button is clicked, it triggers the `onClick` handler if provided,
  * and then calls the `ask` function from the `useChat` hook with the button's text content as the user prompt.
  */
-const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
+const SuggestionsItem = ({
   onClick,
   children,
   className = "",
   ...rest
-}) => {
+}: SuggestionsItemProps) => {
   const { ask, context } = useChat();
   const { askOptions } = context;
 

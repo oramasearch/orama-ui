@@ -22,7 +22,7 @@ export interface ChatInteractionsWrapperProps
   children: (
     interaction: Interaction,
     index?: number,
-    totalInteractions?: number
+    totalInteractions?: number,
   ) => ReactNode;
   className?: string;
   "aria-label"?: string;
@@ -68,20 +68,24 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
+export interface RegenerateLatestProps extends ActionButtonProps {
+  interaction: Interaction;
+}
+
+const ChatInteractionsWrapper = ({
   children,
   className = "",
   onNewInteraction,
   onStreaming,
   beforeInteractions,
   ...rest
-}) => {
+}: ChatInteractionsWrapperProps) => {
   const { interactions } = useChatContext();
   const [lastInteraction, setLastInteraction] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const { containerRef, minHeight } = useLastInteractionMinHeight(
-    interactions?.length ?? 0
+    interactions?.length ?? 0,
   );
 
   useEffect(() => {
@@ -144,24 +148,24 @@ const ChatInteractionsWrapper: React.FC<ChatInteractionsWrapperProps> = ({
   );
 };
 
-const UserPrompt: React.FC<UserPromptProps> = ({
+const UserPrompt = ({
   children,
   className = "",
   "aria-label": ariaLabel = "User message",
   ...rest
-}) => (
+}: UserPromptProps) => (
   <div className={className} aria-label={ariaLabel} {...rest}>
     {children}
   </div>
 );
 
-const AssistantMessage: React.FC<AssistantMessageProps> = ({
+const AssistantMessage = ({
   children,
   theme: customTheme,
   markdownClassnames = {},
   className = "",
   ...rest
-}) => {
+}: AssistantMessageProps) => {
   if (!children) {
     return null;
   }
@@ -313,23 +317,23 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({
   );
 };
 
-const UserActions: React.FC<UserActionsProps> = ({
+const UserActions = ({
   children,
   className = "",
   ...rest
-}) => (
+}: UserActionsProps) => (
   <div className={className} {...rest}>
     {children}
   </div>
 );
 
-const Sources: React.FC<SourcesProps> = ({
+const Sources = ({
   children,
   interaction,
   className,
   itemClassName,
   ...rest
-}) => {
+}: SourcesProps) => {
   const { sources, response } = interaction;
 
   if (!sources || sources.length === 0) {
@@ -362,12 +366,12 @@ const Sources: React.FC<SourcesProps> = ({
   );
 };
 
-const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
+const ScrollToBottomButton = ({
   className = "",
   onClick,
   children,
   ...rest
-}) => {
+}: ScrollToBottomButtonProps) => {
   const dispatch = useChatDispatch();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -394,7 +398,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({
   );
 };
 
-const Reset: React.FC<ActionButtonProps> = ({ children, onClick, ...rest }) => {
+const Reset = ({ children, onClick, ...rest }: ActionButtonProps) => {
   const { reset } = useChat();
   const { interactions } = useChatContext();
 
@@ -416,11 +420,12 @@ const Reset: React.FC<ActionButtonProps> = ({ children, onClick, ...rest }) => {
   );
 };
 
-const RegenerateLatest: React.FC<
-  ActionButtonProps & {
-    interaction: Interaction;
-  }
-> = ({ children, onClick, interaction, ...rest }) => {
+const RegenerateLatest = ({
+  children,
+  onClick,
+  interaction,
+  ...rest
+}: RegenerateLatestProps) => {
   const { regenerateLatest } = useChat();
   const { interactions } = useChatContext();
 
@@ -452,12 +457,12 @@ export interface CopyMessageProps
   interaction: Interaction;
 }
 
-const CopyMessage: React.FC<CopyMessageProps> = ({
+const CopyMessage = ({
   onClick,
   children,
   interaction,
   ...rest
-}) => {
+}: CopyMessageProps) => {
   const { copyToClipboard, copied: copiedMessage } = useClipboard();
   const [copied, setCopied] = useState(false);
   const isStreaming = interaction.loading && interaction.response;
@@ -490,11 +495,11 @@ const CopyMessage: React.FC<CopyMessageProps> = ({
   );
 };
 
-const ChatInteractionsEmptyState: React.FC<EmptyStateProps> = ({
+const ChatInteractionsEmptyState = ({
   className = "",
   children,
   ...rest
-}) => {
+}: EmptyStateProps) => {
   const { interactions } = useChatContext();
 
   if (interactions && interactions.length > 0) {
@@ -514,12 +519,12 @@ interface LoadingProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Loading: React.FC<LoadingProps> = ({
+const Loading = ({
   interaction,
   children,
   className = "",
   ...rest
-}) => {
+}: LoadingProps) => {
   if (!interaction.loading || interaction.response) return null;
   return (
     <div className={className} {...rest}>
@@ -534,12 +539,12 @@ interface ErrorProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const Error: React.FC<ErrorProps> = ({
+const Error = ({
   interaction,
   children,
   className = "",
   ...rest
-}) => {
+}: ErrorProps) => {
   if (!interaction.error) return null;
   return (
     <div className={className} {...rest}>

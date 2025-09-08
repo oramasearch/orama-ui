@@ -6,7 +6,7 @@ export type SearchContextProps = {
   client: OramaCloud | null;
   search?: (
     params: SearchParams & {
-      groupBy?: string;
+      groupedBy?: string;
       filterBy?: Record<string, string>[];
     },
   ) => Promise<void>;

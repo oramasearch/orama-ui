@@ -9,12 +9,12 @@ export interface OramaIconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-const OramaIcon: React.FC<OramaIconProps> = ({
+const OramaIcon = ({
   theme,
   size = 24,
   className = "",
   ...props
-}) => {
+}: OramaIconProps) => {
   const sizeValue = typeof size === "number" ? `${size}px` : size;
 
   if (theme === "dark") {

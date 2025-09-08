@@ -75,12 +75,12 @@ export interface SearchInputProps
    * Get them from Orama
    */
   searchParams?: Omit<SearchParams, "term"> & {
-    groupBy?: string;
+    groupedBy?: string;
     filterBy?: Record<string, string>[];
   };
 }
 
-export const SearchInputField: React.FC<SearchInputProps> = ({
+export const SearchInputField = ({
   inputId,
   placeholder = "Search...",
   ariaLabel,
@@ -89,7 +89,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   ref,
   onChange,
   ...rest
-}) => {
+}: SearchInputProps) => {
   const { search, reset } = useSearch();
   const internalRef = useRef<HTMLInputElement | null>(null);
   const inputRef = ref || internalRef;
@@ -141,28 +141,21 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   );
 };
 
-export interface SearchInputLabelProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  /**
-   * Optional class name for the label element.
-   * This allows for custom styling of the label.
-   * @default ''
-   * */
+interface SearchInputLabelOwnProps {
   className?: string;
-  /**
-   * The HTML element type to render the label as.
-   * Defaults to 'label', but can be overridden to any valid React element type.
-   */
-  as?: React.ElementType;
 }
 
-export const SearchInputLabel: React.FC<SearchInputLabelProps> = ({
+export type SearchInputLabelProps<T extends ElementType = "label"> =
+  PolymorphicComponentProps<T, SearchInputLabelOwnProps>;
+
+export const SearchInputLabel = <T extends ElementType = "label">({
   children,
   className,
-  as = "label",
+  as,
   ...props
-}) => {
-  const Component = as;
+}: SearchInputLabelProps<T>) => {
+  const Component = as || "label";
+
   return (
     <Component className={className} {...props}>
       {children}

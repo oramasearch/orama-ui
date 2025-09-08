@@ -17,7 +17,7 @@ interface SlidingPanelContextProps {
 }
 
 const SlidingPanelContext = createContext<SlidingPanelContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 interface TriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -62,10 +62,10 @@ function Wrapper({
   const trapFocus = useCallback((event: KeyboardEvent) => {
     if (!panelRef.current) return;
     const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
     );
     const focusable = Array.from(focusableElements).filter(
-      (el) => el.tabIndex !== -1
+      (el) => el.tabIndex !== -1,
     );
     if (focusable.length === 0) return;
 
@@ -103,7 +103,7 @@ function Wrapper({
     if (open && panelRef.current) {
       // Focus the first focusable element or the panel itself
       const focusable = panelRef.current.querySelector<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
       );
       if (focusable) {
         focusable.focus();
@@ -159,14 +159,14 @@ function Content({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Content must be used within SlidingPanel.Wrapper"
+      "SlidingPanel.Content must be used within SlidingPanel.Wrapper",
     );
 
   const { open } = ctx;
 
   useEffect(() => {
-  let animationTimeout: ReturnType<typeof setTimeout>;
-  let visibilityTimeout: ReturnType<typeof setTimeout>;
+    let animationTimeout: ReturnType<typeof setTimeout>;
+    let visibilityTimeout: ReturnType<typeof setTimeout>;
 
     if (open) {
       setIsVisible(true);
@@ -228,7 +228,7 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper"
+      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper",
     );
 
   return (
@@ -259,7 +259,7 @@ function Close({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Close must be used within SlidingPanel.Wrapper"
+      "SlidingPanel.Close must be used within SlidingPanel.Wrapper",
     );
   return (
     <button
