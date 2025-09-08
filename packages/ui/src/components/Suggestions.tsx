@@ -1,13 +1,13 @@
-import { useChat } from '../hooks'
-import React from 'react'
+import { useChat } from "../hooks";
+import React from "react";
 
 interface SuggestionsWrapper extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
-  children: React.ReactNode
+  className?: string;
+  children: React.ReactNode;
 }
 
 const SuggestionsWrapper = ({
-  className = '',
+  className = "",
   children,
   ...rest
 }: SuggestionsWrapper) => {
@@ -15,14 +15,14 @@ const SuggestionsWrapper = ({
     <div className={className} {...rest}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 interface SuggestionsItemProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-  children: React.ReactNode
-  className?: string
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  children: React.ReactNode;
+  className?: string;
 }
 
 /**
@@ -41,26 +41,26 @@ interface SuggestionsItemProps
 const SuggestionsItem = ({
   onClick,
   children,
-  className = '',
+  className = "",
   ...rest
 }: SuggestionsItemProps) => {
-  const { ask, context } = useChat()
-  const { askOptions } = context
+  const { ask, context } = useChat();
+  const { askOptions } = context;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
-    event.preventDefault()
+    event.stopPropagation();
+    event.preventDefault();
     if (onClick) {
-      onClick(event)
+      onClick(event);
     }
     ask({
-      query: event.currentTarget.textContent || '',
-      ...askOptions
-    })
-  }
+      query: event.currentTarget.textContent || "",
+      ...askOptions,
+    });
+  };
   return (
     <button
-      type='button'
+      type="button"
       className={className}
       onClick={handleClick}
       data-focus-on-arrow-nav
@@ -68,10 +68,10 @@ const SuggestionsItem = ({
     >
       {children}
     </button>
-  )
-}
+  );
+};
 
 export const Suggestions = {
   Wrapper: SuggestionsWrapper,
-  Item: SuggestionsItem
-}
+  Item: SuggestionsItem,
+};

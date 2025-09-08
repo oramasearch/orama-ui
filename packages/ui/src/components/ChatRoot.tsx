@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   ChatContext,
   ChatDispatchContext,
   chatReducer,
   useChatContext,
-  type ChatContextProps
-} from '../contexts/ChatContext'
+  type ChatContextProps,
+} from "../contexts/ChatContext";
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -63,37 +63,37 @@ export interface ChatRootProps extends React.PropsWithChildren {
    * Required Orama client to be used for chat operations.
    * This client is essential for executing chat queries and managing interactions.
    */
-  client: ChatContextProps['client']
+  client: ChatContextProps["client"];
   /**
    * Initial state for the chat context.
    * This allows you to configure the client, callbacks, options, and pre-populate
    * the chat with initial values like interactions, user prompts, or other state properties.
    */
-  initialState?: Partial<Omit<ChatContextProps, 'client'>>
+  initialState?: Partial<Omit<ChatContextProps, "client">>;
 }
 
 export const ChatRoot = ({
   client,
   initialState = {},
-  children
+  children,
 }: ChatRootProps) => {
-  const chatState = useChatContext()
+  const chatState = useChatContext();
 
-  if (typeof window !== 'undefined' && !client && !chatState.client) {
+  if (typeof window !== "undefined" && !client && !chatState.client) {
     console.warn(
-      'ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.'
-    )
+      "ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
     client: client || chatState.client,
-    ...initialState
-  })
+    ...initialState,
+  });
 
   return (
     <ChatContext.Provider value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext.Provider>
-  )
-}
+  );
+};

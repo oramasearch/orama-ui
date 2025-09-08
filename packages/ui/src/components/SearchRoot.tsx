@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   SearchContext,
   SearchDispatchContext,
   searchReducer,
-  useSearchContext
-} from '../contexts'
-import { type SearchContextProps } from '../contexts/SearchContext'
+  useSearchContext,
+} from "../contexts";
+import { type SearchContextProps } from "../contexts/SearchContext";
 
 /**
  * SearchRoot component provides context for managing search state and actions.
@@ -42,33 +42,33 @@ export interface SearchRootProps extends React.PropsWithChildren {
    * Required Orama client to be used for search operations.
    * This client is essential for executing search queries and managing results.
    */
-  client: SearchContextProps['client']
+  client: SearchContextProps["client"];
   /**
    * Initial state for the search context.
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
-  initialState?: Partial<Omit<SearchContextProps, 'client'>>
+  initialState?: Partial<Omit<SearchContextProps, "client">>;
 }
 
 export const SearchRoot = ({
   client,
   initialState = {},
-  children
+  children,
 }: SearchRootProps) => {
-  const searchState = useSearchContext()
+  const searchState = useSearchContext();
 
-  if (typeof window !== 'undefined' && !client && !searchState.client) {
+  if (typeof window !== "undefined" && !client && !searchState.client) {
     console.warn(
-      'SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.'
-    )
+      "SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
     client: client || searchState.client,
-    ...initialState
-  })
+    ...initialState,
+  });
 
   return (
     <SearchContext.Provider value={state}>
@@ -76,5 +76,5 @@ export const SearchRoot = ({
         {children}
       </SearchDispatchContext.Provider>
     </SearchContext.Provider>
-  )
-}
+  );
+};

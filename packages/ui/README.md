@@ -45,7 +45,7 @@ Orama UI is a composable, unstyled React component library designed to provide f
      SearchResults,
    } from "@orama/ui/components";
 
-   import "@orama/ui/styles.css"
+   import "@orama/ui/styles.css";
    ```
 
    Wrap your application with the SearchRoot provider and compose your search interface:
