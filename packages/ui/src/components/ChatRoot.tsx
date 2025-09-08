@@ -6,7 +6,6 @@ import {
   useChatContext,
   type ChatContextProps
 } from '../contexts/ChatContext'
-import { CollectionManager } from '@orama/core'
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
