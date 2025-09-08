@@ -3,7 +3,6 @@ import { oramaDocsCollection } from './data'
 import React from 'react'
 
 export default function App() {
-  console.log('App React version:', React.version)
   return (
     <div>
       <h1>APP - React 18 + @orama/ui Demo</h1>
@@ -12,12 +11,12 @@ export default function App() {
           <SearchInput.Label htmlFor='search-input'>
             Search Documents
           </SearchInput.Label>
-          {/* <SearchInput.Input
+          <SearchInput.Input
             placeholder='Search documents...'
             autoFocus
             aria-label='Search documents'
-          /> */}
-          {/* <SearchResults.List>
+          />
+          <SearchResults.List>
             {(result, index) => (
               <SearchResults.Item
                 key={index}
@@ -29,7 +28,7 @@ export default function App() {
                 </h2>
               </SearchResults.Item>
             )}
-          </SearchResults.List> */}
+          </SearchResults.List>
         </SearchInput.Wrapper>
       </SearchRoot>
     </div>

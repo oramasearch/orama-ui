@@ -42,7 +42,7 @@
     "lint": "eslint src --max-warnings 0"
   },
   "peerDependencies": {
-    "@orama/core": "^1.2.4"
+    "@orama/core": "^1.2.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

@@ -75,12 +75,12 @@ export interface SearchInputProps
    * Get them from Orama
    */
   searchParams?: Omit<SearchParams, 'term'> & {
-    groupBy?: string
+    groupedBy?: string
     filterBy?: Record<string, string>[]
   }
 }
 
-export const SearchInputField: React.FC<SearchInputProps> = ({
+export const SearchInputField = ({
   inputId,
   placeholder = 'Search...',
   ariaLabel,
@@ -89,7 +89,7 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   ref,
   onChange,
   ...rest
-}) => {
+}: SearchInputProps) => {
   const { search, reset } = useSearch()
   const internalRef = useRef<HTMLInputElement | null>(null)
   const inputRef = ref || internalRef
