@@ -1,27 +1,28 @@
-import { useChat } from "../hooks";
-import React from "react";
+import { useChat } from '../hooks'
+import React from 'react'
 
 interface SuggestionsWrapper extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
+  className?: string
+  children: React.ReactNode
 }
 
-const SuggestionsWrapper: React.FC<SuggestionsWrapper> = ({
-  className = "",
+const SuggestionsWrapper = ({
+  className = '',
   children,
   ...rest
-}) => {
+}: SuggestionsWrapper) => {
   return (
     <div className={className} {...rest}>
       {children}
     </div>
-  );
-};
+  )
+}
 
 interface SuggestionsItemProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
-  className?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  children: React.ReactNode
+  className?: string
 }
 
 /**
@@ -37,29 +38,29 @@ interface SuggestionsItemProps
  * When the button is clicked, it triggers the `onClick` handler if provided,
  * and then calls the `ask` function from the `useChat` hook with the button's text content as the user prompt.
  */
-const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
+const SuggestionsItem = ({
   onClick,
   children,
-  className = "",
+  className = '',
   ...rest
-}) => {
-  const { ask, context } = useChat();
-  const { askOptions } = context;
+}: SuggestionsItemProps) => {
+  const { ask, context } = useChat()
+  const { askOptions } = context
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+    event.stopPropagation()
+    event.preventDefault()
     if (onClick) {
-      onClick(event);
+      onClick(event)
     }
     ask({
-      query: event.currentTarget.textContent || "",
-      ...askOptions,
-    });
-  };
+      query: event.currentTarget.textContent || '',
+      ...askOptions
+    })
+  }
   return (
     <button
-      type="button"
+      type='button'
       className={className}
       onClick={handleClick}
       data-focus-on-arrow-nav
@@ -67,10 +68,10 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
 export const Suggestions = {
   Wrapper: SuggestionsWrapper,
-  Item: SuggestionsItem,
-};
+  Item: SuggestionsItem
+}

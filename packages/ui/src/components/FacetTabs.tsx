@@ -30,11 +30,7 @@ interface GroupedResult {
   count: number
 }
 
-const Wrapper: React.FC<WrapperProps> = ({
-  children,
-  className = '',
-  ...rest
-}) => {
+const Wrapper = ({ children, className = '', ...rest }: WrapperProps) => {
   const { ref, onArrowLeftRight } = useArrowKeysNavigation()
   const { results } = useSearchContext()
   if (!results || results.length === 0) {
@@ -55,12 +51,7 @@ const Wrapper: React.FC<WrapperProps> = ({
   )
 }
 
-const List: React.FC<ListProps> = ({
-  children,
-  className,
-  itemClassName,
-  ...rest
-}) => {
+const List = ({ children, className, itemClassName, ...rest }: ListProps) => {
   const { groupsCount, selectedFacet } = useSearchContext()
 
   if (!groupsCount || groupsCount.length === 0) {
@@ -78,7 +69,7 @@ const List: React.FC<ListProps> = ({
   )
 }
 
-const Item: React.FC<ItemProps> = ({
+const Item = ({
   children,
   group,
   isSelected = false,
@@ -88,7 +79,7 @@ const Item: React.FC<ItemProps> = ({
   className = '',
   disabled = false,
   ...props
-}) => {
+}: ItemProps) => {
   const { search } = useSearch()
   const { searchTerm } = useSearchContext()
   const dispatch = useSearchDispatch()
