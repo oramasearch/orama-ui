@@ -1,5 +1,3 @@
-import { AnswerConfig } from "@orama/core";
-import { useChatContext, useChatDispatch } from "../contexts";
 import { useChat } from "../hooks";
 import React, { useCallback, useEffect, useMemo } from "react";
 interface PromptTextAreaWrapperProps
@@ -21,6 +19,7 @@ export const PromptTextAreaWrapper: React.FC<PromptTextAreaWrapperProps> = ({
 
 interface PromptTextAreaFieldProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  ref?: React.Ref<HTMLTextAreaElement>;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   disabled?: boolean;
@@ -28,7 +27,6 @@ interface PromptTextAreaFieldProps
   rows?: number;
   className?: string;
   buttonText?: string;
-  askOptions?: Omit<AnswerConfig, "query">;
   "aria-label"?: string;
   "aria-describedby"?: string;
 }
@@ -40,29 +38,30 @@ interface PromptTextAreaButtonProps
   isLoading?: boolean;
   buttonText?: string;
   abortContent?: React.ReactNode;
-  askOptions?: Omit<AnswerConfig, "query">;
   "aria-label"?: string;
 }
 
 export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
-  onChange,
   placeholder = "Enter your prompt...",
   disabled = false,
   maxLength,
   rows = 4,
   "aria-label": ariaLabel = "Prompt input",
   "aria-describedby": ariaDescribedBy,
+  onChange,
   onKeyDown,
-  askOptions = {},
+  ref,
   ...props
 }) => {
-  const { ask } = useChat();
-  const { userPrompt } = useChatContext();
-  const dispatch = useChatDispatch();
-  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
+  const { ask, context, dispatch } = useChat();
+  const { userPrompt, askOptions } = context;
+  const internalRef = React.useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = ref ?? internalRef;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    onKeyDown?.(e);
+
+    if (!e.defaultPrevented && e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const userPrompt = e.currentTarget.value.trim();
       if (userPrompt) {
@@ -74,21 +73,28 @@ export const PromptTextAreaField: React.FC<PromptTextAreaFieldProps> = ({
         dispatch({ type: "CLEAR_USER_PROMPT" });
       }
     }
-
-    onKeyDown?.(e);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e);
-    const userPrompt = e.target.value.trim();
-    dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
+
+    if (!e.defaultPrevented) {
+      const userPrompt = e.target.value.trim();
+      dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
+    }
   };
 
   useEffect(() => {
-    if (!userPrompt && textAreaRef.current) {
+    if (
+      !userPrompt &&
+      typeof textAreaRef !== "function" &&
+      textAreaRef &&
+      "current" in textAreaRef &&
+      textAreaRef.current
+    ) {
       textAreaRef.current.value = "";
     }
-  }, [userPrompt]);
+  }, [userPrompt, textAreaRef]);
 
   return (
     <textarea
@@ -113,12 +119,10 @@ export const PromptTextAreaButton: React.FC<PromptTextAreaButtonProps> = ({
   abortContent,
   onClick,
   children,
-  askOptions,
   ...props
 }) => {
-  const { userPrompt } = useChatContext();
-  const { ask, abort } = useChat();
-  const { interactions } = useChatContext();
+  const { ask, abort, context } = useChat();
+  const { userPrompt, interactions, askOptions } = context;
 
   const isStreaming = useMemo(
     () =>

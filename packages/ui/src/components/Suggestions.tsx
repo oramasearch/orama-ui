@@ -1,4 +1,3 @@
-import { AnswerConfig } from "@orama/core";
 import { useChat } from "../hooks";
 import React from "react";
 
@@ -23,7 +22,6 @@ interface SuggestionsItemProps
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   children: React.ReactNode;
   className?: string;
-  askOptions?: Omit<AnswerConfig, "query">;
 }
 
 /**
@@ -43,10 +41,10 @@ const SuggestionsItem: React.FC<SuggestionsItemProps> = ({
   onClick,
   children,
   className = "",
-  askOptions = {},
   ...rest
 }) => {
-  const { ask } = useChat();
+  const { ask, context } = useChat();
+  const { askOptions } = context;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();

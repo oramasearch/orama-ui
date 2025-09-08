@@ -25,6 +25,7 @@ import {
   Suggestions,
   Modal,
 } from "@orama/ui/components";
+import { Hit } from "@orama/core";
 
 const mockInitialContent = [
   {

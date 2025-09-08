@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
-import { CollectionManager, SearchParams, Hit } from "@orama/core";
+import { SearchParams, Hit, OramaCloud } from "@orama/core";
 import { GroupsCount } from "@/types";
 
 export type SearchContextProps = {
-  client: CollectionManager | null;
-  onSearch?: (
+  client: OramaCloud | null;
+  search?: (
     params: SearchParams & {
       groupBy?: string;
       filterBy?: Record<string, string>[];
@@ -18,7 +18,7 @@ export type SearchContextProps = {
 };
 
 export type SearchAction =
-  | { type: "SET_CLIENT"; payload: { client: CollectionManager | null } }
+  | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
   | { type: "SET_SEARCH_TERM"; payload: { searchTerm: string } }
   | { type: "SET_RESULTS"; payload: { results: Hit[] | null } }
   | { type: "SET_GROUPS_COUNT"; payload: { groupsCount: GroupsCount | null } }

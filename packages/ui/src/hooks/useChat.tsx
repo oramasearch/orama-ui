@@ -97,7 +97,12 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
     async (options: AnswerConfig) => {
       setLoading(true);
       setError(null);
-      callbacks.onAskStart?.(options);
+
+      if (callbacks.onAskStart) {
+        callbacks.onAskStart(options);
+      } else if (context.onAskStart) {
+        context.onAskStart(options);
+      }
 
       const { query: userPrompt } = options || {};
 
@@ -105,21 +110,40 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
         const err = new Error("User prompt cannot be empty");
         setError(err);
         setLoading(false);
-        callbacks.onAskError?.(err);
+        if (callbacks.onAskError) {
+          callbacks.onAskError(err);
+        } else if (context.onAskError) {
+          context.onAskError(err);
+        }
         return;
       }
       if (!client) {
         const err = new Error("Client is not initialized");
         setError(err);
         setLoading(false);
-        callbacks.onAskError?.(err);
+        if (callbacks.onAskError) {
+          callbacks.onAskError(err);
+        } else if (context.onAskError) {
+          context.onAskError(err);
+        }
+        return;
+      }
+      if (!client) {
+        const err = new Error("Client is not initialized");
+        setError(err);
+        setLoading(false);
+        if (callbacks.onAskError) {
+          callbacks.onAskError(err);
+        } else if (context.onAskError) {
+          context.onAskError(err);
+        }
         return;
       }
 
       try {
         let session = answerSession;
         if (!session) {
-          session = client.createAISession({
+          session = client.ai.createAISession({
             events: {
               onStateChange: (state) => {
                 const normalizedState = state.filter((item) => !!item.query);
@@ -142,14 +166,31 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
           });
         }
         await streamAnswer(session, options);
-        callbacks.onAskComplete?.();
+        if (callbacks.onAskComplete) {
+          callbacks.onAskComplete();
+        } else if (context.onAskComplete) {
+          context.onAskComplete();
+        }
+        setLoading(false);
       } catch (err) {
         setError(err as Error);
         setLoading(false);
-        callbacks.onAskError?.(err as Error);
+        if (callbacks.onAskError) {
+          callbacks.onAskError(err as Error);
+        } else if (context.onAskError) {
+          context.onAskError(err as Error);
+        }
       }
     },
-    [client, answerSession, interactions, dispatch, streamAnswer, callbacks],
+    [
+      client,
+      answerSession,
+      interactions,
+      dispatch,
+      context,
+      streamAnswer,
+      callbacks,
+    ],
   );
 
   const abort = useCallback(() => {

@@ -1,4 +1,3 @@
-import { AnswerConfig } from "@orama/core";
 import { useArrowKeysNavigation, useChat } from "../hooks";
 import React, {
   createContext,
@@ -68,7 +67,6 @@ interface TabsPanelProps {
   tabId: string;
   children: ReactNode;
   className?: string;
-  askOptions?: Omit<AnswerConfig, "query">;
 }
 
 interface TabsCounterProps {
@@ -356,11 +354,11 @@ const TabsPanel: React.FC<TabsPanelProps> = ({
 const TabsDynamicPanel: React.FC<TabsPanelProps> = ({
   tabId,
   children,
-  askOptions = {},
   className = "",
 }) => {
   const { activeTab, prompt, setPrompt } = useTabsContext();
-  const { ask, dispatch } = useChat();
+  const { ask, dispatch, context } = useChat();
+  const { askOptions } = context;
   const isActive = activeTab === tabId;
   const processedPromptRef = React.useRef<string | undefined>(undefined);
 
@@ -397,7 +395,7 @@ interface TabsDynamicPanelsProps {
   children: (
     item: ChatTabItem,
     chatTabs?: ChatTabItem[],
-    setChatTabs?: (tabs: ChatTabItem[]) => void,
+    setChatTabs?: (tabs: ChatTabItem[]) => void
   ) => React.ReactNode;
 }
 

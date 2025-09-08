@@ -1,4 +1,4 @@
-import { type SearchParams } from "@orama/core";
+import { type CloudSearchParams } from "@orama/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   initialSearchState,
@@ -10,20 +10,20 @@ import { GroupsCount } from "@/types";
 /**
  * Custom React hook for managing search functionality within the application.
  *
- * This hook provides methods to perform a search (`onSearch`), reset the search state (`onReset`),
+ * This hook provides methods to perform a search (`search`), reset the search state (`reset`),
  * and exposes loading and error states for UI feedback.
  *
  * @returns {Object} An object containing:
- * - `onSearch`: A callback function to execute a search with specified parameters.
- * - `onReset`: A callback function to reset the search state to its initial values.
+ * - `search`: A callback function to execute a search with specified parameters.
+ * - `reset`: A callback function to reset the search state to its initial values.
  * - `context`: The current search context, providing access to the search client and other state.
  * - `dispatch`: A function to dispatch actions to the search state management.
  * - `loading`: A boolean indicating if a search operation is in progress.
  * - `error`: An `Error` object or `null` representing the current error state.
  *
  * @example
- * const { onSearch, onReset, loading, error } = useSearch();
- * onSearch({ term: "example", groupBy: "category" });
+ * const { search, reset, loading, error } = useSearch();
+ * search({ term: "example", groupBy: "category" });
  *
  * @remarks
  * - Relies on `useSearchContext` and `useSearchDispatch` for contexts and state management.
@@ -31,13 +31,13 @@ import { GroupsCount } from "@/types";
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  onSearch: (
-    options: SearchParams & {
+  search: (
+    options: CloudSearchParams & {
       groupBy?: string;
       filterBy?: Record<string, string>[];
     },
   ) => Promise<void>;
-  onReset: () => void;
+  reset: () => void;
   context: ReturnType<typeof useSearchContext>;
   dispatch: ReturnType<typeof useSearchDispatch>;
   loading: boolean;
@@ -59,9 +59,9 @@ export function useSearch(): useSearchReturn {
     };
   }, []);
 
-  const onSearch = useCallback(
+  const search = useCallback(
     async (
-      options: SearchParams & {
+      options: CloudSearchParams & {
         groupBy?: string;
         filterBy?: Record<string, string>[];
       },
@@ -87,6 +87,7 @@ export function useSearch(): useSearchReturn {
           ...options,
           term: options.term,
           limit: options.limit || 10,
+          datasources: options.datasourceIDs || [],
           ...(groupBy ? { facets: { [groupBy]: {} } } : {}),
           ...(options.filterBy && options.filterBy.length > 0
             ? {
@@ -170,7 +171,7 @@ export function useSearch(): useSearchReturn {
     [client, dispatch],
   );
 
-  const onReset = useCallback(() => {
+  const reset = useCallback(() => {
     dispatch({
       type: "SET_SEARCH_TERM",
       payload: { searchTerm: "" },
@@ -195,8 +196,8 @@ export function useSearch(): useSearchReturn {
   }, [dispatch]);
 
   return {
-    onSearch,
-    onReset,
+    search,
+    reset,
     context,
     dispatch,
     loading,

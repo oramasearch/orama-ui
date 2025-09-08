@@ -21,8 +21,8 @@ importers:
   apps/demo-next:
     dependencies:
       '@orama/core':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.2.0
+        version: 1.2.0
       '@orama/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -263,8 +263,8 @@ importers:
   packages/ui:
     dependencies:
       '@orama/core':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.2.4
+        version: 1.2.4
       prism-react-renderer:
         specifier: ^1.3.5
         version: 1.3.5(react@19.1.0)
@@ -828,8 +828,11 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@orama/core@1.0.0':
-    resolution: {integrity: sha512-jvyg8Ma+ckpk5kr88UO8nCulYs6g2GZnVHUzLl1oN+wlsG/55euNNUu0Ml/yn0/vzyfuXR+qSjDwHiAJB7CaAQ==}
+  '@orama/core@1.2.0':
+    resolution: {integrity: sha512-4wq+oSPnBjMuUHk0IOGDXWFDBk6QkvmlF76QVStMGVSzKTPsWw98VIh4TlNiDbwj7Qtvuh9gzWHkaVmLFG2ILw==}
+
+  '@orama/core@1.2.4':
+    resolution: {integrity: sha512-5brTvDTV8Kufxnku2Orw+RhQRrLklGMAVhBKvx3KflXLg4Bu6nhXC5fVj7BJgAEwzikqkh8tuzGvZp124C8eHQ==}
 
   '@orama/cuid2@2.2.3':
     resolution: {integrity: sha512-Lcak3chblMejdlSHgYU2lS2cdOhDpU6vkfIJH4m+YKvqQyLqs1bB8+w6NT1MG5bO12NUK2GFc34Mn2xshMIQ1g==}
@@ -3391,7 +3394,14 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@orama/core@1.0.0':
+  '@orama/core@1.2.0':
+    dependencies:
+      '@orama/cuid2': 2.2.3
+      '@orama/oramacore-events-parser': 0.0.5
+      zod: 3.24.3
+      zod-to-json-schema: 3.24.5(zod@3.24.3)
+
+  '@orama/core@1.2.4':
     dependencies:
       '@orama/cuid2': 2.2.3
       '@orama/oramacore-events-parser': 0.0.5

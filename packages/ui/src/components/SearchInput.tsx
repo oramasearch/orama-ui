@@ -45,6 +45,7 @@ export const SearchInputWrapper = <T extends ElementType = 'div'>({
 
 export interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
+  ref?: React.Ref<HTMLInputElement>
   /**
    * The `id` attribute for the input field.
    * If not provided, a unique ID will be generated.
@@ -85,10 +86,13 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
   ariaLabel,
   className,
   searchParams,
+  ref,
+  onChange,
   ...rest
 }) => {
-  const { onSearch, onReset } = useSearch()
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const { search, reset } = useSearch()
+  const internalRef = useRef<HTMLInputElement | null>(null)
+  const inputRef = ref || internalRef
 
   const generatedId = useRef<string>(
     `search-input-${Math.random().toString(36).substring(2, 9)}`
@@ -101,20 +105,25 @@ export const SearchInputField: React.FC<SearchInputProps> = ({
    * @param event The input change event.
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const newValue = event.target.value.trim()
+    onChange?.(event)
 
-    if (newValue === '') {
-      onReset()
+    if (event.defaultPrevented) {
       return
     }
 
-    onSearch({
+    const newValue = event.target.value.trim()
+
+    if (newValue === '') {
+      reset()
+      return
+    }
+
+    search({
       term: newValue,
       limit: 10,
-      ...searchParams
+      ...searchParams,
+      boost: searchParams?.boost ?? {}
     })
-
-    rest.onChange?.(event)
   }
 
   return (

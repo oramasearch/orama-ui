@@ -17,7 +17,7 @@ interface SlidingPanelContextProps {
 }
 
 const SlidingPanelContext = createContext<SlidingPanelContextProps | undefined>(
-  undefined,
+  undefined
 );
 
 interface TriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -29,11 +29,11 @@ function Trigger({ initialPrompt, onClick, children, ...rest }: TriggerProps) {
   const { ask } = useChat();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (initialPrompt) {
+    onClick?.(e);
+
+    if (initialPrompt && !e.defaultPrevented) {
       ask({ query: initialPrompt });
     }
-
-    onClick?.(e);
   };
 
   return (
@@ -62,10 +62,10 @@ function Wrapper({
   const trapFocus = useCallback((event: KeyboardEvent) => {
     if (!panelRef.current) return;
     const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
     const focusable = Array.from(focusableElements).filter(
-      (el) => el.tabIndex !== -1,
+      (el) => el.tabIndex !== -1
     );
     if (focusable.length === 0) return;
 
@@ -103,7 +103,7 @@ function Wrapper({
     if (open && panelRef.current) {
       // Focus the first focusable element or the panel itself
       const focusable = panelRef.current.querySelector<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
       );
       if (focusable) {
         focusable.focus();
@@ -123,17 +123,19 @@ function Wrapper({
     }
   }, [open]);
 
-  if (!panelRef || !open) return null;
-
   return (
     <SlidingPanelContext.Provider value={{ open, onClose, panelRef }}>
       <div
         ref={panelRef}
         tabIndex={open ? 0 : -1}
-        aria-modal="true"
+        aria-modal={open ? "true" : "false"}
         role="dialog"
-        aria-hidden={!open}
-        className={`fixed right-0 top-0 bottom-0 z-50 h-full w-full overflow-hidden ${className || ""}`}
+        {...(!open && { inert: true })}
+        className={`orama:fixed orama:right-0 orama:top-0 orama:bottom-0 orama:z-50 orama:h-full orama:w-full orama:overflow-hidden ${className || ""}`}
+        style={{
+          visibility: open ? "visible" : "hidden",
+          pointerEvents: open ? "auto" : "none",
+        }}
         {...rest}
       >
         {children}
@@ -157,18 +159,27 @@ function Content({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Content must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Content must be used within SlidingPanel.Wrapper"
     );
 
   const { open } = ctx;
 
   useEffect(() => {
+  let animationTimeout: ReturnType<typeof setTimeout>;
+  let visibilityTimeout: ReturnType<typeof setTimeout>;
+
     if (open) {
       setIsVisible(true);
-      setTimeout(() => setIsAnimating(true), 100);
+      animationTimeout = setTimeout(() => setIsAnimating(true), 100);
     } else {
       setIsAnimating(false);
+      visibilityTimeout = setTimeout(() => setIsVisible(false), 300);
     }
+
+    return () => {
+      if (animationTimeout) clearTimeout(animationTimeout);
+      if (visibilityTimeout) clearTimeout(visibilityTimeout);
+    };
   }, [open]);
 
   let translateClosed;
@@ -193,18 +204,19 @@ function Content({
       break;
   }
 
-  if (!isVisible) return null;
-
   return (
     <div
-      className={`w-full fixed transition-transform z-50 ${className || ""}`}
+      className={`orama:w-full orama:fixed orama:transition-transform orama:z-50 ${className || ""}`}
       style={{
         transform: isAnimating ? translateOpen : translateClosed,
         bottom: position === "top" ? "auto" : 0,
         left: position === "left" ? 0 : "auto",
         right: position === "right" ? 0 : "auto",
         top: position === "top" ? 0 : "auto",
+        visibility: isVisible ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
       }}
+      {...(!open && { inert: true })}
       {...rest}
     >
       {children}
@@ -216,14 +228,13 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Backdrop must be used within SlidingPanel.Wrapper"
     );
-  if (!ctx.open) return null;
 
   return (
     <div
-      onClick={ctx.onClose}
-      className={`z-40 ${className || ""}`}
+      onClick={ctx.open ? ctx.onClose : undefined}
+      className={`orama:z-40 ${className || ""}`}
       style={{
         position: "fixed",
         right: 0,
@@ -231,8 +242,10 @@ function Backdrop({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
         bottom: 0,
         width: "100%",
         height: "100%",
+        visibility: ctx.open ? "visible" : "hidden",
+        pointerEvents: ctx.open ? "auto" : "none",
       }}
-      aria-hidden={!ctx.open}
+      {...(!ctx.open && { inert: true })}
       {...rest}
     />
   );
@@ -246,7 +259,7 @@ function Close({
   const ctx = useContext(SlidingPanelContext);
   if (!ctx)
     throw new Error(
-      "SlidingPanel.Close must be used within SlidingPanel.Wrapper",
+      "SlidingPanel.Close must be used within SlidingPanel.Wrapper"
     );
   return (
     <button
@@ -258,11 +271,7 @@ function Close({
       className={className}
       {...rest}
     >
-      {children ?? (
-        <span aria-hidden="true" className="text-2xl">
-          &times;
-        </span>
-      )}
+      {children}
     </button>
   );
 }

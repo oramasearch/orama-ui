@@ -159,7 +159,7 @@ const SearchResultsGroupList: React.FC<{
 
 interface SearchResultsItemProps<T extends React.ElementType = "div"> {
   as?: T;
-  onClick?: (result: Hit) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   children?: React.ReactNode;
   className?: string;
 }
@@ -174,19 +174,8 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
   Omit<React.ComponentPropsWithoutRef<T>, keyof SearchResultsItemProps<T>>) => {
   const Component = as || "div";
 
-  const isInteractive = Boolean(onClick) || Component === "a" || props.href;
-  const needsKeyboardHandling =
-    isInteractive && Component !== "a" && Component !== "button";
-
   return (
-    <Component
-      className={className}
-      role={needsKeyboardHandling ? "button" : undefined}
-      tabIndex={needsKeyboardHandling ? 0 : undefined}
-      aria-label={isInteractive ? "Search result" : undefined}
-      data-focus-on-arrow-nav
-      {...props}
-    >
+    <Component className={className} onClick={onClick} {...props}>
       {children}
     </Component>
   );
