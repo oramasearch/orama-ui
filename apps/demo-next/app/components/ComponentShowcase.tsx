@@ -371,7 +371,13 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                 ariaLabel="Search for products"
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${themeClasses.input}`}
                 searchParams={{
-                  // groupBy: 'category',
+                  groupBy: {
+                    properties: ["category"],
+                    max_results: 10,
+                  },
+                  facets: {
+                    category: {},
+                  },
                   limit: 10,
                 }}
               />
@@ -386,13 +392,16 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
               Ask AI for help
             </button>
 
-            <FacetTabs.Wrapper>
-              <FacetTabs.List className="space-x-2 flex gap-1">
+            <FacetTabs.Wrapper className="overflow-x-auto">
+              <FacetTabs.List
+                className="flex gap-2"
+                itemClassName="flex-shrink-0"
+              >
                 {(group, isSelected) => (
                   <FacetTabs.Item
                     isSelected={isSelected}
                     group={group}
-                    filterBy={"category"}
+                    filterBy="category"
                     className={cn(
                       "p-3 rounded-lg text-sm cursor-pointer",
                       isSelected

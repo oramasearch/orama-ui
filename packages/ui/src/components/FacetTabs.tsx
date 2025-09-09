@@ -60,11 +60,14 @@ const List = ({ children, className, itemClassName, ...rest }: ListProps) => {
 
   return (
     <ul className={className} {...rest}>
-      {groupsCount.map((group: GroupedResult) => (
-        <li key={group.name} className={itemClassName}>
-          {children(group, group.name === selectedFacet)}
-        </li>
-      ))}
+      {groupsCount.map((group: GroupedResult) => {
+        if (!group.count) return null;
+        return (
+          <li key={group.name} className={itemClassName}>
+            {children(group, group.name === selectedFacet)}
+          </li>
+        );
+      })}
     </ul>
   );
 };

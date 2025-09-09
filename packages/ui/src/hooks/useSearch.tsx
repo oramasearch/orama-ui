@@ -47,7 +47,7 @@ type SearchOptions = CloudSearchParams & {
 export function useSearch(): useSearchReturn {
   const context = useSearchContext();
   const dispatch = useSearchDispatch();
-  const { client } = context;
+  const { client, selectedFacet } = context;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const isMounted = useRef(true);
@@ -75,7 +75,7 @@ export function useSearch(): useSearchReturn {
       });
       setLoading(true);
       setError(null);
-      const groupBy = options.groupedBy || null;
+      const groupBy = options.groupBy || null;
 
       try {
         const res = await client.search({
@@ -83,7 +83,6 @@ export function useSearch(): useSearchReturn {
           term: options.term,
           limit: options.limit || 10,
           datasources: options.datasourceIDs || [],
-          ...(groupBy ? { facets: { [groupBy]: {} } } : {}),
           ...(options.filterBy && options.filterBy.length > 0
             ? {
                 where: options.filterBy.reduce(
@@ -108,6 +107,24 @@ export function useSearch(): useSearchReturn {
             : {}),
         });
 
+        if (
+          selectedFacet &&
+          selectedFacet !== "All" &&
+          res.hits &&
+          res.hits.length > 0 &&
+          !options.filterBy
+        ) {
+          const facetInResults = res.hits.some((hit) => {
+            return Object.values(hit.document).includes(selectedFacet);
+          });
+          if (!facetInResults) {
+            dispatch({
+              type: "SET_SELECTED_FACET",
+              payload: { selectedFacet: "All" },
+            });
+          }
+        }
+
         if (!isMounted.current) return;
 
         dispatch({
@@ -122,32 +139,26 @@ export function useSearch(): useSearchReturn {
         if (
           groupBy &&
           res.facets &&
-          res.facets[groupBy] &&
+          groupBy.properties[0] &&
+          res.facets[groupBy.properties[0]] &&
           res.hits?.length > 0
         ) {
           const grouped: GroupsCount = Object.entries(
-            (res.facets[groupBy] as { values: Record<string, number> }).values,
-          ).map(([name, count]) => ({
-            name,
-            count,
-          }));
+            (
+              res.facets[groupBy.properties[0]] as {
+                values: Record<string, number>;
+              }
+            ).values,
+          ).map(([name, count]) => {
+            return {
+              name,
+              count,
+            };
+          });
           grouped.unshift({
             name: "All",
             count: res.count || 0,
           });
-          dispatch({
-            type: "SET_GROUPS_COUNT",
-            payload: { groupsCount: grouped },
-          });
-        } else {
-          const grouped = res.hits?.length
-            ? [
-                {
-                  name: "All",
-                  count: res.count || 0,
-                },
-              ]
-            : null;
           dispatch({
             type: "SET_GROUPS_COUNT",
             payload: { groupsCount: grouped },
@@ -163,7 +174,7 @@ export function useSearch(): useSearchReturn {
         }
       }
     },
-    [client, dispatch],
+    [client, dispatch, selectedFacet],
   );
 
   const reset = useCallback(() => {
