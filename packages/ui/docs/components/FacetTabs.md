@@ -1,4 +1,4 @@
-# `FacetTabs` cimponent
+# `FacetTabs` component
 
 `FacetTabs` is a compound UI component for rendering and managing a set of tabs, typically used for filtering or navigating between different facets or categories in a search interface. It provides keyboard navigation, accessibility, and integration with Orama search context.
 
@@ -12,13 +12,26 @@
 
 ## Usage
 
+`FacetTabs` requires a connected search context to function. Make sure to use it with the [SearchInput](./SearchInput.md) component, or ensure your own input triggers the `search` function from the [useSearch](./../hooks/useSearch.md) hook. If you skip this step, `FacetTabs` will not work. Always pass the correct `searchParams` as in the example below.
+
 ```tsx
-import { FacetTabs } from "@orama-ui";
+<SearchInput.Input
+  searchParams={{
+    groupBy: {
+      properties: ['category'] // Replace 'category' with the name of your property
+    },
+    facets: {
+      category: {}
+    },
+  }}
+/>
+```
+
+
+```tsx
+import { FacetTabs } from "@orama/ui/components";
 
 function Example() {
-  // Context providers and hooks are required for FacetTabs to work.
-  // See your app's search context setup for details.
-
   return (
     <FacetTabs.Wrapper className="facet-tabs">
       <FacetTabs.List
