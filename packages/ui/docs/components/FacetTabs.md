@@ -18,15 +18,14 @@
 <SearchInput.Input
   searchParams={{
     groupBy: {
-      properties: ['category'] // Replace 'category' with the name of your property
+      properties: ["category"], // Replace 'category' with the name of your property
     },
     facets: {
-      category: {}
+      category: {},
     },
   }}
 />
 ```
-
 
 ```tsx
 import { FacetTabs } from "@orama/ui/components";
