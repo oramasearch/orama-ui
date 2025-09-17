@@ -6,12 +6,12 @@ import type {
 } from '@orama/core'
 import { createContext, useContext } from 'react'
 
-export interface ExtendedAnswerConfig extends Omit<AnswerConfig, 'query'> {
+export interface ExtendedAnswerConfig extends AnswerConfig {
   throttle_delay?: number
 }
 
 export type ChatGlobalOptions = {
-  askOptions?: ExtendedAnswerConfig
+  askOptions?: Omit<ExtendedAnswerConfig, 'query'>
   onAskStart?: (options: ExtendedAnswerConfig) => void
   onAskComplete?: () => void
   onAskError?: (error: Error) => void
