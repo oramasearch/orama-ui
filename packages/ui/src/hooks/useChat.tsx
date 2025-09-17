@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
-import { useChatContext, useChatDispatch } from "../contexts";
-import { AnswerConfig, AnswerSession } from "@orama/core";
+import { useState, useCallback, useMemo } from 'react'
+import { useChatContext, useChatDispatch } from '../contexts'
+import { AnswerConfig, AnswerSession, Interaction } from '@orama/core'
+import throttle from 'throttleit'
+import { ExtendedAnswerConfig } from '@/contexts/ChatContext'
 
 /**
  * Custom React hook for managing chat interactions.
@@ -44,182 +46,185 @@ import { AnswerConfig, AnswerSession } from "@orama/core";
  *   onAskError: (error) => { // custom error handling }
  * });
  */
-export interface UseChatCallbacks {
-  onAskStart?: (options: AnswerConfig) => void;
-  onAskComplete?: () => void;
-  onAskError?: (error: Error) => void;
+export interface UseChatOptions {
+  onAskStart?: (options: AnswerConfig) => void
+  onAskComplete?: () => void
+  onAskError?: (error: Error) => void
 }
 
 export interface useChatProps {
-  ask: (options: AnswerConfig) => Promise<void>;
-  abort: () => void;
-  regenerateLatest: () => void;
-  reset: () => void;
-  context: ReturnType<typeof useChatContext>;
-  dispatch: ReturnType<typeof useChatDispatch>;
-  loading: boolean;
-  error: Error | null;
+  ask: (options: AnswerConfig) => Promise<void>
+  abort: () => void
+  regenerateLatest: () => void
+  reset: () => void
+  context: ReturnType<typeof useChatContext>
+  dispatch: ReturnType<typeof useChatDispatch>
+  loading: boolean
+  error: Error | null
 }
 
-export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
-  const context = useChatContext();
-  const dispatch = useChatDispatch();
-  const { client, interactions, answerSession } = context;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+export function useChat(
+  askOptions: ExtendedAnswerConfig = {},
+  callbacks: UseChatOptions = {}
+): useChatProps {
+  const context = useChatContext()
+  const dispatch = useChatDispatch()
+  const { client, interactions, answerSession } = context
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+  const { throttle_delay = 0 } = askOptions || {}
+
+  const throttledDispatch = useMemo(() => {
+    const updateInteractions = (state: Interaction[]) => {
+      const normalizedState = state.filter((item) => !!item.query)
+      if (normalizedState.length > 0) {
+        const updatedInteractions = [
+          ...(interactions ?? []),
+          ...normalizedState
+        ]
+        dispatch({
+          type: 'SET_INTERACTIONS',
+          payload: { interactions: updatedInteractions }
+        })
+      }
+    }
+
+    return throttle_delay > 0
+      ? throttle(updateInteractions, throttle_delay)
+      : updateInteractions
+  }, [throttle_delay, interactions, dispatch])
 
   const streamAnswer = useCallback(
     async (session: AnswerSession | null, options: AnswerConfig) => {
-      if (!session) throw new Error("Answer session is not initialized");
-      const { query: userPrompt, ...restOptions } = options || {};
-      if (!userPrompt) throw new Error("User prompt cannot be empty");
+      if (!session) throw new Error('Answer session is not initialized')
+      const { query: userPrompt, ...restOptions } = options || {}
+      if (!userPrompt) throw new Error('User prompt cannot be empty')
 
       try {
         const answerStream = session.answerStream({
           query: userPrompt,
-          ...restOptions,
-        });
-        dispatch({ type: "CLEAR_USER_PROMPT" });
+          ...restOptions
+        })
+        dispatch({ type: 'CLEAR_USER_PROMPT' })
 
-        if (!answerStream) throw new Error("Answer stream is not initialized");
+        if (!answerStream) throw new Error('Answer stream is not initialized')
         for await (const _ of answerStream) {
           // console.log("Received answer chunk", _);
         }
       } catch (err) {
-        setError(err as Error);
-        setLoading(false);
+        setError(err as Error)
+        setLoading(false)
       }
     },
-    [dispatch],
-  );
+    [dispatch]
+  )
 
   const ask = useCallback(
     async (options: AnswerConfig) => {
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
 
       if (callbacks.onAskStart) {
-        callbacks.onAskStart(options);
+        callbacks.onAskStart(options)
       } else if (context.onAskStart) {
-        context.onAskStart(options);
+        context.onAskStart(options)
       }
 
-      const { query: userPrompt } = options || {};
+      const { query: userPrompt } = options || {}
 
       if (!userPrompt) {
-        const err = new Error("User prompt cannot be empty");
-        setError(err);
-        setLoading(false);
+        const err = new Error('User prompt cannot be empty')
+        setError(err)
+        setLoading(false)
         if (callbacks.onAskError) {
-          callbacks.onAskError(err);
+          callbacks.onAskError(err)
         } else if (context.onAskError) {
-          context.onAskError(err);
+          context.onAskError(err)
         }
-        return;
+        return
       }
       if (!client) {
-        const err = new Error("Client is not initialized");
-        setError(err);
-        setLoading(false);
+        const err = new Error('Client is not initialized')
+        setError(err)
+        setLoading(false)
         if (callbacks.onAskError) {
-          callbacks.onAskError(err);
+          callbacks.onAskError(err)
         } else if (context.onAskError) {
-          context.onAskError(err);
+          context.onAskError(err)
         }
-        return;
-      }
-      if (!client) {
-        const err = new Error("Client is not initialized");
-        setError(err);
-        setLoading(false);
-        if (callbacks.onAskError) {
-          callbacks.onAskError(err);
-        } else if (context.onAskError) {
-          context.onAskError(err);
-        }
-        return;
+        return
       }
 
       try {
-        let session = answerSession;
+        let session = answerSession
         if (!session) {
           session = client.ai.createAISession({
             events: {
               onStateChange: (state) => {
-                const normalizedState = state.filter((item) => !!item.query);
-                if (normalizedState.length > 0) {
-                  const updatedInteractions = [
-                    ...(interactions ?? []),
-                    ...normalizedState,
-                  ];
-                  dispatch({
-                    type: "SET_INTERACTIONS",
-                    payload: { interactions: updatedInteractions },
-                  });
-                }
-              },
-            },
-          });
+                throttledDispatch(state)
+              }
+            }
+          })
           dispatch({
-            type: "SET_ANSWER_SESSION",
-            payload: { answerSession: session },
-          });
+            type: 'SET_ANSWER_SESSION',
+            payload: { answerSession: session }
+          })
         }
-        await streamAnswer(session, options);
+        await streamAnswer(session, options)
         if (callbacks.onAskComplete) {
-          callbacks.onAskComplete();
+          callbacks.onAskComplete()
         } else if (context.onAskComplete) {
-          context.onAskComplete();
+          context.onAskComplete()
         }
-        setLoading(false);
+        setLoading(false)
       } catch (err) {
-        setError(err as Error);
-        setLoading(false);
+        setError(err as Error)
+        setLoading(false)
         if (callbacks.onAskError) {
-          callbacks.onAskError(err as Error);
+          callbacks.onAskError(err as Error)
         } else if (context.onAskError) {
-          context.onAskError(err as Error);
+          context.onAskError(err as Error)
         }
       }
     },
     [
       client,
       answerSession,
-      interactions,
+      throttledDispatch,
       dispatch,
       context,
       streamAnswer,
-      callbacks,
-    ],
-  );
+      callbacks
+    ]
+  )
 
   const abort = useCallback(() => {
-    if (!answerSession) throw new Error("Answer session is not initialized");
+    if (!answerSession) throw new Error('Answer session is not initialized')
     try {
-      console.log("Aborting answer session");
-      answerSession.abort();
+      console.log('Aborting answer session')
+      answerSession.abort()
     } catch (error) {
-      console.error("Error aborting answer:", error);
+      console.error('Error aborting answer:', error)
     }
-  }, [answerSession]);
+  }, [answerSession])
 
   const regenerateLatest = useCallback(() => {
-    if (!answerSession) throw new Error("Answer session is not initialized");
-    answerSession.regenerateLast({ stream: false });
-  }, [answerSession]);
+    if (!answerSession) throw new Error('Answer session is not initialized')
+    answerSession.regenerateLast({ stream: false })
+  }, [answerSession])
 
   const reset = useCallback(() => {
-    if (!answerSession) throw new Error("Answer session is not initialized");
-    if (!interactions || interactions.length < 1) return;
+    if (!answerSession) throw new Error('Answer session is not initialized')
+    if (!interactions || interactions.length < 1) return
 
-    const lastInteraction = interactions[interactions.length - 1];
-    if (lastInteraction?.loading) abort();
+    const lastInteraction = interactions[interactions.length - 1]
+    if (lastInteraction?.loading) abort()
 
-    answerSession.clearSession();
-    dispatch({ type: "CLEAR_INTERACTIONS" });
-    dispatch({ type: "CLEAR_USER_PROMPT" });
-    dispatch({ type: "CLEAR_INITIAL_USER_PROMPT" });
-  }, [answerSession, interactions, abort, dispatch]);
+    answerSession.clearSession()
+    dispatch({ type: 'CLEAR_INTERACTIONS' })
+    dispatch({ type: 'CLEAR_USER_PROMPT' })
+    dispatch({ type: 'CLEAR_INITIAL_USER_PROMPT' })
+  }, [answerSession, interactions, abort, dispatch])
 
   return {
     ask,
@@ -229,6 +234,6 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
     loading,
     context,
     dispatch,
-    error,
-  };
+    error
+  }
 }

@@ -1,11 +1,13 @@
-import React, { useReducer } from "react";
+import React, { useReducer } from 'react'
 import {
   ChatContext,
   ChatDispatchContext,
+  ChatInitialState,
   chatReducer,
+  ExtendedAnswerConfig,
   useChatContext,
-  type ChatContextProps,
-} from "../contexts/ChatContext";
+  type ChatContextProps
+} from '../contexts/ChatContext'
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -22,21 +24,16 @@ import {
  * </ChatRoot>
  *
  * @example
- * // With callbacks and options
+ * // With configuration options and lifecycle callbacks
  * <ChatRoot
  *   client={orama}
- *   initialState={{
- *     onAskStart: (options) => console.log('Starting:', options),
- *     onAskComplete: () => console.log('Completed'),
- *     onAskError: (error) => console.error('Error:', error),
- *     askOptions: {
- *       related: {
- *         enabled: true,
- *         size: 3,
- *         format: 'question'
- *       }
- *     }
+ *   askOptions={{
+ *     throttle_delay: 100,
+ *     related: { enabled: true, size: 3 }
  *   }}
+ *   onAskStart={(options) => console.log('Starting:', options)}
+ *   onAskComplete={() => console.log('Completed')}
+ *   onAskError={(error) => console.error('Error:', error)}
  * >
  *   <ChatComponent />
  * </ChatRoot>
@@ -63,37 +60,66 @@ export interface ChatRootProps extends React.PropsWithChildren {
    * Required Orama client to be used for chat operations.
    * This client is essential for executing chat queries and managing interactions.
    */
-  client: ChatContextProps["client"];
+  client: ChatContextProps['client']
   /**
-   * Initial state for the chat context.
-   * This allows you to configure the client, callbacks, options, and pre-populate
-   * the chat with initial values like interactions, user prompts, or other state properties.
+   * Default options for ask operations, including throttling.
    */
-  initialState?: Partial<Omit<ChatContextProps, "client">>;
+  askOptions?: Partial<ExtendedAnswerConfig>
+  /**
+   * Callback fired when an ask operation starts.
+   */
+  onAskStart?: (options: ExtendedAnswerConfig) => void
+
+  /**
+   * Callback fired when an ask operation completes successfully.
+   */
+  onAskComplete?: () => void
+
+  /**
+   * Callback fired when an ask operation encounters an error.
+   */
+  onAskError?: (error: Error) => void
+
+  /**
+   * Initial state data for the chat context.
+   * This includes state data like interactions, prompts, etc.
+   */
+  initialState?: Partial<Omit<ChatInitialState, 'client'>>
 }
 
 export const ChatRoot = ({
   client,
+  askOptions,
+  onAskStart,
+  onAskComplete,
+  onAskError,
   initialState = {},
-  children,
+  children
 }: ChatRootProps) => {
-  const chatState = useChatContext();
+  const chatState = useChatContext()
 
-  if (typeof window !== "undefined" && !client && !chatState.client) {
+  if (typeof window !== 'undefined' && !client && !chatState.client) {
     console.warn(
-      "ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.",
-    );
+      'ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.'
+    )
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
     ...chatState,
     client: client || chatState.client,
     ...initialState,
-  });
+    askOptions: {
+      ...chatState.askOptions,
+      ...askOptions
+    },
+    onAskStart: onAskStart || chatState.onAskStart,
+    onAskComplete: onAskComplete || chatState.onAskComplete,
+    onAskError: onAskError || chatState.onAskError
+  })
 
   return (
     <ChatContext.Provider value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext.Provider>
-  );
-};
+  )
+}
