@@ -26,18 +26,18 @@ The main context value containing all chat state and configuration:
 ```tsx
 interface ChatContextProps {
   // State properties
-  client: OramaCloud | null
-  interactions: (Interaction | undefined)[]
-  userPrompt: string
-  answerSession: AnswerSession | null
-  scrollToLastInteraction: boolean
-  isStreaming: boolean
-  
+  client: OramaCloud | null;
+  interactions: (Interaction | undefined)[];
+  userPrompt: string;
+  answerSession: AnswerSession | null;
+  scrollToLastInteraction: boolean;
+  isStreaming: boolean;
+
   // Configuration properties
-  askOptions: Partial<ExtendedAnswerConfig>
-  onAskStart?: (options: ExtendedAnswerConfig) => void
-  onAskComplete?: () => void
-  onAskError?: (error: Error) => void
+  askOptions: Partial<ExtendedAnswerConfig>;
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
 }
 ```
 
@@ -47,15 +47,27 @@ Available actions for the chat reducer:
 
 ```tsx
 type ChatAction =
-  | { type: 'SET_CLIENT'; payload: { client: OramaCloud | null } }
-  | { type: 'SET_ANSWER_SESSION'; payload: { answerSession: AnswerSession | null } }
-  | { type: 'ADD_INTERACTION'; payload: { interactions: (Interaction | undefined)[] } }
-  | { type: 'SET_INTERACTIONS'; payload: { interactions: (Interaction | undefined)[] } }
-  | { type: 'CLEAR_INTERACTIONS' }
-  | { type: 'SET_USER_PROMPT'; payload: { userPrompt: string } }
-  | { type: 'CLEAR_USER_PROMPT' }
-  | { type: 'CLEAR_INITIAL_USER_PROMPT' }
-  | { type: 'SET_SCROLL_TO_LAST_INTERACTION'; payload: { scrollToLastInteraction: boolean } }
+  | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
+  | {
+      type: "SET_ANSWER_SESSION";
+      payload: { answerSession: AnswerSession | null };
+    }
+  | {
+      type: "ADD_INTERACTION";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | {
+      type: "SET_INTERACTIONS";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | { type: "CLEAR_INTERACTIONS" }
+  | { type: "SET_USER_PROMPT"; payload: { userPrompt: string } }
+  | { type: "CLEAR_USER_PROMPT" }
+  | { type: "CLEAR_INITIAL_USER_PROMPT" }
+  | {
+      type: "SET_SCROLL_TO_LAST_INTERACTION";
+      payload: { scrollToLastInteraction: boolean };
+    };
 ```
 
 ## Usage
@@ -63,21 +75,21 @@ type ChatAction =
 ### Accessing context and dispatch
 
 ```tsx
-import { useChatContext, useChatDispatch } from '@orama/ui/contexts'
+import { useChatContext, useChatDispatch } from "@orama/ui/contexts";
 
 function CustomChatComponent() {
-  const context = useChatContext()
-  const dispatch = useChatDispatch()
+  const context = useChatContext();
+  const dispatch = useChatDispatch();
 
-  const { 
-    client, 
-    interactions, 
-    loading, 
+  const {
+    client,
+    interactions,
+    loading,
     askOptions,
     onAskStart,
     onAskComplete,
-    onAskError 
-  } = context
+    onAskError,
+  } = context;
 
   // Use context data...
 
@@ -99,5 +111,3 @@ function CustomChatComponent() {
   If you use the `ChatRoot` component, it manages chat state for you.
 - **Custom implementations:**  
   Use this context if you need to build your own chat provider or require advanced state management.
-
-

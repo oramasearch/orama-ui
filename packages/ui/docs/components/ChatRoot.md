@@ -6,15 +6,15 @@ The `ChatRoot` component provides context for managing chat state and actions. I
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `client` | `OramaClient` | Yes | The Orama client instance for chat operations |
-| `askOptions` | `Partial<ExtendedAnswerConfig>` | No | Default options for ask operations, including throttle_delay |
-| `onAskStart` | `(options: ExtendedAnswerConfig) => void` | No | Callback fired when an ask operation starts |
-| `onAskComplete` | `() => void` | No | Callback fired when an ask operation completes successfully |
-| `onAskError` | `(error: Error) => void` | No | Callback fired when an ask operation encounters an error |
-| `initialState` | `Partial<ChatInitialState>` | No | Initial state data for the chat context (interactions, prompts, etc.) |
-| `children` | `ReactNode` | No | Child components |
+| Prop            | Type                                      | Required | Description                                                           |
+| --------------- | ----------------------------------------- | -------- | --------------------------------------------------------------------- |
+| `client`        | `OramaClient`                             | Yes      | The Orama client instance for chat operations                         |
+| `askOptions`    | `Partial<ExtendedAnswerConfig>`           | No       | Default options for ask operations, including throttle_delay          |
+| `onAskStart`    | `(options: ExtendedAnswerConfig) => void` | No       | Callback fired when an ask operation starts                           |
+| `onAskComplete` | `() => void`                              | No       | Callback fired when an ask operation completes successfully           |
+| `onAskError`    | `(error: Error) => void`                  | No       | Callback fired when an ask operation encounters an error              |
+| `initialState`  | `Partial<ChatInitialState>`               | No       | Initial state data for the chat context (interactions, prompts, etc.) |
+| `children`      | `ReactNode`                               | No       | Child components                                                      |
 
 #### `ExtendedAnswerConfig`
 
@@ -22,7 +22,7 @@ The `askOptions` prop accepts an `ExtendedAnswerConfig` object which extends Ora
 
 ```tsx
 interface ExtendedAnswerConfig extends AnswerConfig {
-  throttle_delay?: number // Throttle delay in milliseconds for chat messages updates during streaming. Disabled by default.
+  throttle_delay?: number; // Throttle delay in milliseconds for chat messages updates during streaming. Disabled by default.
 }
 ```
 
@@ -30,13 +30,13 @@ interface ExtendedAnswerConfig extends AnswerConfig {
 
 The `initialState` prop accepts a partial `ChatInitialState` object with the following properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `userPrompt` | `string` | Initial user prompt text |
-| `interactions` | `(Interaction \| undefined)[]` | Array of previous chat interactions to pre-populate the chat history |
-| `answerSession` | `AnswerSession \| null` | Current answer session object from Orama |
-| `scrollToLastInteraction` | `boolean` | Whether to automatically scroll to the last interaction |
-| `isStreaming` | `boolean` | Whether the chat is currently streaming a response |
+| Property                  | Type                           | Description                                                          |
+| ------------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| `userPrompt`              | `string`                       | Initial user prompt text                                             |
+| `interactions`            | `(Interaction \| undefined)[]` | Array of previous chat interactions to pre-populate the chat history |
+| `answerSession`           | `AnswerSession \| null`        | Current answer session object from Orama                             |
+| `scrollToLastInteraction` | `boolean`                      | Whether to automatically scroll to the last interaction              |
+| `isStreaming`             | `boolean`                      | Whether the chat is currently streaming a response                   |
 
 > **Note**: The `AnswerConfig` type is imported from `@orama/core`. For the complete list of available options and their descriptions, please refer to the [Orama documentation](https://docs.orama.com/).
 
@@ -45,20 +45,20 @@ The `initialState` prop accepts a partial `ChatInitialState` object with the fol
 ### Basic Usage
 
 ```tsx
-import { ChatRoot } from '@orama/ui/components'
-import { OramaCloud } from '@orama/core'
+import { ChatRoot } from "@orama/ui/components";
+import { OramaCloud } from "@orama/core";
 
 const orama = new OramaCloud({
-  projectId: 'your-project-id',
-  apiKey: 'your-api-key'
-})
+  projectId: "your-project-id",
+  apiKey: "your-api-key",
+});
 
 function App() {
   return (
     <ChatRoot client={orama}>
       <ChatComponent />
     </ChatRoot>
-  )
+  );
 }
 ```
 
@@ -69,11 +69,11 @@ function App() {
   client={orama}
   askOptions={{
     throttle_delay: 100,
-    related: { enabled: true, size: 3 }
+    related: { enabled: true, size: 3 },
   }}
-  onAskStart={(options) => console.log('Starting:', options)}
-  onAskComplete={() => console.log('Completed')}
-  onAskError={(error) => console.error('Error:', error)}
+  onAskStart={(options) => console.log("Starting:", options)}
+  onAskComplete={() => console.log("Completed")}
+  onAskError={(error) => console.error("Error:", error)}
 >
   <ChatComponent />
 </ChatRoot>
@@ -89,10 +89,10 @@ function App() {
       {
         query: "Welcome message",
         response: { text: "Hi there! I'm here to help you." },
-        interactionId: "welcome-1"
-      }
+        interactionId: "welcome-1",
+      },
     ],
-    userPrompt: "Type your question here..."
+    userPrompt: "Type your question here...",
   }}
 >
   <ChatComponent />
@@ -111,14 +111,14 @@ The `askOptions` prop allows you to configure default behavior for all ask opera
   askOptions={{
     // Throttle UI updates during streaming (milliseconds)
     throttle_delay: 100,
-    
+
     // Enable related questions
     related: {
       enabled: true,
       size: 3,
       format: 'question'
     },
-    
+
     // Other Orama AnswerConfig options...
   }}
 >

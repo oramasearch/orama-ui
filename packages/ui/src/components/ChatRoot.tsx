@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   ChatContext,
   ChatDispatchContext,
@@ -6,8 +6,8 @@ import {
   chatReducer,
   ExtendedAnswerConfig,
   useChatContext,
-  type ChatContextProps
-} from '../contexts/ChatContext'
+  type ChatContextProps,
+} from "../contexts/ChatContext";
 
 /**
  * ChatRoot component provides context for managing chat state and actions.
@@ -60,31 +60,31 @@ export interface ChatRootProps extends React.PropsWithChildren {
    * Required Orama client to be used for chat operations.
    * This client is essential for executing chat queries and managing interactions.
    */
-  client: ChatContextProps['client']
+  client: ChatContextProps["client"];
   /**
    * Default options for ask operations, including throttling.
    */
-  askOptions?: Partial<ExtendedAnswerConfig>
+  askOptions?: Partial<ExtendedAnswerConfig>;
   /**
    * Callback fired when an ask operation starts.
    */
-  onAskStart?: (options: ExtendedAnswerConfig) => void
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
 
   /**
    * Callback fired when an ask operation completes successfully.
    */
-  onAskComplete?: () => void
+  onAskComplete?: () => void;
 
   /**
    * Callback fired when an ask operation encounters an error.
    */
-  onAskError?: (error: Error) => void
+  onAskError?: (error: Error) => void;
 
   /**
    * Initial state data for the chat context.
    * This includes state data like interactions, prompts, etc.
    */
-  initialState?: Partial<Omit<ChatInitialState, 'client'>>
+  initialState?: Partial<Omit<ChatInitialState, "client">>;
 }
 
 export const ChatRoot = ({
@@ -94,14 +94,14 @@ export const ChatRoot = ({
   onAskComplete,
   onAskError,
   initialState = {},
-  children
+  children,
 }: ChatRootProps) => {
-  const chatState = useChatContext()
+  const chatState = useChatContext();
 
-  if (typeof window !== 'undefined' && !client && !chatState.client) {
+  if (typeof window !== "undefined" && !client && !chatState.client) {
     console.warn(
-      'ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.'
-    )
+      "ChatRoot: No client provided. Either pass a client in initialState or ensure a parent ChatRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(chatReducer, {
@@ -110,16 +110,16 @@ export const ChatRoot = ({
     ...initialState,
     askOptions: {
       ...chatState.askOptions,
-      ...askOptions
+      ...askOptions,
     },
     onAskStart: onAskStart || chatState.onAskStart,
     onAskComplete: onAskComplete || chatState.onAskComplete,
-    onAskError: onAskError || chatState.onAskError
-  })
+    onAskError: onAskError || chatState.onAskError,
+  });
 
   return (
     <ChatContext.Provider value={state}>
       <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
     </ChatContext.Provider>
-  )
-}
+  );
+};

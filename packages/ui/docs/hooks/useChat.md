@@ -6,10 +6,10 @@ The `useChat` hook provides a comprehensive interface for managing chat interact
 
 ## Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `defaultOptions` | `Partial<ExtendedAnswerConfig>` | No | Default options for all ask operations (includes throttle_delay) |
-| `callbacks` | `UseChatCallbacks` | No | Optional callbacks for ask lifecycle events |
+| Parameter        | Type                            | Required | Description                                                      |
+| ---------------- | ------------------------------- | -------- | ---------------------------------------------------------------- |
+| `defaultOptions` | `Partial<ExtendedAnswerConfig>` | No       | Default options for all ask operations (includes throttle_delay) |
+| `callbacks`      | `UseChatCallbacks`              | No       | Optional callbacks for ask lifecycle events                      |
 
 #### `ExtendedAnswerConfig`
 
@@ -17,7 +17,7 @@ Extends Orama's `AnswerConfig` with additional UI-specific options:
 
 ```tsx
 interface ExtendedAnswerConfig extends AnswerConfig {
-  throttle_delay?: number // Throttle delay in milliseconds for chat messages updates. Disabled by default
+  throttle_delay?: number; // Throttle delay in milliseconds for chat messages updates. Disabled by default
 }
 ```
 
@@ -25,50 +25,50 @@ interface ExtendedAnswerConfig extends AnswerConfig {
 
 ```tsx
 interface UseChatCallbacks {
-  onAskStart?: (options: ExtendedAnswerConfig) => void
-  onAskComplete?: () => void
-  onAskError?: (error: Error) => void
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
 }
 ```
 
 ## Return value
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `ask` | `(options: ExtendedAnswerConfig) => Promise<void>` | Send a user prompt and handle the answer stream |
-| `abort` | `() => void` | Abort the current answer stream |
-| `regenerateLatest` | `() => void` | Regenerate the latest answer |
-| `reset` | `() => void` | Reset the chat session and clear interactions |
-| `loading` | `boolean` | Whether a request is in progress |
-| `error` | `Error \| null` | Error object if an error occurred |
-| `context` | `ChatContextProps` | The chat context containing client and session information |
-| `dispatch` | `ChatDispatch` | Function to dispatch actions to the chat state |
+| Property           | Type                                               | Description                                                |
+| ------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| `ask`              | `(options: ExtendedAnswerConfig) => Promise<void>` | Send a user prompt and handle the answer stream            |
+| `abort`            | `() => void`                                       | Abort the current answer stream                            |
+| `regenerateLatest` | `() => void`                                       | Regenerate the latest answer                               |
+| `reset`            | `() => void`                                       | Reset the chat session and clear interactions              |
+| `loading`          | `boolean`                                          | Whether a request is in progress                           |
+| `error`            | `Error \| null`                                    | Error object if an error occurred                          |
+| `context`          | `ChatContextProps`                                 | The chat context containing client and session information |
+| `dispatch`         | `ChatDispatch`                                     | Function to dispatch actions to the chat state             |
 
 ## Usage
 
 ### Basic Usage
 
 ```tsx
-import { useChat } from '@orama/ui/hooks'
+import { useChat } from "@orama/ui/hooks";
 
 function ChatComponent() {
-  const { ask, loading, error } = useChat()
+  const { ask, loading, error } = useChat();
 
   const handleSubmit = async () => {
     await ask({
-      query: 'What is Orama?',
-      throttle_delay: 100
-    })
-  }
+      query: "What is Orama?",
+      throttle_delay: 100,
+    });
+  };
 
   return (
     <div>
       <button onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Asking...' : 'Ask Question'}
+        {loading ? "Asking..." : "Ask Question"}
       </button>
       {error && <p>Error: {error.message}</p>}
     </div>
-  )
+  );
 }
 ```
 
@@ -80,52 +80,48 @@ function ChatComponent() {
     // Default options for all ask operations
     {
       throttle_delay: 100,
-      related: { enabled: true, size: 3 }
+      related: { enabled: true, size: 3 },
     },
     // Callbacks
     {
       onAskStart: (options) => {
-        console.log('Ask started with options:', options)
+        console.log("Ask started with options:", options);
       },
       onAskComplete: () => {
-        console.log('Ask completed successfully')
+        console.log("Ask completed successfully");
       },
       onAskError: (error) => {
-        console.error('Ask failed:', error)
-      }
-    }
-  )
+        console.error("Ask failed:", error);
+      },
+    },
+  );
 
   const handleAsk = async (query: string) => {
     // Uses default throttle_delay: 100 and related options
-    await ask({ query })
-  }
+    await ask({ query });
+  };
 
   const handleSpecialAsk = async (query: string) => {
     // Override default throttling for this specific request
-    await ask({ 
+    await ask({
       query,
       throttle_delay: 200,
-      related: { enabled: false }
-    })
-  }
+      related: { enabled: false },
+    });
+  };
 
   return (
     <div>
-      <button onClick={() => handleAsk('General question')}>
+      <button onClick={() => handleAsk("General question")}>
         Ask General Question
       </button>
-      <button onClick={() => handleSpecialAsk('Complex question')}>
+      <button onClick={() => handleSpecialAsk("Complex question")}>
         Ask Complex Question (slower throttle)
       </button>
-      <button onClick={regenerateLatest}>
-        Regenerate Latest
-      </button>
-      <button onClick={reset}>
-        Reset Chat
-      </button>
+      <button onClick={regenerateLatest}>Regenerate Latest</button>
+      <button onClick={reset}>Reset Chat</button>
     </div>
-  )
+  );
 }
 ```
 
@@ -138,25 +134,25 @@ When used within a `ChatRoot`, the hook automatically inherits configuration:
 <ChatRoot
   client={orama}
   askOptions={{ throttle_delay: 50, related: { enabled: true } }}
-  onAskError={(error) => console.error('Global error:', error)}
+  onAskError={(error) => console.error("Global error:", error)}
 >
   <ChatComponent />
-</ChatRoot>
+</ChatRoot>;
 
 function ChatComponent() {
   // Inherits ChatRoot configuration, can override per operation
   const { ask } = useChat(
     { throttle_delay: 100 }, // Hook defaults override context
-    { onAskComplete: () => console.log('Local completion handler') }
-  )
+    { onAskComplete: () => console.log("Local completion handler") },
+  );
 
   const handleAsk = async () => {
     // Priority: ChatRoot < Hook defaults < Call options
-    await ask({ 
-      query: 'Question',
-      throttle_delay: 200 // Highest priority
-    })
-  }
+    await ask({
+      query: "Question",
+      throttle_delay: 200, // Highest priority
+    });
+  };
 }
 ```
 
@@ -173,20 +169,20 @@ Options are merged with the following priority (highest to lowest):
 // Example of option merging
 <ChatRoot askOptions={{ throttle_delay: 50, related: { enabled: true } }}>
   <Component />
-</ChatRoot>
+</ChatRoot>;
 
 function Component() {
   const { ask } = useChat(
-    { throttle_delay: 100, format: 'markdown' }, // Hook defaults
-    {}
-  )
+    { throttle_delay: 100, format: "markdown" }, // Hook defaults
+    {},
+  );
 
   await ask({
-    query: 'Question',
+    query: "Question",
     throttle_delay: 200, // Overrides all other throttle_delay values
-    related: { enabled: false } // Overrides context related.enabled
+    related: { enabled: false }, // Overrides context related.enabled
     // format: 'markdown' inherited from hook defaults
-  })
+  });
 }
 ```
 
@@ -202,37 +198,40 @@ During streaming responses, chat messages are updated in real-time as tokens arr
 Throttling reduces update frequency by batching multiple token updates together:
 
 ```tsx
-const { ask } = useChat()
+const { ask } = useChat();
 
 // No throttling - every token triggers immediate UI update
 // Use for simple UIs or when you need real-time character-by-character display
-await ask({ query: 'Question', throttle_delay: 0 })
+await ask({ query: "Question", throttle_delay: 0 });
 
 // Moderate throttling - updates every 100ms
 // Good balance between responsiveness and performance for most applications
-await ask({ query: 'Question', throttle_delay: 100 })
+await ask({ query: "Question", throttle_delay: 100 });
 
 // Heavy throttling - updates every 300ms
 // Use for complex UIs, mobile devices, or when performance is critical
-await ask({ query: 'Question', throttle_delay: 300 })
+await ask({ query: "Question", throttle_delay: 300 });
 ```
 
 ### Error Handling
 
 ```tsx
-const { ask, error } = useChat({}, {
-  onAskError: (error) => {
-    // Handle specific errors
-    if (error.message.includes('network')) {
-      // Handle network errors
-    } else if (error.message.includes('auth')) {
-      // Handle authentication errors
-    }
-  }
-})
+const { ask, error } = useChat(
+  {},
+  {
+    onAskError: (error) => {
+      // Handle specific errors
+      if (error.message.includes("network")) {
+        // Handle network errors
+      } else if (error.message.includes("auth")) {
+        // Handle authentication errors
+      }
+    },
+  },
+);
 
 // Also check error state directly
 if (error) {
-  console.error('Current error:', error)
+  console.error("Current error:", error);
 }
 ```
