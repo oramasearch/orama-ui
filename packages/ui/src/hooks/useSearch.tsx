@@ -1,11 +1,11 @@
-import { type CloudSearchParams } from "@orama/core";
-import { useCallback, useEffect, useRef } from "react";
+import { type CloudSearchParams } from '@orama/core'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   initialSearchState,
   useSearchContext,
-  useSearchDispatch,
-} from "../contexts";
-import { GroupsCount } from "@/types";
+  useSearchDispatch
+} from '../contexts'
+import { GroupsCount } from '@/types'
 
 /**
  * Custom React hook for managing search functionality within the application.
@@ -31,47 +31,55 @@ import { GroupsCount } from "@/types";
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  search: (options: SearchOptions) => Promise<void>;
-  reset: () => void;
-  context: ReturnType<typeof useSearchContext>;
-  dispatch: ReturnType<typeof useSearchDispatch>;
+  search: (options: SearchOptions) => Promise<void>
+  reset: () => void
+  context: ReturnType<typeof useSearchContext>
+  dispatch: ReturnType<typeof useSearchDispatch>
 }
 
 type SearchOptions = CloudSearchParams & {
-  groupedBy?: string;
-  filterBy?: Record<string, string>[];
-};
+  groupedBy?: string
+  filterBy?: Record<string, string>[]
+}
 
 export function useSearch(): useSearchReturn {
-  const context = useSearchContext();
-  const dispatch = useSearchDispatch();
-  const { client, selectedFacet } = context;
-  const isMounted = useRef(true);
+  const context = useSearchContext()
+  const dispatch = useSearchDispatch()
+  const { client, selectedFacet } = context
+  const isMounted = useRef(true)
 
   useEffect(() => {
-    isMounted.current = true;
+    isMounted.current = true
     return () => {
-      isMounted.current = false;
-    };
-  }, []);
+      isMounted.current = false
+    }
+  }, [])
 
   const search = useCallback(
     async (options: SearchOptions) => {
       if (!client) {
-        setError(new Error("Client is not initialized"));
-        setLoading(false);
-        return;
+        if (context.error?.message === 'Search client is not initialized') {
+          return
+        }
+        dispatch({
+          type: 'SET_ERROR',
+          payload: { error: new Error('Search client is not initialized') }
+        })
+        if (context.loading) {
+          dispatch({ type: 'SET_LOADING', payload: { loading: false } })
+        }
+        return
       }
 
       dispatch({
-        type: "SET_SEARCH_TERM",
+        type: 'SET_SEARCH_TERM',
         payload: {
-          searchTerm: options.term || initialSearchState.searchTerm || "",
-        },
-      });
-      dispatch({ type: "SET_LOADING", payload: { loading: true } });
-      dispatch({ type: "SET_ERROR", payload: { error: null } });
-      const groupBy = options.groupBy || null;
+          searchTerm: options.term || initialSearchState.searchTerm || ''
+        }
+      })
+      dispatch({ type: 'SET_LOADING', payload: { loading: true } })
+      dispatch({ type: 'SET_ERROR', payload: { error: null } })
+      const groupBy = options.groupBy || null
 
       try {
         const res = await client.search({
@@ -83,54 +91,54 @@ export function useSearch(): useSearchReturn {
             ? {
                 where: options.filterBy.reduce(
                   (acc, filter) => {
-                    const entry = Object.entries(filter)[0];
+                    const entry = Object.entries(filter)[0]
                     if (entry) {
-                      const [key, value] = entry;
+                      const [key, value] = entry
                       dispatch({
-                        type: "SET_SELECTED_FACET",
-                        payload: { selectedFacet: key },
-                      });
-                      if (value === "All") {
-                        return acc;
+                        type: 'SET_SELECTED_FACET',
+                        payload: { selectedFacet: key }
+                      })
+                      if (value === 'All') {
+                        return acc
                       }
-                      acc[key] = value;
+                      acc[key] = value
                     }
-                    return acc;
+                    return acc
                   },
-                  {} as Record<string, string>,
-                ),
+                  {} as Record<string, string>
+                )
               }
-            : {}),
-        });
+            : {})
+        })
 
         if (
           selectedFacet &&
-          selectedFacet !== "All" &&
+          selectedFacet !== 'All' &&
           res.hits &&
           res.hits.length > 0 &&
           !options.filterBy
         ) {
           const facetInResults = res.hits.some((hit) => {
-            return Object.values(hit.document).includes(selectedFacet);
-          });
+            return Object.values(hit.document).includes(selectedFacet)
+          })
           if (!facetInResults) {
             dispatch({
-              type: "SET_SELECTED_FACET",
-              payload: { selectedFacet: "All" },
-            });
+              type: 'SET_SELECTED_FACET',
+              payload: { selectedFacet: 'All' }
+            })
           }
         }
 
-        if (!isMounted.current) return;
+        if (!isMounted.current) return
 
         dispatch({
-          type: "SET_RESULTS",
-          payload: { results: res.hits || [] },
-        });
+          type: 'SET_RESULTS',
+          payload: { results: res.hits || [] }
+        })
         dispatch({
-          type: "SET_COUNT",
-          payload: { count: res.count || 0 },
-        });
+          type: 'SET_COUNT',
+          payload: { count: res.count || 0 }
+        })
 
         if (
           groupBy &&
@@ -142,65 +150,65 @@ export function useSearch(): useSearchReturn {
           const grouped: GroupsCount = Object.entries(
             (
               res.facets[groupBy.properties[0]] as {
-                values: Record<string, number>;
+                values: Record<string, number>
               }
-            ).values,
+            ).values
           ).map(([name, count]) => {
             return {
               name,
-              count,
-            };
-          });
+              count
+            }
+          })
           grouped.unshift({
-            name: "All",
-            count: res.count || 0,
-          });
+            name: 'All',
+            count: res.count || 0
+          })
           dispatch({
-            type: "SET_GROUPS_COUNT",
-            payload: { groupsCount: grouped },
-          });
+            type: 'SET_GROUPS_COUNT',
+            payload: { groupsCount: grouped }
+          })
         }
       } catch (e) {
         if (isMounted.current) {
-          dispatch({ type: "SET_ERROR", payload: { error: e as Error } });
+          dispatch({ type: 'SET_ERROR', payload: { error: e as Error } })
         }
       } finally {
         if (isMounted.current) {
-          dispatch({ type: "SET_LOADING", payload: { loading: false } });
+          dispatch({ type: 'SET_LOADING', payload: { loading: false } })
         }
       }
     },
-    [client, dispatch, selectedFacet],
-  );
+    [client, dispatch, selectedFacet]
+  )
 
   const reset = useCallback(() => {
     dispatch({
-      type: "SET_SEARCH_TERM",
-      payload: { searchTerm: "" },
-    });
+      type: 'SET_SEARCH_TERM',
+      payload: { searchTerm: '' }
+    })
     dispatch({
-      type: "SET_RESULTS",
-      payload: { results: [] },
-    });
+      type: 'SET_RESULTS',
+      payload: { results: [] }
+    })
     dispatch({
-      type: "SET_GROUPS_COUNT",
-      payload: { groupsCount: null },
-    });
+      type: 'SET_GROUPS_COUNT',
+      payload: { groupsCount: null }
+    })
     dispatch({
-      type: "SET_SELECTED_FACET",
-      payload: { selectedFacet: "All" },
-    });
+      type: 'SET_SELECTED_FACET',
+      payload: { selectedFacet: 'All' }
+    })
     dispatch({
-      type: "SET_COUNT",
-      payload: { count: 0 },
-    });
-    dispatch({ type: "SET_ERROR", payload: { error: null } });
-  }, [dispatch]);
+      type: 'SET_COUNT',
+      payload: { count: 0 }
+    })
+    dispatch({ type: 'SET_ERROR', payload: { error: null } })
+  }, [dispatch])
 
   return {
     search,
     reset,
     context,
-    dispatch,
-  };
+    dispatch
+  }
 }
