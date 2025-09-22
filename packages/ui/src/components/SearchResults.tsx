@@ -117,8 +117,7 @@ export const SearchResultsNoResults = ({
 }
 
 export interface SearchResultsLoadingProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: React.ReactNode
+  extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
@@ -142,6 +141,32 @@ export const SearchResultsLoading = ({
   return (
     <div role='status' aria-live='polite' className={className} {...rest}>
       {children}
+    </div>
+  )
+}
+
+export interface SearchResultsErrorProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  children: (error: Error) => React.ReactNode
+  className?: string
+}
+
+export const SearchResultsError = ({
+  children,
+  className = '',
+  ...rest
+}: SearchResultsErrorProps) => {
+  const {
+    context: { error }
+  } = useSearch()
+
+  if (!error) {
+    return null
+  }
+
+  return (
+    <div className={className} role='alert' {...rest}>
+      {children(error)}
     </div>
   )
 }
@@ -234,5 +259,6 @@ export const SearchResults = {
   GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
   Loading: SearchResultsLoading,
+  Error: SearchResultsError,
   NoResults: SearchResultsNoResults
 }
