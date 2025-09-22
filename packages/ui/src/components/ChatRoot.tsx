@@ -2,7 +2,9 @@ import React, { useReducer } from "react";
 import {
   ChatContext,
   ChatDispatchContext,
+  ChatInitialState,
   chatReducer,
+  ExtendedAnswerConfig,
   useChatContext,
   type ChatContextProps,
 } from "../contexts/ChatContext";
@@ -22,21 +24,16 @@ import {
  * </ChatRoot>
  *
  * @example
- * // With callbacks and options
+ * // With configuration options and lifecycle callbacks
  * <ChatRoot
  *   client={orama}
- *   initialState={{
- *     onAskStart: (options) => console.log('Starting:', options),
- *     onAskComplete: () => console.log('Completed'),
- *     onAskError: (error) => console.error('Error:', error),
- *     askOptions: {
- *       related: {
- *         enabled: true,
- *         size: 3,
- *         format: 'question'
- *       }
- *     }
+ *   askOptions={{
+ *     throttle_delay: 100,
+ *     related: { enabled: true, size: 3 }
  *   }}
+ *   onAskStart={(options) => console.log('Starting:', options)}
+ *   onAskComplete={() => console.log('Completed')}
+ *   onAskError={(error) => console.error('Error:', error)}
  * >
  *   <ChatComponent />
  * </ChatRoot>
@@ -65,15 +62,37 @@ export interface ChatRootProps extends React.PropsWithChildren {
    */
   client: ChatContextProps["client"];
   /**
-   * Initial state for the chat context.
-   * This allows you to configure the client, callbacks, options, and pre-populate
-   * the chat with initial values like interactions, user prompts, or other state properties.
+   * Default options for ask operations, including throttling.
    */
-  initialState?: Partial<Omit<ChatContextProps, "client">>;
+  askOptions?: Partial<ExtendedAnswerConfig>;
+  /**
+   * Callback fired when an ask operation starts.
+   */
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+
+  /**
+   * Callback fired when an ask operation completes successfully.
+   */
+  onAskComplete?: () => void;
+
+  /**
+   * Callback fired when an ask operation encounters an error.
+   */
+  onAskError?: (error: Error) => void;
+
+  /**
+   * Initial state data for the chat context.
+   * This includes state data like interactions, prompts, etc.
+   */
+  initialState?: Partial<Omit<ChatInitialState, "client">>;
 }
 
 export const ChatRoot = ({
   client,
+  askOptions,
+  onAskStart,
+  onAskComplete,
+  onAskError,
   initialState = {},
   children,
 }: ChatRootProps) => {
@@ -89,6 +108,13 @@ export const ChatRoot = ({
     ...chatState,
     client: client || chatState.client,
     ...initialState,
+    askOptions: {
+      ...chatState.askOptions,
+      ...askOptions,
+    },
+    onAskStart: onAskStart || chatState.onAskStart,
+    onAskComplete: onAskComplete || chatState.onAskComplete,
+    onAskError: onAskError || chatState.onAskError,
   });
 
   return (

@@ -64,6 +64,7 @@ export const PromptTextAreaField = ({
     if (!e.defaultPrevented && e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const userPrompt = e.currentTarget.value.trim();
+
       if (userPrompt) {
         dispatch({ type: "SET_USER_PROMPT", payload: { userPrompt } });
         if (ask) {

@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useChatContext, useChatDispatch } from "../contexts";
-import { AnswerConfig, AnswerSession } from "@orama/core";
+import { AnswerConfig, AnswerSession, Interaction } from "@orama/core";
+import throttle from "throttleit";
+import { ExtendedAnswerConfig } from "@/contexts/ChatContext";
 
 /**
  * Custom React hook for managing chat interactions.
@@ -12,6 +14,10 @@ import { AnswerConfig, AnswerSession } from "@orama/core";
  * - Reset the chat session and clear interactions.
  * - Provides loading and error state.
  * - Supports lifecycle callbacks for ask events.
+ *
+ * @param {Partial<ExtendedAnswerConfig>} [defaultOptions] - Default options for all ask operations.
+ *   These will be merged with context options and used for every ask call unless overridden.
+ *   Includes throttle_delay and all standard AnswerConfig options.
  *
  * @param {UseChatCallbacks} [callbacks] - Optional callbacks for ask lifecycle:
  *   - `onAskStart(options)`: Called when ask starts, receives the prompt options.
@@ -38,20 +44,20 @@ import { AnswerConfig, AnswerSession } from "@orama/core";
  *   reset,
  *   loading,
  *   error,
- * } = useChat({
+ * } = useChat({}, {
  *   onAskStart: (options) => { // custom logic },
  *   onAskComplete: () => { // custom logic },
  *   onAskError: (error) => { // custom error handling }
  * });
  */
-export interface UseChatCallbacks {
-  onAskStart?: (options: AnswerConfig) => void;
+export interface ChatCallbacks {
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
   onAskComplete?: () => void;
   onAskError?: (error: Error) => void;
 }
 
 export interface useChatProps {
-  ask: (options: AnswerConfig) => Promise<void>;
+  ask: (options: ExtendedAnswerConfig) => Promise<void>;
   abort: () => void;
   regenerateLatest: () => void;
   reset: () => void;
@@ -61,12 +67,59 @@ export interface useChatProps {
   error: Error | null;
 }
 
-export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
+export function useChat(
+  options: Partial<ExtendedAnswerConfig> = {},
+  callbacks: ChatCallbacks = {},
+): useChatProps {
   const context = useChatContext();
   const dispatch = useChatDispatch();
-  const { client, interactions, answerSession } = context;
+  const {
+    client,
+    interactions,
+    answerSession,
+    askOptions: contextAskOptions,
+  } = context;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  const throttledDispatchRef = useRef<((state: Interaction[]) => void) | null>(
+    null,
+  );
+  const rafIdRef = useRef<number | null>(null);
+
+  const mergedDefaultOptions = useMemo(() => {
+    return {
+      throttle_delay: 0,
+      ...contextAskOptions,
+      ...options,
+    };
+  }, [contextAskOptions, options]);
+
+  const createThrottledDispatch = useCallback(
+    (throttle_delay: number) => {
+      const updateInteractions = (state: Interaction[]) => {
+        const normalizedState = state.filter((item) => !!item.query);
+        if (normalizedState.length > 0) {
+          const updatedInteractions = [
+            ...(interactions ?? []),
+            ...normalizedState,
+          ];
+          const rafId = requestAnimationFrame(() => {
+            dispatch({
+              type: "SET_INTERACTIONS",
+              payload: { interactions: updatedInteractions },
+            });
+          });
+          rafIdRef.current = rafId;
+        }
+      };
+
+      return throttle_delay > 0
+        ? throttle(updateInteractions, throttle_delay)
+        : updateInteractions;
+    },
+    [interactions, dispatch],
+  );
 
   const streamAnswer = useCallback(
     async (session: AnswerSession | null, options: AnswerConfig) => {
@@ -94,14 +147,26 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
   );
 
   const ask = useCallback(
-    async (options: AnswerConfig) => {
+    async (options: ExtendedAnswerConfig) => {
       setLoading(true);
       setError(null);
 
-      if (callbacks.onAskStart) {
-        callbacks.onAskStart(options);
-      } else if (context.onAskStart) {
-        context.onAskStart(options);
+      const mergedAskOptions: ExtendedAnswerConfig = {
+        ...mergedDefaultOptions,
+        ...options,
+      };
+
+      const { throttle_delay = 0, ...restOptions } = mergedAskOptions;
+
+      const throttledDispatch = createThrottledDispatch(throttle_delay);
+      throttledDispatchRef.current = throttledDispatch;
+
+      const onAskStart = callbacks.onAskStart || context.onAskStart;
+      const onAskComplete = callbacks.onAskComplete || context.onAskComplete;
+      const onAskError = callbacks.onAskError || context.onAskError;
+
+      if (onAskStart) {
+        onAskStart(mergedAskOptions);
       }
 
       const { query: userPrompt } = options || {};
@@ -110,33 +175,14 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
         const err = new Error("User prompt cannot be empty");
         setError(err);
         setLoading(false);
-        if (callbacks.onAskError) {
-          callbacks.onAskError(err);
-        } else if (context.onAskError) {
-          context.onAskError(err);
-        }
+        onAskError?.(err);
         return;
       }
       if (!client) {
         const err = new Error("Client is not initialized");
         setError(err);
         setLoading(false);
-        if (callbacks.onAskError) {
-          callbacks.onAskError(err);
-        } else if (context.onAskError) {
-          context.onAskError(err);
-        }
-        return;
-      }
-      if (!client) {
-        const err = new Error("Client is not initialized");
-        setError(err);
-        setLoading(false);
-        if (callbacks.onAskError) {
-          callbacks.onAskError(err);
-        } else if (context.onAskError) {
-          context.onAskError(err);
-        }
+        onAskError?.(err);
         return;
       }
 
@@ -146,17 +192,7 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
           session = client.ai.createAISession({
             events: {
               onStateChange: (state) => {
-                const normalizedState = state.filter((item) => !!item.query);
-                if (normalizedState.length > 0) {
-                  const updatedInteractions = [
-                    ...(interactions ?? []),
-                    ...normalizedState,
-                  ];
-                  dispatch({
-                    type: "SET_INTERACTIONS",
-                    payload: { interactions: updatedInteractions },
-                  });
-                }
+                throttledDispatch(state);
               },
             },
           });
@@ -165,31 +201,32 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
             payload: { answerSession: session },
           });
         }
-        await streamAnswer(session, options);
-        if (callbacks.onAskComplete) {
-          callbacks.onAskComplete();
-        } else if (context.onAskComplete) {
-          context.onAskComplete();
+        await streamAnswer(session, restOptions);
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
         }
+        onAskComplete?.();
         setLoading(false);
       } catch (err) {
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
         setError(err as Error);
         setLoading(false);
-        if (callbacks.onAskError) {
-          callbacks.onAskError(err as Error);
-        } else if (context.onAskError) {
-          context.onAskError(err as Error);
-        }
+        onAskError?.(err as Error);
       }
     },
     [
       client,
       answerSession,
-      interactions,
+      createThrottledDispatch,
       dispatch,
       context,
       streamAnswer,
       callbacks,
+      mergedDefaultOptions,
     ],
   );
 
@@ -198,6 +235,12 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
     try {
       console.log("Aborting answer session");
       answerSession.abort();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      setLoading(false);
+      setError(null);
     } catch (error) {
       console.error("Error aborting answer:", error);
     }
@@ -215,11 +258,26 @@ export function useChat(callbacks: UseChatCallbacks = {}): useChatProps {
     const lastInteraction = interactions[interactions.length - 1];
     if (lastInteraction?.loading) abort();
 
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    throttledDispatchRef.current = null;
+
     answerSession.clearSession();
     dispatch({ type: "CLEAR_INTERACTIONS" });
     dispatch({ type: "CLEAR_USER_PROMPT" });
     dispatch({ type: "CLEAR_INITIAL_USER_PROMPT" });
   }, [answerSession, interactions, abort, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      throttledDispatchRef.current = null;
+    };
+  }, []);
 
   return {
     ask,

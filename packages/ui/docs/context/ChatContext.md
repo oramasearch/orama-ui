@@ -17,56 +17,81 @@ The `ChatContext` provides a React context and reducer for managing chat-related
 - **`chatReducer`**: Reducer function for chat state management.
 - **`initialChatState`**: Default chat state.
 
----
-
 ## Props & Types
 
-### `ChatContextProps`
+#### `ChatContextProps`
 
-```ts
-type ChatContextProps = {
-  client: OramaCloud | null;
-  userPrompt?: string;
-  interactions?: (Interaction | undefined)[];
-  answerSession: AnswerSession | null;
-  scrollToLastInteraction?: boolean;
-  isStreaming?: boolean;
-};
-```
-
----
-
-## Usage
-
-### With Custom Provider
+The main context value containing all chat state and configuration:
 
 ```tsx
-import {
-  ChatContext,
-  ChatDispatchContext,
-  chatReducer,
-  initialChatState,
-} from "@orama/ui/contexts";
+interface ChatContextProps {
+  // State properties
+  client: OramaCloud | null;
+  interactions: (Interaction | undefined)[];
+  userPrompt: string;
+  answerSession: AnswerSession | null;
+  scrollToLastInteraction: boolean;
+  isStreaming: boolean;
 
-function ChatProvider({ children }) {
-  const [state, dispatch] = React.useReducer(chatReducer, initialChatState);
-
-  return (
-    <ChatContext value={state}>
-      <ChatDispatchContext value={dispatch}>{children}</ChatDispatchContext>
-    </ChatContext>
-  );
+  // Configuration properties
+  askOptions: Partial<ExtendedAnswerConfig>;
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
 }
 ```
 
-### Accessing State and Dispatch
+#### `ChatAction`
+
+Available actions for the chat reducer:
+
+```tsx
+type ChatAction =
+  | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
+  | {
+      type: "SET_ANSWER_SESSION";
+      payload: { answerSession: AnswerSession | null };
+    }
+  | {
+      type: "ADD_INTERACTION";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | {
+      type: "SET_INTERACTIONS";
+      payload: { interactions: (Interaction | undefined)[] };
+    }
+  | { type: "CLEAR_INTERACTIONS" }
+  | { type: "SET_USER_PROMPT"; payload: { userPrompt: string } }
+  | { type: "CLEAR_USER_PROMPT" }
+  | { type: "CLEAR_INITIAL_USER_PROMPT" }
+  | {
+      type: "SET_SCROLL_TO_LAST_INTERACTION";
+      payload: { scrollToLastInteraction: boolean };
+    };
+```
+
+## Usage
+
+### Accessing context and dispatch
 
 ```tsx
 import { useChatContext, useChatDispatch } from "@orama/ui/contexts";
 
-function MyComponent() {
-  const chatState = useChatContext();
+function CustomChatComponent() {
+  const context = useChatContext();
   const dispatch = useChatDispatch();
+
+  const {
+    client,
+    interactions,
+    loading,
+    askOptions,
+    onAskStart,
+    onAskComplete,
+    onAskError,
+  } = context;
+
+  // Use context data...
 
   // Example: Set a new user prompt
   dispatch({
@@ -75,35 +100,14 @@ function MyComponent() {
       userPrompt: "Give me a quick overview of key metrics for our Q2 review.",
     },
   });
-
-  return <div>{chatState.userPrompt}</div>;
 }
 ```
 
 ---
 
-## Actions
-
-The reducer supports the following action types:
-
-- `SET_CLIENT`
-- `SET_INITIAL_USER_PROMPT`
-- `SET_ANSWER_SESSION`
-- `ADD_INTERACTION`
-- `SET_INTERACTIONS`
-- `CLEAR_INTERACTIONS`
-- `SET_USER_PROMPT`
-- `CLEAR_USER_PROMPT`
-- `CLEAR_INITIAL_USER_PROMPT`
-- `SET_SCROLL_TO_LAST_INTERACTION`
-
----
-
 ## When to Use
 
-- **Not needed with `SearchRoot`:**  
-  If you use the `SearchRoot` component, it manages chat state for you.
+- **Not needed with `ChatRoot`:**  
+  If you use the `ChatRoot` component, it manages chat state for you.
 - **Custom implementations:**  
   Use this context if you need to build your own chat provider or require advanced state management.
-
----

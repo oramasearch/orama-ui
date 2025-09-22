@@ -17,7 +17,11 @@ export const SlidingPanelChatbox = () => {
     useScrollableContainer();
 
   return (
-    <ChatRoot client={oramaDocsCollection}>
+    <ChatRoot
+      client={oramaDocsCollection}
+      askOptions={{ throttle_delay: 0 }}
+      onAskStart={(options) => console.log("Starting:", options)}
+    >
       <div className="flex flex-col items-center gap-4">
         <div className="flex gap-2">
           {positions.map((pos) => (

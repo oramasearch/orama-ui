@@ -1,36 +1,48 @@
-# `ChatRoot` component
+# ChatRoot
 
-The `ChatRoot` component provides the context and state management for Orama chat operations in your React application. It uses a reducer to manage chat-related state and provides both the state and dispatch function to its descendants via context.
+The `ChatRoot` component provides context for managing chat state and actions. It serves as the foundation for chat functionality, managing state through a reducer pattern and providing both state and dispatch contexts to child components.
 
-This component is typically used to wrap parts of your UI that require access to chat functionality, such as sending messages, receiving responses, and interacting with the Orama client.
+> **Important**: All Orama UI chat components (such as `PromptTextArea`, `ChatInteractions`, `useChat` hook, etc.) must be wrapped within a `ChatRoot` component to function properly. The `ChatRoot` provides the necessary context and state management that these components depend on. If you're building a custom chat implementation, you can create your own context provider, but for standard usage, `ChatRoot` is required.
 
 ## Props
 
-| Name         | Type                                   | Description                                                                                                                    |
-| ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| client       | `OramaCloud`                           | **Required.** The Orama client instance to be used for chat operations.                                                        |
-| children     | `React.ReactNode`                      | The child components that will have access to the chat context.                                                                |
-| initialState | `Partial<ChatContextProps>` (optional) | Initial state for the chat context. Allows you to configure callbacks, options, and pre-populate the chat with initial values. |
+| Prop            | Type                                      | Required | Description                                                           |
+| --------------- | ----------------------------------------- | -------- | --------------------------------------------------------------------- |
+| `client`        | `OramaClient`                             | Yes      | The Orama client instance for chat operations                         |
+| `askOptions`    | `Partial<ExtendedAnswerConfig>`           | No       | Default options for ask operations, including throttle_delay          |
+| `onAskStart`    | `(options: ExtendedAnswerConfig) => void` | No       | Callback fired when an ask operation starts                           |
+| `onAskComplete` | `() => void`                              | No       | Callback fired when an ask operation completes successfully           |
+| `onAskError`    | `(error: Error) => void`                  | No       | Callback fired when an ask operation encounters an error              |
+| `initialState`  | `Partial<ChatInitialState>`               | No       | Initial state data for the chat context (interactions, prompts, etc.) |
+| `children`      | `ReactNode`                               | No       | Child components                                                      |
 
-### initialState Properties
+#### `ExtendedAnswerConfig`
 
-The `initialState` prop accepts a partial `ChatContextProps` object with the following optional properties:
+The `askOptions` prop accepts an `ExtendedAnswerConfig` object which extends Orama's `AnswerConfig` with additional UI-specific options:
 
-| Property                | Type                              | Description                                                                                     |
-| ----------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| onAskStart              | `(options: AnswerConfig) => void` | Callback function triggered when a chat request starts. Receives the answer configuration.      |
-| onAskComplete           | `() => void`                      | Callback function triggered when a chat request completes successfully.                         |
-| onAskError              | `(error: Error) => void`          | Callback function triggered when a chat request encounters an error. Receives the error object. |
-| askOptions              | `Omit<AnswerConfig, "query">`     | Default options to pass to all ask requests within this ChatRoot context.                       |
-| userPrompt              | `string`                          | Current user prompt text.                                                                       |
-| interactions            | `(Interaction \| undefined)[]`    | Array of previous chat interactions to pre-populate the chat history.                           |
-| answerSession           | `AnswerSession \| null`           | Current answer session object from Orama.                                                       |
-| scrollToLastInteraction | `boolean`                         | Whether to automatically scroll to the last interaction.                                        |
-| isStreaming             | `boolean`                         | Whether the chat is currently streaming a response.                                             |
+```tsx
+interface ExtendedAnswerConfig extends AnswerConfig {
+  throttle_delay?: number; // Throttle delay in milliseconds for chat messages updates during streaming. Disabled by default.
+}
+```
 
-> **Note**: The `AnswerConfig` type is imported from `@orama/core`. For the complete list of available options and their descriptions, please refer to the [OramaCore client documentation](hhttps://github.com/oramasearch/oramacore).
+### ChatInitialState
+
+The `initialState` prop accepts a partial `ChatInitialState` object with the following properties:
+
+| Property                  | Type                           | Description                                                          |
+| ------------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| `userPrompt`              | `string`                       | Initial user prompt text                                             |
+| `interactions`            | `(Interaction \| undefined)[]` | Array of previous chat interactions to pre-populate the chat history |
+| `answerSession`           | `AnswerSession \| null`        | Current answer session object from Orama                             |
+| `scrollToLastInteraction` | `boolean`                      | Whether to automatically scroll to the last interaction              |
+| `isStreaming`             | `boolean`                      | Whether the chat is currently streaming a response                   |
+
+> **Note**: The `AnswerConfig` type is imported from `@orama/core`. For the complete list of available options and their descriptions, please refer to the [Orama documentation](https://docs.orama.com/).
 
 ## Usage
+
+### Basic Usage
 
 ```tsx
 import { ChatRoot } from "@orama/ui/components";
@@ -40,59 +52,34 @@ const orama = new OramaCloud({
   projectId: "your-project-id",
   apiKey: "your-api-key",
 });
+
+function App() {
+  return (
+    <ChatRoot client={orama}>
+      <ChatComponent />
+    </ChatRoot>
+  );
+}
 ```
 
-### Basic Usage
-
-```tsx
-<ChatRoot client={orama}>{/* Chat-related components go here */}</ChatRoot>
-```
-
-### With Initial State and Event Handlers
-
-```tsx
-<ChatRoot
-  client={orama}
-  initialState={{
-    onAskStart: (options) => {
-      console.log("Chat request started with options:", options);
-    },
-    onAskComplete: () => {
-      console.log("Chat request completed successfully");
-    },
-    onAskError: (error) => {
-      console.error("Chat request failed:", error);
-    },
-  }}
->
-  {/* Chat-related components go here */}
-</ChatRoot>
-```
-
-### With askOptions
-
-The `askOptions` property in `initialState` allows you to set default configuration for all chat requests within the ChatRoot context. These options will be automatically passed to every `ask` call made by components within this context.
+### With configuration and callbacks
 
 ```tsx
 <ChatRoot
   client={orama}
-  initialState={{
-    askOptions: {
-      related: {
-        enabled: true,
-        size: 3,
-        format: "question",
-      },
-    },
+  askOptions={{
+    throttle_delay: 100,
+    related: { enabled: true, size: 3 },
   }}
+  onAskStart={(options) => console.log("Starting:", options)}
+  onAskComplete={() => console.log("Completed")}
+  onAskError={(error) => console.error("Error:", error)}
 >
-  {/* All ask requests will include the above options */}
+  <ChatComponent />
 </ChatRoot>
 ```
 
-### Pre-populating Chat State
-
-You can use `initialState` to pre-populate the chat with existing interactions, user prompts, or other state:
+### With pre-populated state
 
 ```tsx
 <ChatRoot
@@ -100,76 +87,61 @@ You can use `initialState` to pre-populate the chat with existing interactions, 
   initialState={{
     interactions: [
       {
-        query: "Hello",
+        query: "Welcome message",
         response: { text: "Hi there! I'm here to help you." },
+        interactionId: "welcome-1",
       },
     ],
-    scrollToLastInteraction: true,
+    userPrompt: "Type your question here...",
   }}
 >
-  {/* Chat starts with pre-populated content */}
+  <ChatComponent />
 </ChatRoot>
 ```
 
-### Complete Example
+## Configuration Options
+
+### Ask Options (`askOptions`)
+
+The `askOptions` prop allows you to configure default behavior for all ask operations:
 
 ```tsx
 <ChatRoot
   client={orama}
-  initialState={{
-    askOptions: {
-      related: {
-        enabled: true,
-        size: 5,
-        format: "question",
-      },
-      datasourceIDs: ["123", "456"],
+  askOptions={{
+    // Throttle UI updates during streaming (milliseconds)
+    throttle_delay: 100,
+
+    // Enable related questions
+    related: {
+      enabled: true,
+      size: 3,
+      format: 'question'
     },
-    onAskStart: (options) => {
-      console.log("Starting chat with:", options);
-      // Analytics tracking example
-      analytics.track("chat_started", { query: options.query });
-    },
-    onAskComplete: () => {
-      console.log("Chat completed");
-      analytics.track("chat_completed");
-    },
-    onAskError: (error) => {
-      console.error("Chat error:", error);
-      analytics.track("chat_error", { error: error.message });
-    },
-    scrollToLastInteraction: true,
+
+    // Other Orama AnswerConfig options...
   }}
 >
-  {/* Chat components inherit askOptions */}
-  <ChatInteractions.Wrapper>
-    {(interaction) => (
-      <>
-        <ChatInteractions.UserPrompt>
-          {interaction.query}
-        </ChatInteractions.UserPrompt>
-        <ChatInteractions.AssistantMessage>
-          {interaction.response}
-        </ChatInteractions.AssistantMessage>
-      </>
-    )}
-  </ChatInteractions.Wrapper>
-
-  <PromptTextArea.Wrapper>
-    <PromptTextArea.Field placeholder="Ask something..." />
-    <PromptTextArea.Button>Send</PromptTextArea.Button>
-  </PromptTextArea.Wrapper>
-</ChatRoot>
 ```
 
-## How initialState Works
+### Callbacks
 
-1. **Flexible Configuration**: The `initialState` prop allows you to configure any aspect of the chat context in a single object.
+Configure global callback handlers for ask operations:
 
-2. **Default Options**: Properties like `askOptions` set in `initialState` become defaults for all chat operations within that context.
-
-3. **Context Inheritance**: All child components automatically inherit the configuration through the chat context.
-
-4. **Pre-population**: You can pre-populate the chat with existing interactions, prompts, or other state data.
-
-5. **Partial Updates**: Since `initialState` accepts a partial object, you only need to specify the properties you want to configure.
+```tsx
+<ChatRoot
+  client={orama}
+  onAskStart={(options) => {
+    console.log('Ask started with options:', options)
+    // Track analytics, show loading states, etc.
+  }}
+  onAskComplete={() => {
+    console.log('Ask completed successfully')
+    // Hide loading states, track success, etc.
+  }}
+  onAskError={(error) => {
+    console.error('Ask failed:', error)
+    // Show error notifications, track failures, etc.
+  }}
+>
+```

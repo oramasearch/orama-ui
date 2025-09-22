@@ -7,7 +7,7 @@ The `Suggestions` component provides a set of composable UI primitives for rende
 ## Usage
 
 ```tsx
-import { Suggestions } from "@orama/ui";
+import { Suggestions } from "@orama/ui/components";
 
 <Suggestions.Wrapper className="suggestions-wrapper">
   {suggestions.map((suggestion) => (

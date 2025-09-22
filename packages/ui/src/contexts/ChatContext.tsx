@@ -6,18 +6,27 @@ import type {
 } from "@orama/core";
 import { createContext, useContext } from "react";
 
-export type ChatContextProps = {
+export interface ExtendedAnswerConfig extends AnswerConfig {
+  throttle_delay?: number;
+}
+
+export type ChatGlobalOptions = {
+  askOptions?: Omit<ExtendedAnswerConfig, "query">;
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
+};
+
+export type ChatInitialState = {
   client: OramaCloud | null;
   userPrompt?: string;
   interactions?: (Interaction | undefined)[];
   answerSession: AnswerSession | null;
   scrollToLastInteraction?: boolean;
   isStreaming?: boolean;
-  askOptions?: Omit<AnswerConfig, "query">;
-  onAskStart?: (options: AnswerConfig) => void;
-  onAskComplete?: () => void;
-  onAskError?: (error: Error) => void;
 };
+
+export type ChatContextProps = ChatInitialState & ChatGlobalOptions;
 
 export type ChatAction =
   | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }

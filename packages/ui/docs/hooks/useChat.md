@@ -1,228 +1,237 @@
-# `useChat` hook
+# useChat
 
-The `useChat` hook provides a set of utilities for managing chat interactions in Orama-powered React applications. It handles sending prompts, streaming answers, aborting and regenerating responses, resetting the chat session, and gives access to the chat context and dispatch function.
+The `useChat` hook provides a comprehensive interface for managing chat interactions in Orama-powered React applications, including sending prompts, handling streaming responses, and managing chat state.
 
----
+> **Note**: Orama UI chat components (like `PromptTextArea`, `ChatInteractions`, etc.) use this hook internally to manage chat logic. For most use cases, you should use these components instead of calling `useChat` directly. Use this hook when you need custom chat implementations or advanced control over chat behavior that isn't provided by the standard components.
+
+## Parameters
+
+| Parameter        | Type                            | Required | Description                                                      |
+| ---------------- | ------------------------------- | -------- | ---------------------------------------------------------------- |
+| `defaultOptions` | `Partial<ExtendedAnswerConfig>` | No       | Default options for all ask operations (includes throttle_delay) |
+| `callbacks`      | `UseChatCallbacks`              | No       | Optional callbacks for ask lifecycle events                      |
+
+#### `ExtendedAnswerConfig`
+
+Extends Orama's `AnswerConfig` with additional UI-specific options:
+
+```tsx
+interface ExtendedAnswerConfig extends AnswerConfig {
+  throttle_delay?: number; // Throttle delay in milliseconds for chat messages updates. Disabled by default
+}
+```
+
+#### `UseChatCallbacks`
+
+```tsx
+interface UseChatCallbacks {
+  onAskStart?: (options: ExtendedAnswerConfig) => void;
+  onAskComplete?: () => void;
+  onAskError?: (error: Error) => void;
+}
+```
+
+## Return value
+
+| Property           | Type                                               | Description                                                |
+| ------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| `ask`              | `(options: ExtendedAnswerConfig) => Promise<void>` | Send a user prompt and handle the answer stream            |
+| `abort`            | `() => void`                                       | Abort the current answer stream                            |
+| `regenerateLatest` | `() => void`                                       | Regenerate the latest answer                               |
+| `reset`            | `() => void`                                       | Reset the chat session and clear interactions              |
+| `loading`          | `boolean`                                          | Whether a request is in progress                           |
+| `error`            | `Error \| null`                                    | Error object if an error occurred                          |
+| `context`          | `ChatContextProps`                                 | The chat context containing client and session information |
+| `dispatch`         | `ChatDispatch`                                     | Function to dispatch actions to the chat state             |
 
 ## Usage
 
-### Basic usage (using `ChatRoot` callbacks)
+### Basic Usage
 
 ```tsx
 import { useChat } from "@orama/ui/hooks";
 
-function MyChatComponent() {
-  // Uses callbacks defined at ChatRoot level
-  const { ask, loading, error, context, dispatch } = useChat();
-
-  const handleSubmit = (query: string) => {
-    ask({ query });
-  };
-
-  return (
-    <div>
-      {loading && <div>Loading...</div>}
-      {error && <div>Error: {error.message}</div>}
-      {/* Chat UI */}
-    </div>
-  );
-}
-```
-
-### Advanced usage (with hook-level callbacks)
-
-```tsx
-import { useChat } from "@orama/ui/hooks";
-
-function MyChatComponent() {
-  const { ask, loading, error, context, dispatch } = useChat({
-    onAskStart: (options) => {
-      console.log("Starting chat with query:", options.query);
-      // Component-specific start logic
-    },
-    onAskComplete: () => {
-      console.log("Chat completed successfully");
-      // Component-specific completion logic
-    },
-    onAskError: (error) => {
-      console.error("Chat failed:", error);
-      // Component-specific error handling
-    },
-  });
-
-  const handleSubmit = (query: string) => {
-    ask({ query });
-  };
-
-  return (
-    <div>
-      {loading && <div>Loading...</div>}
-      {error && <div>Error: {error.message}</div>}
-      {/* Chat UI */}
-    </div>
-  );
-}
-```
-
----
-
-## API
-
-### Callbacks
-
-You can pass an optional callbacks object to `useChat` to hook into the ask lifecycle. These callbacks have a priority system with callbacks passed to the `ChatRoot` component's `initialState`:
-
-| Name            | Type                              | Description                                            |
-| --------------- | --------------------------------- | ------------------------------------------------------ |
-| `onAskStart`    | `(options: AnswerConfig) => void` | Called when `ask` starts, receives the prompt options. |
-| `onAskComplete` | `() => void`                      | Called when `ask` completes successfully.              |
-| `onAskError`    | `(error: Error) => void`          | Called when `ask` fails, receives the error object.    |
-
-#### Callback priority
-
-The `useChat` hook implements a callback priority system:
-
-1. **Hook-level callbacks** (passed directly to `useChat`) take precedence
-2. **ChatRoot-level callbacks** (passed to `ChatRoot` component's `initialState`) are used as fallbacks
-
-This means if you provide both hook-level and ChatRoot-level callbacks, only the hook-level callbacks will be executed.
-
-### Returns
-
-| Name               | Type                                       | Description                                          |
-| ------------------ | ------------------------------------------ | ---------------------------------------------------- |
-| `ask`              | `(options: AnswerConfig) => Promise<void>` | Sends a user prompt and handles the answer stream.   |
-| `abort`            | `() => void`                               | Aborts the current answer stream.                    |
-| `regenerateLatest` | `() => void`                               | Regenerates the latest answer.                       |
-| `reset`            | `() => void`                               | Resets the chat session and clears interactions.     |
-| `context`          | `ReturnType<typeof useChatContext>`        | The chat context containing client and session info. |
-| `dispatch`         | `ReturnType<typeof useChatDispatch>`       | Function to dispatch actions to the chat state.      |
-| `loading`          | `boolean`                                  | Indicates if a request is in progress.               |
-| `error`            | `Error \| null`                            | Error object if an error occurred, otherwise `null`. |
-
----
-
-## When to use callbacks
-
-### ChatRoot-level callbacks (recommended for global behavior)
-
-Use callbacks at the `ChatRoot` level when you want consistent behavior across all chat interactions in your application:
-
-```tsx
-import { ChatRoot } from "@orama/ui/components";
-import { OramaCloud } from "@orama/core";
-
-function App() {
-  const orama = new OramaCloud({
-    projectId: "your-project-id",
-    apiKey: "your-api-key",
-  });
-
-  return (
-    <ChatRoot
-      client={orama}
-      initialState={{
-        onAskStart: (options) => {
-          // Global analytics tracking
-          analytics.track("chat_question_started", { query: options.query });
-        },
-        onAskComplete: () => {
-          // Global success tracking
-          analytics.track("chat_question_completed");
-        },
-        onAskError: (error) => {
-          // Global error handling and logging
-          console.error("Chat error:", error);
-          errorService.log(error);
-        },
-      }}
-    >
-      <MyChatInterface />
-    </ChatRoot>
-  );
-}
-
-function MyChatInterface() {
-  // Uses ChatRoot-level callbacks automatically
+function ChatComponent() {
   const { ask, loading, error } = useChat();
 
-  return <div>{/* Chat UI components */}</div>;
+  const handleSubmit = async () => {
+    await ask({
+      query: "What is Orama?",
+      throttle_delay: 100,
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Asking..." : "Ask Question"}
+      </button>
+      {error && <p>Error: {error.message}</p>}
+    </div>
+  );
 }
 ```
 
-### Hook-level callbacks (for component-specific behavior)
-
-Use callbacks at the hook level when you need specific behavior for individual components or want to override global behavior:
+### With default options and callbacks
 
 ```tsx
-function SpecialChatComponent() {
-  const { ask, loading, error } = useChat({
-    onAskStart: (options) => {
-      // Component-specific behavior that overrides ChatRoot callbacks
-      setCustomLoadingState(true);
-      showTypingIndicator();
+function ChatComponent() {
+  const { ask, loading, regenerateLatest, reset } = useChat(
+    // Default options for all ask operations
+    {
+      throttle_delay: 100,
+      related: { enabled: true, size: 3 },
     },
-    onAskComplete: () => {
-      // Custom completion logic for this component only
-      setCustomLoadingState(false);
-      hideTypingIndicator();
-      scrollToBottom();
+    // Callbacks
+    {
+      onAskStart: (options) => {
+        console.log("Ask started with options:", options);
+      },
+      onAskComplete: () => {
+        console.log("Ask completed successfully");
+      },
+      onAskError: (error) => {
+        console.error("Ask failed:", error);
+      },
     },
-    onAskError: (error) => {
-      // Component-specific error handling
-      setCustomLoadingState(false);
-      showCustomErrorMessage(error.message);
-    },
-  });
+  );
 
-  return <div>{/* Special chat UI with custom behavior */}</div>;
+  const handleAsk = async (query: string) => {
+    // Uses default throttle_delay: 100 and related options
+    await ask({ query });
+  };
+
+  const handleSpecialAsk = async (query: string) => {
+    // Override default throttling for this specific request
+    await ask({
+      query,
+      throttle_delay: 200,
+      related: { enabled: false },
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={() => handleAsk("General question")}>
+        Ask General Question
+      </button>
+      <button onClick={() => handleSpecialAsk("Complex question")}>
+        Ask Complex Question (slower throttle)
+      </button>
+      <button onClick={regenerateLatest}>Regenerate Latest</button>
+      <button onClick={reset}>Reset Chat</button>
+    </div>
+  );
 }
 ```
 
-### Mixed approach
+### Within `ChatRoot` context
 
-You can also use both approaches together. Hook-level callbacks will override ChatRoot-level callbacks, allowing you to have global defaults with component-specific overrides:
+When used within a `ChatRoot`, the hook automatically inherits configuration:
 
 ```tsx
-// Global setup with ChatRoot callbacks for analytics
+// ChatRoot provides base configuration
 <ChatRoot
   client={orama}
-  initialState={{
-    onAskStart: (options) => analytics.track("chat_started", options),
-    onAskComplete: () => analytics.track("chat_completed"),
-    onAskError: (error) =>
-      analytics.track("chat_error", { error: error.message }),
-  }}
+  askOptions={{ throttle_delay: 50, related: { enabled: true } }}
+  onAskError={(error) => console.error("Global error:", error)}
 >
-  {/* Regular chat component uses global callbacks */}
-  <RegularChatComponent />
+  <ChatComponent />
+</ChatRoot>;
 
-  {/* Special component overrides with its own callbacks */}
-  <SpecialChatComponent />
-</ChatRoot>
+function ChatComponent() {
+  // Inherits ChatRoot configuration, can override per operation
+  const { ask } = useChat(
+    { throttle_delay: 100 }, // Hook defaults override context
+    { onAskComplete: () => console.log("Local completion handler") },
+  );
+
+  const handleAsk = async () => {
+    // Priority: ChatRoot < Hook defaults < Call options
+    await ask({
+      query: "Question",
+      throttle_delay: 200, // Highest priority
+    });
+  };
+}
 ```
 
-### Best practices
+## Configuration priority
 
-- **Use ChatRoot callbacks** for:
-  - Analytics and tracking
-  - Global error handling and logging
-  - Consistent user experience patterns
-  - Application-wide state management
+Options are merged with the following priority (highest to lowest):
 
-- **Use hook callbacks** for:
-  - Component-specific UI updates
-  - Custom loading states
-  - Specialized error handling
-  - Overriding global behavior for specific use cases
+1. **Call-level options**: Options passed directly to `ask()`
+2. **Hook-level defaults**: Options passed to `useChat()` first parameter
+3. **Context options**: Options from `ChatRoot.askOptions`
+4. **Built-in defaults**: Internal fallback values
 
----
+```tsx
+// Example of option merging
+<ChatRoot askOptions={{ throttle_delay: 50, related: { enabled: true } }}>
+  <Component />
+</ChatRoot>;
 
-## Notes
+function Component() {
+  const { ask } = useChat(
+    { throttle_delay: 100, format: "markdown" }, // Hook defaults
+    {},
+  );
 
-- Throws errors if required dependencies (like answer session or client) are not initialized.
-- Designed to be used within a [`ChatRoot`](../components/ChatRoot.md) or custom chat provider using [`ChatContext`](../context/ChatContext.md).
-- Hook-level callbacks take precedence over [`ChatRoot`](../components/ChatRoot.md) callbacks when both are provided.
-- The hook automatically handles the callback priority system, so you don't need to worry about manually managing which callbacks to call.
+  await ask({
+    query: "Question",
+    throttle_delay: 200, // Overrides all other throttle_delay values
+    related: { enabled: false }, // Overrides context related.enabled
+    // format: 'markdown' inherited from hook defaults
+  });
+}
+```
 
----
+### Throttling Support
+
+During streaming responses, chat messages are updated in real-time as tokens arrive from the AI. This can cause performance issues when:
+
+- **High-frequency updates**: AI responses stream very quickly, causing excessive re-renders
+- **Complex UI**: Chat components have heavy rendering logic (i.e. Markdown) or many child components
+- **Mobile devices**: Limited processing power struggles with rapid DOM updates
+- **Large conversations**: Many chat interactions make each update more expensive
+
+Throttling reduces update frequency by batching multiple token updates together:
+
+```tsx
+const { ask } = useChat();
+
+// No throttling - every token triggers immediate UI update
+// Use for simple UIs or when you need real-time character-by-character display
+await ask({ query: "Question", throttle_delay: 0 });
+
+// Moderate throttling - updates every 100ms
+// Good balance between responsiveness and performance for most applications
+await ask({ query: "Question", throttle_delay: 100 });
+
+// Heavy throttling - updates every 300ms
+// Use for complex UIs, mobile devices, or when performance is critical
+await ask({ query: "Question", throttle_delay: 300 });
+```
+
+### Error Handling
+
+```tsx
+const { ask, error } = useChat(
+  {},
+  {
+    onAskError: (error) => {
+      // Handle specific errors
+      if (error.message.includes("network")) {
+        // Handle network errors
+      } else if (error.message.includes("auth")) {
+        // Handle authentication errors
+      }
+    },
+  },
+);
+
+// Also check error state directly
+if (error) {
+  console.error("Current error:", error);
+}
+```
