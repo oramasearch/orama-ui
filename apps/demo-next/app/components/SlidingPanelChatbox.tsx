@@ -19,7 +19,7 @@ export const SlidingPanelChatbox = () => {
   return (
     <ChatRoot
       client={oramaDocsCollection}
-      askOptions={{ throttle_delay: 100 }}
+      askOptions={{ throttle_delay: 0 }}
       onAskStart={(options) => console.log("Starting:", options)}
     >
       <div className="flex flex-col items-center gap-4">

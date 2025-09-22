@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useChatContext, useChatDispatch } from "../contexts";
 import { AnswerConfig, AnswerSession, Interaction } from "@orama/core";
 import throttle from "throttleit";
@@ -57,7 +57,7 @@ export interface ChatCallbacks {
 }
 
 export interface useChatProps {
-  ask: (options: AnswerConfig) => Promise<void>;
+  ask: (options: ExtendedAnswerConfig) => Promise<void>;
   abort: () => void;
   regenerateLatest: () => void;
   reset: () => void;
@@ -82,7 +82,10 @@ export function useChat(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const currentThrottledDispatchRef = useRef<any | null>(null);
+  const throttledDispatchRef = useRef<((state: Interaction[]) => void) | null>(
+    null,
+  );
+  const rafIdRef = useRef<number | null>(null);
 
   const mergedDefaultOptions = useMemo(() => {
     return {
@@ -101,10 +104,13 @@ export function useChat(
             ...(interactions ?? []),
             ...normalizedState,
           ];
-          dispatch({
-            type: "SET_INTERACTIONS",
-            payload: { interactions: updatedInteractions },
+          const rafId = requestAnimationFrame(() => {
+            dispatch({
+              type: "SET_INTERACTIONS",
+              payload: { interactions: updatedInteractions },
+            });
           });
+          rafIdRef.current = rafId;
         }
       };
 
@@ -153,7 +159,7 @@ export function useChat(
       const { throttle_delay = 0, ...restOptions } = mergedAskOptions;
 
       const throttledDispatch = createThrottledDispatch(throttle_delay);
-      currentThrottledDispatchRef.current = throttledDispatch;
+      throttledDispatchRef.current = throttledDispatch;
 
       const onAskStart = callbacks.onAskStart || context.onAskStart;
       const onAskComplete = callbacks.onAskComplete || context.onAskComplete;
@@ -196,10 +202,17 @@ export function useChat(
           });
         }
         await streamAnswer(session, restOptions);
-
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
         onAskComplete?.();
         setLoading(false);
       } catch (err) {
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
         setError(err as Error);
         setLoading(false);
         onAskError?.(err as Error);
@@ -222,6 +235,12 @@ export function useChat(
     try {
       console.log("Aborting answer session");
       answerSession.abort();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      setLoading(false);
+      setError(null);
     } catch (error) {
       console.error("Error aborting answer:", error);
     }
@@ -239,11 +258,26 @@ export function useChat(
     const lastInteraction = interactions[interactions.length - 1];
     if (lastInteraction?.loading) abort();
 
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    throttledDispatchRef.current = null;
+
     answerSession.clearSession();
     dispatch({ type: "CLEAR_INTERACTIONS" });
     dispatch({ type: "CLEAR_USER_PROMPT" });
     dispatch({ type: "CLEAR_INITIAL_USER_PROMPT" });
   }, [answerSession, interactions, abort, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      throttledDispatchRef.current = null;
+    };
+  }, []);
 
   return {
     ask,
