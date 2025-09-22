@@ -87,6 +87,7 @@ Shows loading state while search is in progress.
 ```
 
 **Behavior:**
+
 - Only renders when `loading` is `true` and there are no existing results
 - Uses `role="status"` and `aria-live="polite"` for accessibility
 
@@ -111,6 +112,7 @@ Displays error state when search fails.
 ```
 
 **Behavior:**
+
 - Only renders when there is an error from the search context
 - Uses `role="alert"` for accessibility to announce errors immediately
 
