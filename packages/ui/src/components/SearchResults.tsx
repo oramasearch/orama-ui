@@ -1,7 +1,8 @@
-import React, { ComponentPropsWithRef, useMemo } from "react";
+import React, { Children, ComponentPropsWithRef, useMemo } from "react";
 import { Hit } from "@orama/core";
 import { useSearchContext } from "../contexts";
 import { GroupedResult } from "@/types";
+import { useSearch } from "../hooks";
 
 export interface SearchResultsWrapperProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -96,7 +97,13 @@ export const SearchResultsNoResults = ({
   className = "",
   ...rest
 }: SearchResultsNoResultsProps) => {
-  const { searchTerm, results } = useSearchContext();
+  const {
+    context: { searchTerm, results, loading },
+  } = useSearch();
+
+  if (loading) {
+    return null;
+  }
 
   if (results && results.length > 0) {
     return null;
@@ -105,6 +112,61 @@ export const SearchResultsNoResults = ({
   return (
     <div className={className} aria-live="polite" {...rest}>
       {children(searchTerm || "")}
+    </div>
+  );
+};
+
+export interface SearchResultsLoadingProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+}
+
+export const SearchResultsLoading = ({
+  children,
+  className = "",
+  ...rest
+}: SearchResultsLoadingProps) => {
+  const {
+    context: { results, loading },
+  } = useSearch();
+
+  if (!loading) {
+    return null;
+  }
+
+  if (results && results.length > 0) {
+    return null;
+  }
+
+  return (
+    <div role="status" aria-live="polite" className={className} {...rest}>
+      {children}
+    </div>
+  );
+};
+
+export interface SearchResultsErrorProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: (error: Error) => React.ReactNode;
+  className?: string;
+}
+
+export const SearchResultsError = ({
+  children,
+  className = "",
+  ...rest
+}: SearchResultsErrorProps) => {
+  const {
+    context: { error },
+  } = useSearch();
+
+  if (!error) {
+    return null;
+  }
+
+  return (
+    <div className={className} role="alert" {...rest}>
+      {children(error)}
     </div>
   );
 };
@@ -196,5 +258,7 @@ export const SearchResults = {
   GroupsWrapper: SearchResultsGroupedWrapper,
   GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
+  Loading: SearchResultsLoading,
+  Error: SearchResultsError,
   NoResults: SearchResultsNoResults,
 };

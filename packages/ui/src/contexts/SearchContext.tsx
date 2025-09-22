@@ -14,12 +14,16 @@ export type SearchContextProps = {
   results?: Hit[] | null;
   selectedFacet?: string | null;
   groupsCount?: GroupsCount | null;
+  loading?: boolean;
+  error?: Error | null;
   count?: number;
 };
 
 export type SearchAction =
   | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
   | { type: "SET_SEARCH_TERM"; payload: { searchTerm: string } }
+  | { type: "SET_LOADING"; payload: { loading: boolean } }
+  | { type: "SET_ERROR"; payload: { error: Error | null } }
   | { type: "SET_RESULTS"; payload: { results: Hit[] | null } }
   | { type: "SET_GROUPS_COUNT"; payload: { groupsCount: GroupsCount | null } }
   | { type: "SET_SELECTED_FACET"; payload: { selectedFacet: string | null } }
@@ -31,6 +35,8 @@ export const initialSearchState: SearchContextProps = {
   results: null,
   selectedFacet: "All",
   groupsCount: null,
+  loading: false,
+  error: null,
   count: 0,
 };
 
@@ -82,6 +88,10 @@ export const searchReducer = (
       return { ...state, groupsCount: action.payload?.groupsCount || null };
     case "SET_SELECTED_FACET":
       return { ...state, selectedFacet: action.payload?.selectedFacet || null };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload?.loading || false };
+    case "SET_ERROR":
+      return { ...state, error: action.payload?.error || null };
     case "SET_COUNT":
       return { ...state, count: action.payload?.count || 0 };
     default:

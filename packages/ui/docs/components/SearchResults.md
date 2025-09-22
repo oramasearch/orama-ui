@@ -13,6 +13,8 @@ export const SearchResults = {
   GroupsWrapper: SearchResultsGroupedWrapper,
   GroupList: SearchResultsGroupList,
   Item: SearchResultsItem,
+  Loading: SearchResultsLoading,
+  Error: SearchResultsError,
   NoResults: SearchResultsNoResults,
 };
 ```
@@ -66,7 +68,57 @@ Groups results by a field.
 
 ---
 
-### 3. `<SearchResults.NoResults>`
+### 3. `<SearchResults.Loading>`
+
+Shows loading state while search is in progress.
+
+**Props:**
+
+- `children: React.ReactNode` – Content to render during loading.
+- `className?: string` – Optional custom class name.
+- `...rest` – Other `div` props.
+
+**Usage:**
+
+```tsx
+<SearchResults.Loading>
+  <div>Searching...</div>
+</SearchResults.Loading>
+```
+
+**Behavior:**
+
+- Only renders when `loading` is `true` and there are no existing results
+- Uses `role="status"` and `aria-live="polite"` for accessibility
+
+---
+
+### 4. `<SearchResults.Error>`
+
+Displays error state when search fails.
+
+**Props:**
+
+- `children: (error: Error) => React.ReactNode` – Render function for error state, receives the error object.
+- `className?: string` – Optional custom class name.
+- `...rest` – Other `div` props.
+
+**Usage:**
+
+```tsx
+<SearchResults.Error>
+  {(error) => <div>Error: {error.message}</div>}
+</SearchResults.Error>
+```
+
+**Behavior:**
+
+- Only renders when there is an error from the search context
+- Uses `role="alert"` for accessibility to announce errors immediately
+
+---
+
+### 5. `<SearchResults.NoResults>`
 
 Renders when there are no results.
 
@@ -85,7 +137,7 @@ Renders when there are no results.
 
 ---
 
-### 4. `<SearchResults.List>`
+### 6. `<SearchResults.List>`
 
 Renders a list of results.
 
@@ -104,7 +156,7 @@ Renders a list of results.
 
 ---
 
-### 5. `<SearchResults.GroupList>`
+### 7. `<SearchResults.GroupList>`
 
 Renders a list of results within a group.
 
@@ -125,7 +177,7 @@ Renders a list of results within a group.
 
 ---
 
-### 6. `<SearchResults.Item>`
+### 8. `<SearchResults.Item>`
 
 Renders a single result item, optionally as a custom element.
 
@@ -147,22 +199,16 @@ Renders a single result item, optionally as a custom element.
 
 ---
 
-## Accessibility
-
-- Uses `aria-live`, `role`, and keyboard navigation support for interactive items.
-
----
-
-## Context
-
-All components rely on `useSearchContext()` for access to `results` and `searchTerm`.
-
----
-
 ## Example
 
 ```tsx
 <SearchResults.Wrapper>
+  <SearchResults.Loading>
+    <div>Searching...</div>
+  </SearchResults.Loading>
+  <SearchResults.Error>
+    {(error) => <div>Error: {error.message}</div>}
+  </SearchResults.Error>
   <SearchResults.NoResults>
     {(term) => <div>No results for "{term}"</div>}
   </SearchResults.NoResults>
