@@ -35,14 +35,19 @@
   "license": "MIT",
   "scripts": {
     "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
-    "build:components": "tsdown",
+    "build:react": "tsdown -c tsdown.react.config.ts",
+    "build:preact": "tsdown -c tsdown.preact.config.ts",
+    "build:components": "npm run build:react && npm run build:preact",
     "check-types": "tsc --noEmit",
     "dev:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
     "dev:components": "tsdown --watch",
     "lint": "eslint src --max-warnings 0"
   },
   "peerDependencies": {
-    "@orama/core": "^1.2.7"
+    "@orama/core": "^1.2.7",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "preact": "^10.0.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -52,6 +57,7 @@
     "@types/react": "^19.1.0",
     "eslint": "^9.28.0",
     "tailwindcss": "^4.1.5",
+    "preact": "^10.20.0",
     "tsdown": "^0.15.6",
     "typescript": "5.8.2"
   },
