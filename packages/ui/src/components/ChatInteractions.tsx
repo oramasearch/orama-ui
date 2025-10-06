@@ -13,7 +13,7 @@ import Highlight, {
   Language,
   PrismTheme,
 } from "prism-react-renderer";
-import theme from "prism-react-renderer/themes/vsDark";
+import theme from "prism-react-renderer/themes/vsDark/index.js";
 import { useChat, useClipboard, useLastInteractionMinHeight } from "../hooks";
 import { useChatContext, useChatDispatch } from "../contexts";
 
