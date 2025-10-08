@@ -22,8 +22,6 @@
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "@orama/core": "npm:@orama/core@^1.2.13",
-    "@orama/ui": "npm:@orama/ui@^1.2.0",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
@@ -31,7 +29,11 @@
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "$std/": "https://deno.land/std@0.216.0/"
+    "$std/": "https://deno.land/std@0.216.0/",
+    "@orama/core": "npm:@orama/core@^1.2.13",
+    "@orama/ui/components": "https://esm.sh/@orama/ui@1.2.1/components?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat&deps=preact@10.22.0",
+    "@orama/ui/hooks": "https://esm.sh/@orama/ui@1.2.1/hooks?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat&deps=preact@10.22.0",
+    "@orama/ui/contexts": "https://esm.sh/@orama/ui@1.2.1/contexts?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat&deps=preact@10.22.0"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
