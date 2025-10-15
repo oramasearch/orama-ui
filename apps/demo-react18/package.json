@@ -15,7 +15,7 @@
     "react": "18",
     "react-dom": "18",
     "@orama/ui": "workspace:*",
-    "@orama/core": "^1.2.7"
+    "@orama/core": "^1.2.13"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
