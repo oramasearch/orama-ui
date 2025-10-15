@@ -1,199 +1,199 @@
-import React, { Children, ComponentPropsWithRef, useMemo } from 'react'
-import { Hit } from '@orama/core'
-import { useSearchContext } from '../contexts'
-import { GroupedResult } from '@/types'
-import { useSearch } from '../hooks'
+import React, { Children, ComponentPropsWithRef, useMemo } from "react";
+import { Hit } from "@orama/core";
+import { useSearchContext } from "../contexts";
+import { GroupedResult } from "@/types";
+import { useSearch } from "../hooks";
 
 export interface SearchResultsWrapperProps
   extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Optional class name for custom styling.
    */
-  className?: string
+  className?: string;
 }
 
 export const SearchResultsWrapper = ({
   children,
-  className = ''
+  className = "",
 }: SearchResultsWrapperProps) => {
-  return <div className={className}>{children}</div>
-}
+  return <div className={className}>{children}</div>;
+};
 
 export interface SearchResultsGroupedWrapperProps
-  extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
-  children: (groupedResult: GroupedResult) => React.ReactNode
-  groupBy: string
-  className?: string
+  extends Omit<ComponentPropsWithRef<"div">, "children"> {
+  children: (groupedResult: GroupedResult) => React.ReactNode;
+  groupBy: string;
+  className?: string;
 }
 export const SearchResultsGroupedWrapper = ({
   children,
   groupBy,
-  className = '',
+  className = "",
   ...rest
 }: SearchResultsGroupedWrapperProps) => {
-  const { results } = useSearchContext()
+  const { results } = useSearchContext();
 
   const groupedResults = useMemo(() => {
     if (!results || results.length === 0) {
-      return []
+      return [];
     }
-    const groupsMap = new Map<string, GroupedResult>()
+    const groupsMap = new Map<string, GroupedResult>();
 
     results.forEach((result) => {
-      const groupValue = result.document?.[groupBy]
+      const groupValue = result.document?.[groupBy];
 
       if (
         !groupValue ||
-        (typeof groupValue !== 'string' && typeof groupValue !== 'number')
+        (typeof groupValue !== "string" && typeof groupValue !== "number")
       ) {
-        return
+        return;
       }
 
-      const groupKey = String(groupValue)
+      const groupKey = String(groupValue);
 
       if (groupsMap.has(groupKey)) {
-        const existingGroup = groupsMap.get(groupKey)!
-        existingGroup.hits.push(result)
-        existingGroup.count += 1
+        const existingGroup = groupsMap.get(groupKey)!;
+        existingGroup.hits.push(result);
+        existingGroup.count += 1;
       } else {
         groupsMap.set(groupKey, {
           name: groupKey,
           hits: [result],
-          count: 1
-        })
+          count: 1,
+        });
       }
-    })
+    });
 
-    const groupsArray = Array.from(groupsMap.values())
+    const groupsArray = Array.from(groupsMap.values());
 
-    return groupsArray
-  }, [results, groupBy])
+    return groupsArray;
+  }, [results, groupBy]);
 
   if (!results || results.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div
       className={className}
-      role='region'
-      aria-label='Grouped search results'
+      role="region"
+      aria-label="Grouped search results"
       {...rest}
     >
       {groupedResults.map((group) => (
         <React.Fragment key={group.name}>{children(group)}</React.Fragment>
       ))}
     </div>
-  )
-}
+  );
+};
 export interface SearchResultsNoResultsProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: (searchTerm: string) => React.ReactNode
-  className?: string
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: (searchTerm: string) => React.ReactNode;
+  className?: string;
 }
 
 export const SearchResultsNoResults = ({
   children,
-  className = '',
+  className = "",
   ...rest
 }: SearchResultsNoResultsProps) => {
   const {
-    context: { searchTerm, results, loading }
-  } = useSearch()
+    context: { searchTerm, results, loading },
+  } = useSearch();
 
   if (loading) {
-    return null
+    return null;
   }
 
   if (results && results.length > 0) {
-    return null
+    return null;
   }
 
   return (
-    <div className={className} aria-live='polite' {...rest}>
-      {children(searchTerm || '')}
+    <div className={className} aria-live="polite" {...rest}>
+      {children(searchTerm || "")}
     </div>
-  )
-}
+  );
+};
 
 export interface SearchResultsLoadingProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
+  className?: string;
 }
 
 export const SearchResultsLoading = ({
   children,
-  className = '',
+  className = "",
   ...rest
 }: SearchResultsLoadingProps) => {
   const {
-    context: { results, loading }
-  } = useSearch()
+    context: { results, loading },
+  } = useSearch();
 
   if (!loading) {
-    return null
+    return null;
   }
 
   if (results && results.length > 0) {
-    return null
+    return null;
   }
 
   return (
-    <div role='status' aria-live='polite' className={className} {...rest}>
+    <div role="status" aria-live="polite" className={className} {...rest}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 export interface SearchResultsErrorProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: (error: Error) => React.ReactNode
-  className?: string
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: (error: Error) => React.ReactNode;
+  className?: string;
 }
 
 export const SearchResultsError = ({
   children,
-  className = '',
+  className = "",
   ...rest
 }: SearchResultsErrorProps) => {
   const {
-    context: { error }
-  } = useSearch()
+    context: { error },
+  } = useSearch();
 
   if (!error) {
-    return null
+    return null;
   }
 
   return (
-    <div className={className} role='alert' {...rest}>
+    <div className={className} role="alert" {...rest}>
       {children(error)}
     </div>
-  )
-}
+  );
+};
 
 export interface SearchResultsListProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
-  children: (result: Hit, index: number) => React.ReactNode
-  className?: string
-  itemClassName?: string
-  emptyMessage?: string
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+  children: (result: Hit, index: number) => React.ReactNode;
+  className?: string;
+  itemClassName?: string;
+  emptyMessage?: string;
 }
 
 const SearchResultsList = ({
   children,
-  className = '',
+  className = "",
   itemClassName,
   ...rest
 }: SearchResultsListProps) => {
-  const { results } = useSearchContext()
+  const { results } = useSearchContext();
 
   if (!results || results.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div>
-      <ul className={className} aria-live='polite' {...rest}>
+      <ul className={className} aria-live="polite" {...rest}>
         {results.map((result, index) => (
           <li key={result.id || `result-${index}`} className={itemClassName}>
             {children(result, index)}
@@ -201,21 +201,21 @@ const SearchResultsList = ({
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 export interface SearchResultsGroupListProps {
-  children: (result: Hit, index: number) => React.ReactNode
-  group: GroupedResult
-  className?: string
-  itemClassName?: string
+  children: (result: Hit, index: number) => React.ReactNode;
+  group: GroupedResult;
+  className?: string;
+  itemClassName?: string;
 }
 
 const SearchResultsGroupList = ({
   children,
   group,
-  className = '',
-  itemClassName = ''
+  className = "",
+  itemClassName = "",
 }: SearchResultsGroupListProps) => {
   return (
     <ul className={className}>
@@ -225,17 +225,17 @@ const SearchResultsGroupList = ({
         </li>
       ))}
     </ul>
-  )
+  );
+};
+
+interface SearchResultsItemProps<T extends React.ElementType = "div"> {
+  as?: T;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  children?: React.ReactNode;
+  className?: string;
 }
 
-interface SearchResultsItemProps<T extends React.ElementType = 'div'> {
-  as?: T
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
-  children?: React.ReactNode
-  className?: string
-}
-
-const SearchResultsItem = <T extends React.ElementType = 'div'>({
+const SearchResultsItem = <T extends React.ElementType = "div">({
   as,
   onClick,
   children,
@@ -243,14 +243,14 @@ const SearchResultsItem = <T extends React.ElementType = 'div'>({
   ...props
 }: SearchResultsItemProps<T> &
   Omit<React.ComponentPropsWithoutRef<T>, keyof SearchResultsItemProps<T>>) => {
-  const Component = as || 'div'
+  const Component = as || "div";
 
   return (
     <Component className={className} onClick={onClick} {...props}>
       {children}
     </Component>
-  )
-}
+  );
+};
 
 export const SearchResults = {
   Wrapper: SearchResultsWrapper,
@@ -260,5 +260,5 @@ export const SearchResults = {
   Item: SearchResultsItem,
   Loading: SearchResultsLoading,
   Error: SearchResultsError,
-  NoResults: SearchResultsNoResults
-}
+  NoResults: SearchResultsNoResults,
+};
