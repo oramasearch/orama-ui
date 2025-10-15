@@ -1,4 +1,4 @@
-import { type CloudSearchParams } from "@orama/core";
+import { NLPSearchParams, type CloudSearchParams } from "@orama/core";
 import { useCallback, useEffect, useRef } from "react";
 import {
   initialSearchState,
@@ -33,6 +33,7 @@ import { GroupsCount } from "@/types";
 export interface useSearchReturn {
   search: (options: SearchOptions) => Promise<void>;
   reset: () => void;
+  NLPSearch: (options: NLPSearchParams) => Promise<void>;
   context: ReturnType<typeof useSearchContext>;
   dispatch: ReturnType<typeof useSearchDispatch>;
 }
@@ -200,9 +201,52 @@ export function useSearch(): useSearchReturn {
     dispatch({ type: "SET_ERROR", payload: { error: null } });
   }, [dispatch]);
 
+  const NLPSearch = useCallback(
+    async (options: NLPSearchParams) => {
+      if (!client) {
+        dispatch({
+          type: "SET_ERROR",
+          payload: { error: new Error("Search client is not initialized") },
+        });
+        return;
+      }
+      dispatch({
+        type: "SET_SEARCH_TERM",
+        payload: {
+          searchTerm: options.query || initialSearchState.searchTerm || "",
+        },
+      });
+      dispatch({ type: "SET_LOADING", payload: { loading: true } });
+      dispatch({ type: "SET_ERROR", payload: { error: null } });
+
+      try {
+        const searchResults = await client.ai.NLPSearch(options);
+        const results =
+          searchResults.length > 0 ? searchResults[0]?.results[0]?.hits : [];
+        const count =
+          searchResults.length > 0 ? searchResults[0]?.results[0]?.count : 0;
+
+        dispatch({
+          type: "SET_RESULTS",
+          payload: { results: results || [] },
+        });
+        dispatch({
+          type: "SET_COUNT",
+          payload: { count: count || 0 },
+        });
+      } catch (e) {
+        dispatch({ type: "SET_ERROR", payload: { error: e as Error } });
+      } finally {
+        dispatch({ type: "SET_LOADING", payload: { loading: false } });
+      }
+    },
+    [client, dispatch],
+  );
+
   return {
     search,
     reset,
+    NLPSearch,
     context,
     dispatch,
   };

@@ -15,6 +15,7 @@ import {
 import {
   useArrowKeysNavigation,
   useScrollableContainer,
+  useSearch,
 } from "@orama/ui/hooks";
 import { cn } from "@/lib/utils";
 import {
@@ -741,7 +742,23 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
             </div>
           </SlidingPanel.Content>
         </SlidingPanel.Wrapper>
+
+        {/* <TestInput /> */}
       </ChatRoot>
     </SearchRoot>
   );
 };
+
+// const TestInput: React.FC = () => {
+//   const { NLPSearch } = useSearch()
+//   return (
+//     <input
+//       type='text'
+//       className='border border-gray-600'
+//       onChange={(e: any) => {
+//         console.log('searching for', e.target.value)
+//         NLPSearch({ query: e.target.value })
+//       }}
+//     />
+//   )
+// }
