@@ -45,6 +45,14 @@ export const InnerSearchBox = () => {
             </SearchResults.NoResults>
             <div className='flex-1 min-h-0 flex flex-col overflow-y-auto'>
               <SearchResults.Wrapper className='mt-4 overflow-y-auto'>
+                <SearchResults.Loading className='text-center py-4 text-sm text-slate-500 dark:text-slate-400'>
+                  {/* add skeleton */}
+                  <div className='animate-pulse space-y-2'>
+                    <div className='h-4 bg-slate-200 rounded w-3/4 mx-auto'></div>
+                    <div className='h-4 bg-slate-200 rounded w-5/6 mx-auto'></div>
+                    <div className='h-4 bg-slate-200 rounded w-2/3 mx-auto'></div>
+                  </div>
+                </SearchResults.Loading>
                 <SearchResults.List>
                   {(hit) => (
                     <SearchResults.Item

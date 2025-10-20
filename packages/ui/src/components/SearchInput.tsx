@@ -131,30 +131,34 @@ export const SearchInputForm = ({
   ...props
 }: SearchInputFormProps) => {
   const mode = useSearchInputContext()
-  const { search, NLPSearch, context } = useSearch()
+  const { search, NLPSearch, context, dispatch } = useSearch()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    dispatch({
+      type: 'SET_RESULTS',
+      payload: { results: [] }
+    })
+    dispatch({
+      type: 'SET_NLP_RESULTS',
+      payload: { results: [] }
+    })
+    dispatch({ type: 'SET_LOADING', payload: { loading: true } })
+    dispatch({ type: 'SET_ERROR', payload: { error: null } })
+    dispatch({ type: 'SET_NLP_LOADING', payload: { loading: true } })
+    dispatch({ type: 'SET_NLP_ERROR', payload: { error: null } })
 
     const searchTerm =
       mode === 'nlp' ? context.nlpSearchTerm : context.searchTerm
 
     onSubmit?.(event)
 
-    console.log('Search Input Form Submit **:', { mode, searchTerm })
-
     if (!searchTerm) {
-      console.log('Form submission prevented or empty search term.', {
-        mode,
-        searchTerm
-      })
       return
     }
 
-    console.log('Search Input Form Submit:', { mode, searchTerm })
-
     if (mode === 'nlp') {
-      console.log('Performing NLP search for:', searchTerm)
       NLPSearch({ query: searchTerm, ...searchParams })
 
       if (onNlpSearch) {
