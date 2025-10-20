@@ -97,6 +97,8 @@ export const searchReducer = (
       return { ...state, client: action.payload?.client || null }
     case 'SET_SEARCH_TERM':
       return { ...state, searchTerm: action.payload?.searchTerm || '' }
+    case 'SET_NLP_SEARCH_TERM':
+      return { ...state, nlpSearchTerm: action.payload?.searchTerm || '' }
     case 'SET_RESULTS':
       return { ...state, results: action.payload?.results || [] }
     case 'SET_NLP_RESULTS':

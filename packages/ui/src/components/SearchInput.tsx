@@ -139,15 +139,22 @@ export const SearchInputForm = ({
     const searchTerm =
       mode === 'nlp' ? context.nlpSearchTerm : context.searchTerm
 
-    console.log('Submitting search for term:', searchTerm)
-
     onSubmit?.(event)
 
-    if (event.defaultPrevented || !searchTerm) {
+    console.log('Search Input Form Submit **:', { mode, searchTerm })
+
+    if (!searchTerm) {
+      console.log('Form submission prevented or empty search term.', {
+        mode,
+        searchTerm
+      })
       return
     }
 
+    console.log('Search Input Form Submit:', { mode, searchTerm })
+
     if (mode === 'nlp') {
+      console.log('Performing NLP search for:', searchTerm)
       NLPSearch({ query: searchTerm, ...searchParams })
 
       if (onNlpSearch) {
@@ -244,8 +251,6 @@ export const SearchInputField = ({
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     onChange?.(event)
-
-    console.log('Input changed to:', event.target.value)
 
     const newValue = event.target.value.trim()
 

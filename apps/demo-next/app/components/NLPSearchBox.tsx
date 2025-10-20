@@ -10,16 +10,16 @@ export const InnerSearchBox = () => {
       <div className='w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col'>
         <div className='flex flex-col justify-between h-140 gap-2'>
           <SearchInput.Provider mode='nlp'>
-            <SearchInput.Form>
+            <SearchInput.Form className='flex gap-2 w-full p-2 border border-gray-300 rounded-lg focus-within::ring-1 focus-within::ring-pink-400 transition-colors'>
               <SearchInput.Input
                 inputId='product-search'
                 searchOnType={false}
                 ariaLabel='Search for products'
                 placeholder='Find your next favorite thing...'
-                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-pink-400 transition-colors'
+                className='w-full outline-none'
               />
               <SearchInput.Submit
-                className='mt-2 inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors'
+                className='inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors'
                 aria-label='Submit search'
               >
                 <ArrowRight className='w-5 h-5 text-white' />
