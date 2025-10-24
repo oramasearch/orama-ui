@@ -17,16 +17,14 @@ interface SearchInputContextValue {
   setInputValue: (value: string) => void
 }
 
-const SearchInputContext = createContext<SearchInputContextValue | null>(null)
+const SearchInputContext = createContext<SearchInputContextValue>({
+  mode: 'search',
+  inputValue: '',
+  setInputValue: () => {}
+})
 
 const useSearchInputContext = () => {
-  const context = useContext(SearchInputContext)
-
-  if (!context) {
-    return { mode: 'search', inputValue: '', setInputValue: () => {} }
-  }
-
-  return context
+  return useContext(SearchInputContext)
 }
 
 interface SearchInputProviderProps {
@@ -163,8 +161,11 @@ export const SearchInputForm = ({
     dispatch({ type: 'SET_NLP_LOADING', payload: { loading: true } })
     dispatch({ type: 'SET_NLP_ERROR', payload: { error: null } })
 
-    const searchTerm =
-      inputValue || mode === 'nlp' ? context.nlpSearchTerm : context.searchTerm
+    const searchTerm = inputValue
+      ? inputValue
+      : mode === 'nlp'
+        ? context.nlpSearchTerm
+        : context.searchTerm
 
     dispatch({
       type: 'SET_SEARCH_TERM',
@@ -177,7 +178,11 @@ export const SearchInputForm = ({
 
     onSubmit?.(event)
 
+    console.log('Submitting search for:', searchTerm)
+
     if (!searchTerm) {
+      dispatch({ type: 'SET_LOADING', payload: { loading: false } })
+      dispatch({ type: 'SET_NLP_LOADING', payload: { loading: false } })
       return
     }
 
