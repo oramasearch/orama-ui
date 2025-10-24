@@ -199,6 +199,7 @@ export const SearchResultsNoResults = ({
     return null
   }
 
+  // I also have to check if I'm searching on typing or on submit
   if (results && results.length > 0) {
     return null
   }

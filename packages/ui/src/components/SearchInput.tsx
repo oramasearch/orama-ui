@@ -3,23 +3,29 @@ import React, {
   ChangeEvent,
   ElementType,
   createContext,
-  useContext
+  useContext,
+  useState
 } from 'react'
 import { PolymorphicComponentProps } from '@/types'
 import { useSearch } from '../hooks'
 import { SearchParams } from '@orama/core'
 
 type SearchMode = 'search' | 'nlp'
+interface SearchInputContextValue {
+  mode: SearchMode
+  inputValue: string
+  setInputValue: (value: string) => void
+}
 
-const SearchInputContext = createContext<SearchMode | null>(null)
+const SearchInputContext = createContext<SearchInputContextValue | null>(null)
 
 const useSearchInputContext = () => {
   const context = useContext(SearchInputContext)
+
   if (!context) {
-    throw new Error(
-      'SearchInput components must be used within a SearchInput.Provider'
-    )
+    return { mode: 'search', inputValue: '', setInputValue: () => {} }
   }
+
   return context
 }
 
@@ -32,8 +38,16 @@ export const SearchInputProvider = ({
   children,
   mode = 'search'
 }: SearchInputProviderProps) => {
+  const [inputValue, setInputValue] = useState('')
+
+  const value = {
+    mode,
+    inputValue,
+    setInputValue
+  }
+
   return (
-    <SearchInputContext.Provider value={mode}>
+    <SearchInputContext.Provider value={value}>
       {children}
     </SearchInputContext.Provider>
   )
@@ -130,7 +144,7 @@ export const SearchInputForm = ({
   onSubmit,
   ...props
 }: SearchInputFormProps) => {
-  const mode = useSearchInputContext()
+  const { mode, inputValue } = useSearchInputContext()
   const { search, NLPSearch, context, dispatch } = useSearch()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -150,7 +164,16 @@ export const SearchInputForm = ({
     dispatch({ type: 'SET_NLP_ERROR', payload: { error: null } })
 
     const searchTerm =
-      mode === 'nlp' ? context.nlpSearchTerm : context.searchTerm
+      inputValue || mode === 'nlp' ? context.nlpSearchTerm : context.searchTerm
+
+    dispatch({
+      type: 'SET_SEARCH_TERM',
+      payload: { searchTerm: searchTerm || '' }
+    })
+    dispatch({
+      type: 'SET_NLP_SEARCH_TERM',
+      payload: { searchTerm: searchTerm || '' }
+    })
 
     onSubmit?.(event)
 
@@ -239,7 +262,8 @@ export const SearchInputField = ({
   onChange,
   ...rest
 }: SearchInputProps) => {
-  const { search, reset, dispatch } = useSearch()
+  const { setInputValue } = useSearchInputContext()
+  const { search, reset } = useSearch()
   const internalRef = useRef<HTMLInputElement | null>(null)
   const inputRef = ref || internalRef
 
@@ -259,14 +283,7 @@ export const SearchInputField = ({
     const newValue = event.target.value.trim()
 
     if (!searchOnType || event.defaultPrevented) {
-      dispatch({
-        type: 'SET_SEARCH_TERM',
-        payload: { searchTerm: newValue }
-      })
-      dispatch({
-        type: 'SET_NLP_SEARCH_TERM',
-        payload: { searchTerm: newValue }
-      })
+      setInputValue(newValue)
       return
     }
 
