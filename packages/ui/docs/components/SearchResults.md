@@ -89,7 +89,9 @@ Groups search results by a specified field and renders them with a custom render
 <SearchResults.GroupsWrapper groupBy="category">
   {(group) => (
     <div>
-      <h3>{group.name} ({group.count} results)</h3>
+      <h3>
+        {group.name} ({group.count} results)
+      </h3>
       <SearchResults.GroupList group={group}>
         {(hit) => <div>{hit.document.title}</div>}
       </SearchResults.GroupList>
@@ -242,9 +244,9 @@ Renders search results within a specific group as an unordered list.
 **Usage:**
 
 ```tsx
-<SearchResults.GroupList 
-  group={group} 
-  className="group-list" 
+<SearchResults.GroupList
+  group={group}
+  className="group-list"
   itemClassName="group-item"
 >
   {(hit, index) => (
@@ -274,8 +276,8 @@ A flexible container component for individual search result items.
 
 ```tsx
 <!-- As a clickable div -->
-<SearchResults.Item 
-  onClick={() => console.log('clicked')} 
+<SearchResults.Item
+  onClick={() => console.log('clicked')}
   className="clickable-result"
 >
   {result.document.title}
@@ -324,7 +326,7 @@ Set the mode using either the `Provider` or `Wrapper` component:
 ## Complete Example
 
 ```tsx
-import { SearchResults } from '@orama/ui-react'
+import { SearchResults } from "@orama/ui-react";
 
 function SearchPage() {
   return (
@@ -357,8 +359,8 @@ function SearchPage() {
       {/* Results list */}
       <SearchResults.List className="results-list">
         {(result, index) => (
-          <SearchResults.Item 
-            as="a" 
+          <SearchResults.Item
+            as="a"
             href={result.document.url}
             className="result-card"
           >
@@ -369,7 +371,7 @@ function SearchPage() {
         )}
       </SearchResults.List>
     </SearchResults.Wrapper>
-  )
+  );
 }
 ```
 
@@ -383,7 +385,7 @@ function SearchPage() {
         <h3>{group.name}</h3>
         <span className="count">{group.count} results</span>
       </header>
-      
+
       <SearchResults.GroupList group={group}>
         {(hit) => (
           <SearchResults.Item className="grouped-result">

@@ -13,7 +13,7 @@ export const SearchInput = {
   Form: SearchInputForm,
   Input: SearchInputField,
   Label: SearchInputLabel,
-  Submit: SearchInputSubmit
+  Submit: SearchInputSubmit,
 };
 ```
 
@@ -34,7 +34,7 @@ Provides search mode context and manages local input state for child components.
 
 ```tsx
 <SearchInput.Provider mode="nlp">
-  <SearchInput.Form onNlpSearch={(term) => console.log('NLP:', term)}>
+  <SearchInput.Form onNlpSearch={(term) => console.log("NLP:", term)}>
     <SearchInput.Input searchOnType={false} />
     <SearchInput.Submit>Search</SearchInput.Submit>
   </SearchInput.Form>
@@ -203,8 +203,8 @@ A polymorphic label component for the search input.
 </SearchInput.Label>
 
 <!-- With custom styling -->
-<SearchInput.Label 
-  htmlFor="search" 
+<SearchInput.Label
+  htmlFor="search"
   className="visually-hidden"
 >
   Search
@@ -238,7 +238,7 @@ A submit button component for search forms.
 </SearchInput.Submit>
 
 <!-- Custom styling -->
-<SearchInput.Submit 
+<SearchInput.Submit
   className="btn btn-primary"
   disabled={!hasQuery}
 >
@@ -290,7 +290,7 @@ Set the mode using the `SearchInput.Provider`:
 ```tsx
 <SearchInput.Wrapper className="realtime-search">
   <SearchInput.Label htmlFor="realtime">Quick Search</SearchInput.Label>
-  <SearchInput.Input 
+  <SearchInput.Input
     inputId="realtime"
     searchOnType={true}
     placeholder="Results appear as you type..."
@@ -306,7 +306,7 @@ Set the mode using the `SearchInput.Provider`:
     <SearchInput.Wrapper as="fieldset">
       <SearchInput.Label as="legend">Search Our Catalog</SearchInput.Label>
       <div className="input-group">
-        <SearchInput.Input 
+        <SearchInput.Input
           searchOnType={false}
           placeholder="Enter your search terms..."
         />
@@ -321,13 +321,13 @@ Set the mode using the `SearchInput.Provider`:
 
 ```tsx
 <SearchInput.Provider mode="nlp">
-  <SearchInput.Form 
+  <SearchInput.Form
     onNlpSearch={(query) => handleNlpQuery(query)}
     searchParams={{ limit: 10 }}
   >
     <SearchInput.Wrapper className="ai-search">
       <SearchInput.Label>Ask our AI assistant</SearchInput.Label>
-      <SearchInput.Input 
+      <SearchInput.Input
         searchOnType={false}
         placeholder="What would you like to know?"
         ariaLabel="AI search query"
@@ -341,18 +341,15 @@ Set the mode using the `SearchInput.Provider`:
 ### 4. Advanced Search with Filters
 
 ```tsx
-<SearchInput.Form 
+<SearchInput.Form
   searchParams={{
     limit: 50,
     boost: { title: 3, description: 1 },
-    filterBy: [
-      { category: selectedCategory },
-      { inStock: true }
-    ]
+    filterBy: [{ category: selectedCategory }, { inStock: true }],
   }}
   onSearch={(term) => handleAdvancedSearch(term)}
 >
-  <SearchInput.Input 
+  <SearchInput.Input
     placeholder="Search with filters applied..."
     searchOnType={false}
   />
@@ -365,32 +362,32 @@ Set the mode using the `SearchInput.Provider`:
 ## Complete Example
 
 ```tsx
-import { SearchInput } from '@orama/ui-react'
+import { SearchInput } from "@orama/ui-react";
 
 function SearchPage() {
-  const [searchMode, setSearchMode] = useState<'search' | 'nlp'>('search')
+  const [searchMode, setSearchMode] = useState<"search" | "nlp">("search");
 
   const handleSearch = (term: string) => {
-    console.log('Regular search:', term)
-  }
+    console.log("Regular search:", term);
+  };
 
   const handleNlpSearch = (query: string) => {
-    console.log('NLP search:', query)
-  }
+    console.log("NLP search:", query);
+  };
 
   return (
     <div className="search-page">
       {/* Mode toggle */}
       <div className="search-mode-toggle">
-        <button 
-          onClick={() => setSearchMode('search')}
-          className={searchMode === 'search' ? 'active' : ''}
+        <button
+          onClick={() => setSearchMode("search")}
+          className={searchMode === "search" ? "active" : ""}
         >
           Keyword Search
         </button>
-        <button 
-          onClick={() => setSearchMode('nlp')}
-          className={searchMode === 'nlp' ? 'active' : ''}
+        <button
+          onClick={() => setSearchMode("nlp")}
+          className={searchMode === "nlp" ? "active" : ""}
         >
           AI Search
         </button>
@@ -403,35 +400,35 @@ function SearchPage() {
           onNlpSearch={handleNlpSearch}
           searchParams={{
             limit: 20,
-            boost: { title: 2, content: 1 }
+            boost: { title: 2, content: 1 },
           }}
         >
           <SearchInput.Wrapper className="search-container">
             <SearchInput.Label htmlFor="main-search">
-              {searchMode === 'nlp' ? 'Ask a question' : 'Search our content'}
+              {searchMode === "nlp" ? "Ask a question" : "Search our content"}
             </SearchInput.Label>
-            
+
             <div className="search-input-group">
               <SearchInput.Input
                 inputId="main-search"
                 searchOnType={false}
                 placeholder={
-                  searchMode === 'nlp' 
-                    ? "What would you like to know?" 
+                  searchMode === "nlp"
+                    ? "What would you like to know?"
                     : "Enter search terms..."
                 }
                 className="search-input"
               />
-              
+
               <SearchInput.Submit className="search-submit">
-                {searchMode === 'nlp' ? 'Ask AI' : 'Search'}
+                {searchMode === "nlp" ? "Ask AI" : "Search"}
               </SearchInput.Submit>
             </div>
           </SearchInput.Wrapper>
         </SearchInput.Form>
       </SearchInput.Provider>
     </div>
-  )
+  );
 }
 ```
 

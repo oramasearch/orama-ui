@@ -4,59 +4,59 @@ import React, {
   ElementType,
   createContext,
   useContext,
-  useState
-} from 'react'
-import { PolymorphicComponentProps } from '@/types'
-import { useSearch } from '../hooks'
-import { SearchParams } from '@orama/core'
+  useState,
+} from "react";
+import { PolymorphicComponentProps } from "@/types";
+import { useSearch } from "../hooks";
+import { SearchParams } from "@orama/core";
 
-type SearchMode = 'search' | 'nlp'
+type SearchMode = "search" | "nlp";
 interface SearchInputContextValue {
-  mode: SearchMode
-  inputValue: string
-  setInputValue: (value: string) => void
+  mode: SearchMode;
+  inputValue: string;
+  setInputValue: (value: string) => void;
 }
 
 const SearchInputContext = createContext<SearchInputContextValue>({
-  mode: 'search',
-  inputValue: '',
-  setInputValue: () => {}
-})
+  mode: "search",
+  inputValue: "",
+  setInputValue: () => {},
+});
 
 const useSearchInputContext = () => {
-  return useContext(SearchInputContext)
-}
+  return useContext(SearchInputContext);
+};
 
 interface SearchInputProviderProps {
-  children: React.ReactNode
-  mode?: SearchMode
+  children: React.ReactNode;
+  mode?: SearchMode;
 }
 
 export const SearchInputProvider = ({
   children,
-  mode = 'search'
+  mode = "search",
 }: SearchInputProviderProps) => {
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState("");
 
   const value = {
     mode,
     inputValue,
-    setInputValue
-  }
+    setInputValue,
+  };
 
   return (
     <SearchInputContext.Provider value={value}>
       {children}
     </SearchInputContext.Provider>
-  )
-}
+  );
+};
 
 interface SearchInputWrapperOwnProps {
-  className?: string
+  className?: string;
 }
 
-export type SearchInputWrapperProps<T extends ElementType = 'div'> =
-  PolymorphicComponentProps<T, SearchInputWrapperOwnProps>
+export type SearchInputWrapperProps<T extends ElementType = "div"> =
+  PolymorphicComponentProps<T, SearchInputWrapperOwnProps>;
 
 /**
  * A wrapper component for the search input field.
@@ -77,46 +77,46 @@ export type SearchInputWrapperProps<T extends ElementType = 'div'> =
  * @param as The HTML element type to render the wrapper as. Defaults to 'div'.
  * @param children The content to be wrapped, typically including the label and input field.
  */
-export const SearchInputWrapper = <T extends ElementType = 'div'>({
+export const SearchInputWrapper = <T extends ElementType = "div">({
   children,
-  className = '',
+  className = "",
   as,
   ...props
 }: SearchInputWrapperProps<T>) => {
-  const Component = as || 'div'
+  const Component = as || "div";
   return (
-    <Component className={className} {...props} role='search'>
+    <Component className={className} {...props} role="search">
       {children}
     </Component>
-  )
-}
+  );
+};
 
 interface SearchInputFormProps
   extends React.FormHTMLAttributes<HTMLFormElement> {
   /**
    * Optional class name for custom styling of the form.
    */
-  className?: string
+  className?: string;
   /**
    * Search parameters to be used for the search operation when form is submitted.
    */
-  searchParams?: Omit<SearchParams, 'term'> & {
-    groupedBy?: string
-    filterBy?: Record<string, string>[]
-  }
+  searchParams?: Omit<SearchParams, "term"> & {
+    groupedBy?: string;
+    filterBy?: Record<string, string>[];
+  };
   /**
    * Callback function for NLP search. Required when mode is 'nlp'.
    * Receives the search term and optional search parameters.
    */
-  onNlpSearch?: (term: string, params?: any) => void
+  onNlpSearch?: (term: string, params?: any) => void;
   /**
    * Custom callback function called when the form is submitted.
    * Receives the search term and the form event.
    */
   onSearch?: (
     searchTerm: string,
-    event: React.FormEvent<HTMLFormElement>
-  ) => void
+    event: React.FormEvent<HTMLFormElement>,
+  ) => void;
 }
 
 /**
@@ -135,130 +135,130 @@ interface SearchInputFormProps
  */
 export const SearchInputForm = ({
   children,
-  className = '',
+  className = "",
   searchParams,
   onNlpSearch,
   onSearch,
   onSubmit,
   ...props
 }: SearchInputFormProps) => {
-  const { mode, inputValue } = useSearchInputContext()
-  const { search, NLPSearch, context, dispatch } = useSearch()
+  const { mode, inputValue } = useSearchInputContext();
+  const { search, NLPSearch, context, dispatch } = useSearch();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
 
     dispatch({
-      type: 'SET_RESULTS',
-      payload: { results: [] }
-    })
+      type: "SET_RESULTS",
+      payload: { results: [] },
+    });
     dispatch({
-      type: 'SET_NLP_RESULTS',
-      payload: { results: [] }
-    })
-    dispatch({ type: 'SET_LOADING', payload: { loading: true } })
-    dispatch({ type: 'SET_ERROR', payload: { error: null } })
-    dispatch({ type: 'SET_NLP_LOADING', payload: { loading: true } })
-    dispatch({ type: 'SET_NLP_ERROR', payload: { error: null } })
+      type: "SET_NLP_RESULTS",
+      payload: { results: [] },
+    });
+    dispatch({ type: "SET_LOADING", payload: { loading: true } });
+    dispatch({ type: "SET_ERROR", payload: { error: null } });
+    dispatch({ type: "SET_NLP_LOADING", payload: { loading: true } });
+    dispatch({ type: "SET_NLP_ERROR", payload: { error: null } });
 
     const searchTerm = inputValue
       ? inputValue
-      : mode === 'nlp'
+      : mode === "nlp"
         ? context.nlpSearchTerm
-        : context.searchTerm
+        : context.searchTerm;
 
     dispatch({
-      type: 'SET_SEARCH_TERM',
-      payload: { searchTerm: searchTerm || '' }
-    })
+      type: "SET_SEARCH_TERM",
+      payload: { searchTerm: searchTerm || "" },
+    });
     dispatch({
-      type: 'SET_NLP_SEARCH_TERM',
-      payload: { searchTerm: searchTerm || '' }
-    })
+      type: "SET_NLP_SEARCH_TERM",
+      payload: { searchTerm: searchTerm || "" },
+    });
 
-    onSubmit?.(event)
+    onSubmit?.(event);
 
-    console.log('Submitting search for:', searchTerm)
+    console.log("Submitting search for:", searchTerm);
 
     if (!searchTerm) {
-      dispatch({ type: 'SET_LOADING', payload: { loading: false } })
-      dispatch({ type: 'SET_NLP_LOADING', payload: { loading: false } })
-      return
+      dispatch({ type: "SET_LOADING", payload: { loading: false } });
+      dispatch({ type: "SET_NLP_LOADING", payload: { loading: false } });
+      return;
     }
 
-    if (mode === 'nlp') {
-      NLPSearch({ query: searchTerm, ...searchParams })
+    if (mode === "nlp") {
+      NLPSearch({ query: searchTerm, ...searchParams });
 
       if (onNlpSearch) {
-        onNlpSearch(searchTerm, searchParams)
+        onNlpSearch(searchTerm, searchParams);
       }
     } else {
       search({
         term: searchTerm,
         limit: 10,
         ...searchParams,
-        boost: searchParams?.boost ?? {}
-      })
+        boost: searchParams?.boost ?? {},
+      });
 
       if (onSearch) {
-        onSearch(searchTerm, event)
+        onSearch(searchTerm, event);
       }
     }
-  }
+  };
 
   return (
     <form className={className} onSubmit={handleSubmit} {...props}>
       {children}
     </form>
-  )
-}
+  );
+};
 
 export interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  ref?: React.Ref<HTMLInputElement>
+  ref?: React.Ref<HTMLInputElement>;
   /**
    * The `id` attribute for the input field.
    * If not provided, a unique ID will be generated.
    */
-  inputId?: string
+  inputId?: string;
   /**
    * Placeholder text for the input field.
    * @default 'Search...'
    */
-  placeholder?: string
+  placeholder?: string;
   /**
    * Callback function that is called when the input value changes.
    * It receives the new value as an argument.
    */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string) => void;
   /**
    * Aria label for accessibility purposes.
    */
-  ariaLabel?: string
+  ariaLabel?: string;
   /**
    * Optional class name for custom styling of the input field.
    */
-  className?: string
+  className?: string;
   /**
    * Search parameters to be used for the search operation.
    * This can include filters, grouping, etc.
    * Get them from Orama
    */
-  searchParams?: Omit<SearchParams, 'term'> & {
-    groupedBy?: string
-    filterBy?: Record<string, string>[]
-  }
+  searchParams?: Omit<SearchParams, "term"> & {
+    groupedBy?: string;
+    filterBy?: Record<string, string>[];
+  };
   /**
    * If true, the search will be triggered on each keystroke.
    * If false, the search will only be triggered on form submission.
    * @default true
    */
-  searchOnType?: boolean
+  searchOnType?: boolean;
 }
 
 export const SearchInputField = ({
   inputId,
-  placeholder = 'Search...',
+  placeholder = "Search...",
   ariaLabel,
   className,
   searchOnType = true,
@@ -267,15 +267,15 @@ export const SearchInputField = ({
   onChange,
   ...rest
 }: SearchInputProps) => {
-  const { setInputValue } = useSearchInputContext()
-  const { search, reset } = useSearch()
-  const internalRef = useRef<HTMLInputElement | null>(null)
-  const inputRef = ref || internalRef
+  const { setInputValue } = useSearchInputContext();
+  const { search, reset } = useSearch();
+  const internalRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = ref || internalRef;
 
   const generatedId = useRef<string>(
-    `search-input-${Math.random().toString(36).substring(2, 9)}`
-  )
-  const currentInputId = inputId || generatedId.current
+    `search-input-${Math.random().toString(36).substring(2, 9)}`,
+  );
+  const currentInputId = inputId || generatedId.current;
 
   /**
    * Handles the change event of the input field.
@@ -283,31 +283,31 @@ export const SearchInputField = ({
    * @param event The input change event.
    */
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    onChange?.(event)
+    onChange?.(event);
 
-    const newValue = event.target.value.trim()
+    const newValue = event.target.value.trim();
 
     if (!searchOnType || event.defaultPrevented) {
-      setInputValue(newValue)
-      return
+      setInputValue(newValue);
+      return;
     }
 
-    if (newValue === '') {
-      reset()
-      return
+    if (newValue === "") {
+      reset();
+      return;
     }
 
     search({
       term: newValue,
       limit: 10,
       ...searchParams,
-      boost: searchParams?.boost ?? {}
-    })
-  }
+      boost: searchParams?.boost ?? {},
+    });
+  };
 
   return (
     <input
-      type='search'
+      type="search"
       id={currentInputId}
       ref={inputRef}
       onChange={handleChange}
@@ -317,37 +317,37 @@ export const SearchInputField = ({
       data-focus-on-arrow-nav
       {...rest}
     />
-  )
-}
+  );
+};
 
 interface SearchInputLabelOwnProps {
-  className?: string
+  className?: string;
 }
 
-export type SearchInputLabelProps<T extends ElementType = 'label'> =
-  PolymorphicComponentProps<T, SearchInputLabelOwnProps>
+export type SearchInputLabelProps<T extends ElementType = "label"> =
+  PolymorphicComponentProps<T, SearchInputLabelOwnProps>;
 
-export const SearchInputLabel = <T extends ElementType = 'label'>({
+export const SearchInputLabel = <T extends ElementType = "label">({
   children,
   className,
   as,
   ...props
 }: SearchInputLabelProps<T>) => {
-  const Component = as || 'label'
+  const Component = as || "label";
 
   return (
     <Component className={className} {...props}>
       {children}
     </Component>
-  )
-}
+  );
+};
 
 export interface SearchInputSubmitProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * Optional class name for custom styling of the button.
    */
-  className?: string
+  className?: string;
 }
 
 /**
@@ -366,15 +366,15 @@ export interface SearchInputSubmitProps
  */
 export const SearchInputSubmit = ({
   children,
-  className = '',
+  className = "",
   ...props
 }: SearchInputSubmitProps) => {
   return (
-    <button className={className} type='submit' {...props}>
+    <button className={className} type="submit" {...props}>
       {children}
     </button>
-  )
-}
+  );
+};
 
 export const SearchInput = {
   Provider: SearchInputProvider,
@@ -382,5 +382,5 @@ export const SearchInput = {
   Form: SearchInputForm,
   Input: SearchInputField,
   Label: SearchInputLabel,
-  Submit: SearchInputSubmit
-}
+  Submit: SearchInputSubmit,
+};
