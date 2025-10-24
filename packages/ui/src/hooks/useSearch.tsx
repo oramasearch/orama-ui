@@ -205,39 +205,40 @@ export function useSearch(): useSearchReturn {
     async (options: NLPSearchParams) => {
       if (!client) {
         dispatch({
-          type: "SET_ERROR",
+          type: "SET_NLP_ERROR",
           payload: { error: new Error("Search client is not initialized") },
         });
         return;
       }
       dispatch({
-        type: "SET_SEARCH_TERM",
+        type: "SET_NLP_SEARCH_TERM",
         payload: {
           searchTerm: options.query || initialSearchState.searchTerm || "",
         },
       });
-      dispatch({ type: "SET_LOADING", payload: { loading: true } });
-      dispatch({ type: "SET_ERROR", payload: { error: null } });
+      dispatch({ type: "SET_NLP_LOADING", payload: { loading: true } });
+      dispatch({ type: "SET_NLP_ERROR", payload: { error: null } });
 
       try {
         const searchResults = await client.ai.NLPSearch(options);
+        console.log("NLPSearch results:", searchResults);
         const results =
           searchResults.length > 0 ? searchResults[0]?.results[0]?.hits : [];
         const count =
           searchResults.length > 0 ? searchResults[0]?.results[0]?.count : 0;
 
         dispatch({
-          type: "SET_RESULTS",
+          type: "SET_NLP_RESULTS",
           payload: { results: results || [] },
         });
         dispatch({
-          type: "SET_COUNT",
+          type: "SET_NLP_COUNT",
           payload: { count: count || 0 },
         });
       } catch (e) {
-        dispatch({ type: "SET_ERROR", payload: { error: e as Error } });
+        dispatch({ type: "SET_NLP_ERROR", payload: { error: e as Error } });
       } finally {
-        dispatch({ type: "SET_LOADING", payload: { loading: false } });
+        dispatch({ type: "SET_NLP_LOADING", payload: { loading: false } });
       }
     },
     [client, dispatch],

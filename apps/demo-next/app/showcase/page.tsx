@@ -10,6 +10,7 @@ import { HorizontalTabsChatbox } from "@/components/HorizontalTabsChatbox";
 import { VerticalTabsChatbox } from "@/components/VerticalTabsChatbox";
 import { Badge } from "@/components/Badge";
 import { HeroShowcase } from "@/components/HeroShowcase";
+import { NLPSearchBox } from "@/components/NLPSearchBox";
 import Header from "@/components/Header";
 
 const Showcase = () => {
@@ -73,6 +74,20 @@ const Showcase = () => {
         "Goes to bottom button for long conversations",
       ],
       component: <ScrollableChatContainer />,
+      cardDescription: "Try searching and filtering the content below",
+    },
+    {
+      title: "NLP Search",
+      description:
+        "An advanced search component that understands natural language queries, providing more relevant results.",
+      badge: "Search",
+      features: [
+        "Natural language processing",
+        "Contextual understanding",
+        "Improved search relevance",
+        "Supports follow-up questions",
+      ],
+      component: <NLPSearchBox />,
       cardDescription: "Try searching and filtering the content below",
     },
   ];

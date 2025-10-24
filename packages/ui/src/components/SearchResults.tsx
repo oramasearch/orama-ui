@@ -1,22 +1,116 @@
-import React, { Children, ComponentPropsWithRef, useMemo } from "react";
+import React, {
+  ComponentPropsWithRef,
+  useMemo,
+  createContext,
+  useContext,
+} from "react";
 import { Hit } from "@orama/core";
-import { useSearchContext } from "../contexts";
 import { GroupedResult } from "@/types";
 import { useSearch } from "../hooks";
 
+type SearchMode = "search" | "nlp";
+
+interface SearchResultsContextValue {
+  mode: SearchMode;
+}
+
+const SearchResultsContext = createContext<SearchResultsContextValue>({
+  mode: "search",
+});
+
+const useSearchResultsContext = () => {
+  return useContext(SearchResultsContext);
+};
+
+const useSearchResultsData = () => {
+  const { mode } = useSearchResultsContext();
+  const {
+    context: {
+      searchTerm,
+      results,
+      loading,
+      error,
+      nlpSearchTerm,
+      nlpResults,
+      nlpLoading,
+      nlpError,
+    },
+  } = useSearch();
+
+  return useMemo(() => {
+    if (mode === "nlp") {
+      return {
+        searchTerm: nlpSearchTerm,
+        results: nlpResults,
+        loading: nlpLoading,
+        error: nlpError,
+      };
+    }
+
+    return {
+      searchTerm,
+      results: results,
+      loading,
+      error,
+    };
+  }, [
+    mode,
+    searchTerm,
+    results,
+    loading,
+    error,
+    nlpSearchTerm,
+    nlpResults,
+    nlpLoading,
+    nlpError,
+  ]);
+};
+
+export interface SearchResultsProviderProps {
+  children: React.ReactNode;
+  mode?: SearchMode;
+}
+
+const SearchResultsProvider = ({
+  children,
+  mode = "search",
+}: SearchResultsProviderProps) => {
+  const value = useMemo(() => ({ mode }), [mode]);
+
+  return (
+    <SearchResultsContext.Provider value={value}>
+      {children}
+    </SearchResultsContext.Provider>
+  );
+};
+
 export interface SearchResultsWrapperProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Optional class name for custom styling.
-   */
   className?: string;
+  mode?: SearchMode;
 }
 
 export const SearchResultsWrapper = ({
   children,
   className = "",
+  mode,
+  ...rest
 }: SearchResultsWrapperProps) => {
-  return <div className={className}>{children}</div>;
+  if (mode !== undefined) {
+    return (
+      <SearchResultsProvider mode={mode}>
+        <div className={className} {...rest}>
+          {children}
+        </div>
+      </SearchResultsProvider>
+    );
+  }
+
+  return (
+    <div className={className} {...rest}>
+      {children}
+    </div>
+  );
 };
 
 export interface SearchResultsGroupedWrapperProps
@@ -25,13 +119,14 @@ export interface SearchResultsGroupedWrapperProps
   groupBy: string;
   className?: string;
 }
+
 export const SearchResultsGroupedWrapper = ({
   children,
   groupBy,
   className = "",
   ...rest
 }: SearchResultsGroupedWrapperProps) => {
-  const { results } = useSearchContext();
+  const { results } = useSearchResultsData();
 
   const groupedResults = useMemo(() => {
     if (!results || results.length === 0) {
@@ -86,6 +181,7 @@ export const SearchResultsGroupedWrapper = ({
     </div>
   );
 };
+
 export interface SearchResultsNoResultsProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (searchTerm: string) => React.ReactNode;
@@ -97,14 +193,13 @@ export const SearchResultsNoResults = ({
   className = "",
   ...rest
 }: SearchResultsNoResultsProps) => {
-  const {
-    context: { searchTerm, results, loading },
-  } = useSearch();
+  const { searchTerm, results, loading } = useSearchResultsData();
 
   if (loading) {
     return null;
   }
 
+  // I also have to check if I'm searching on typing or on submit
   if (results && results.length > 0) {
     return null;
   }
@@ -126,9 +221,7 @@ export const SearchResultsLoading = ({
   className = "",
   ...rest
 }: SearchResultsLoadingProps) => {
-  const {
-    context: { results, loading },
-  } = useSearch();
+  const { results, loading } = useSearchResultsData();
 
   if (!loading) {
     return null;
@@ -156,9 +249,7 @@ export const SearchResultsError = ({
   className = "",
   ...rest
 }: SearchResultsErrorProps) => {
-  const {
-    context: { error },
-  } = useSearch();
+  const { error } = useSearchResultsData();
 
   if (!error) {
     return null;
@@ -185,7 +276,7 @@ const SearchResultsList = ({
   itemClassName,
   ...rest
 }: SearchResultsListProps) => {
-  const { results } = useSearchContext();
+  const { results } = useSearchResultsData();
 
   if (!results || results.length === 0) {
     return null;
@@ -253,6 +344,7 @@ const SearchResultsItem = <T extends React.ElementType = "div">({
 };
 
 export const SearchResults = {
+  Provider: SearchResultsProvider,
   Wrapper: SearchResultsWrapper,
   List: SearchResultsList,
   GroupsWrapper: SearchResultsGroupedWrapper,

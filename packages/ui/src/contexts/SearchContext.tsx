@@ -11,33 +11,48 @@ export type SearchContextProps = {
     },
   ) => Promise<void>;
   searchTerm?: string;
+  nlpSearchTerm?: string;
   results?: Hit[] | null;
+  nlpResults?: Hit[] | null;
   selectedFacet?: string | null;
   groupsCount?: GroupsCount | null;
   loading?: boolean;
   error?: Error | null;
+  nlpLoading?: boolean;
+  nlpError?: Error | null;
   count?: number;
+  nlpCount?: number;
 };
 
 export type SearchAction =
   | { type: "SET_CLIENT"; payload: { client: OramaCloud | null } }
   | { type: "SET_SEARCH_TERM"; payload: { searchTerm: string } }
+  | { type: "SET_NLP_SEARCH_TERM"; payload: { searchTerm: string } }
   | { type: "SET_LOADING"; payload: { loading: boolean } }
+  | { type: "SET_NLP_LOADING"; payload: { loading: boolean } }
   | { type: "SET_ERROR"; payload: { error: Error | null } }
+  | { type: "SET_NLP_ERROR"; payload: { error: Error | null } }
   | { type: "SET_RESULTS"; payload: { results: Hit[] | null } }
+  | { type: "SET_NLP_RESULTS"; payload: { results: Hit[] | null } }
   | { type: "SET_GROUPS_COUNT"; payload: { groupsCount: GroupsCount | null } }
   | { type: "SET_SELECTED_FACET"; payload: { selectedFacet: string | null } }
-  | { type: "SET_COUNT"; payload: { count: number } };
+  | { type: "SET_COUNT"; payload: { count: number } }
+  | { type: "SET_NLP_COUNT"; payload: { count: number } };
 
 export const initialSearchState: SearchContextProps = {
   client: null,
   searchTerm: "",
+  nlpSearchTerm: "",
   results: null,
+  nlpResults: null,
   selectedFacet: "All",
   groupsCount: null,
   loading: false,
+  nlpLoading: false,
   error: null,
+  nlpError: null,
   count: 0,
+  nlpCount: 0,
 };
 
 export const SearchContext =
@@ -82,18 +97,28 @@ export const searchReducer = (
       return { ...state, client: action.payload?.client || null };
     case "SET_SEARCH_TERM":
       return { ...state, searchTerm: action.payload?.searchTerm || "" };
+    case "SET_NLP_SEARCH_TERM":
+      return { ...state, nlpSearchTerm: action.payload?.searchTerm || "" };
     case "SET_RESULTS":
       return { ...state, results: action.payload?.results || [] };
+    case "SET_NLP_RESULTS":
+      return { ...state, nlpResults: action.payload?.results || [] };
     case "SET_GROUPS_COUNT":
       return { ...state, groupsCount: action.payload?.groupsCount || null };
     case "SET_SELECTED_FACET":
       return { ...state, selectedFacet: action.payload?.selectedFacet || null };
     case "SET_LOADING":
       return { ...state, loading: action.payload?.loading || false };
+    case "SET_NLP_LOADING":
+      return { ...state, nlpLoading: action.payload?.loading || false };
     case "SET_ERROR":
       return { ...state, error: action.payload?.error || null };
+    case "SET_NLP_ERROR":
+      return { ...state, nlpError: action.payload?.error || null };
     case "SET_COUNT":
       return { ...state, count: action.payload?.count || 0 };
+    case "SET_NLP_COUNT":
+      return { ...state, nlpCount: action.payload?.count || 0 };
     default:
       return state;
   }
