@@ -21,9 +21,10 @@ export function useScrollableContainer({
   const calculateIsScrollOnBottom = useCallback(() => {
     const el = containerElement;
     if (!el) return false;
-    if (!el.scrollTop) return false;
     const scrollableHeight = el.scrollHeight - el.clientHeight;
-    return el.scrollTop >= scrollableHeight;
+    // Account for sub-pixel rounding differences across browsers/mobile
+    const threshold = 2; // px
+    return scrollableHeight - el.scrollTop <= threshold;
   }, [containerElement]);
 
   const calculateIsContainerOverflowing = useCallback(() => {
@@ -89,11 +90,11 @@ export function useScrollableContainer({
       requestAnimationFrame(animateScroll);
       setShowGoToBottomButton(false);
     },
-    [onScrollToBottom, containerElement],
+    [onScrollToBottom, containerElement]
   );
 
-  // Wheel handler
-  const handleWheel = useCallback(() => {
+  // General scroll handler (wheel/touch/scroll)
+  const handleScroll = useCallback(() => {
     const el = containerElement;
     if (!el) return;
     const isOverflowing = calculateIsContainerOverflowing();
@@ -117,11 +118,15 @@ export function useScrollableContainer({
   useEffect(() => {
     const el = containerElement;
     if (!el) return;
-    el.addEventListener("wheel", handleWheel);
+    el.addEventListener("wheel", handleScroll, { passive: true });
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    el.addEventListener("touchmove", handleScroll, { passive: true });
     return () => {
-      el.removeEventListener("wheel", handleWheel);
+      el.removeEventListener("wheel", handleScroll as EventListener);
+      el.removeEventListener("scroll", handleScroll as EventListener);
+      el.removeEventListener("touchmove", handleScroll as EventListener);
     };
-  }, [handleWheel, containerElement]);
+  }, [handleScroll, containerElement]);
 
   // Resize observer for container
   useEffect(() => {
