@@ -221,7 +221,6 @@ export function useSearch(): useSearchReturn {
 
       try {
         const searchResults = await client.ai.NLPSearch(options);
-        console.log("NLPSearch results:", searchResults);
         const results =
           searchResults.length > 0 ? searchResults[0]?.results[0]?.hits : [];
         const count =
