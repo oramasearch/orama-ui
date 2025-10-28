@@ -90,7 +90,7 @@ export function useScrollableContainer({
       requestAnimationFrame(animateScroll);
       setShowGoToBottomButton(false);
     },
-    [onScrollToBottom, containerElement]
+    [onScrollToBottom, containerElement],
   );
 
   // General scroll handler (wheel/touch/scroll)
