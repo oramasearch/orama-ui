@@ -135,7 +135,6 @@ const Showcase = () => {
                       </div>
                     </div>
 
-                    {/* Right: Component Preview */}
                     <div className='relative'>
                       <div className='border border-gray-200 shadow-sm bg-background py-8 rounded-lg'>
                         <div className='pb-4 px-6 border-b border-gray-200/50'>
