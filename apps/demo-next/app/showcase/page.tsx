@@ -5,9 +5,9 @@ import React from 'react'
 // import { HorizontalTabsChatbox } from '@/components/HorizontalTabsChatbox'
 // import { VerticalTabsChatbox } from '@/components/VerticalTabsChatbox'
 // import { Badge } from '@/components/Badge'
-import { HeroShowcase } from '@/components/HeroShowcase'
+// import { HeroShowcase } from '@/components/HeroShowcase'
 // import { NLPSearchBox } from '@/components/NLPSearchBox'
-import Header from '@/components/Header'
+// import Header from '@/components/Header'
 
 const Showcase = () => {
   // const components = [
@@ -90,10 +90,10 @@ const Showcase = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className='min-h-screen bg-background'>
-        <HeroShowcase />
-
+        Testing showcase page
+        {/* <HeroShowcase /> */}
         {/* Components Section */}
         {/* <div className='container mx-auto px-4 py-5'>
           <div className='max-w-6xl mx-auto space-y-12'>
