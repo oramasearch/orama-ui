@@ -327,16 +327,16 @@ const parseRelatedQueries = (relatedQueries: string) => {
 }
 
 const markdownClassnames = {
-  div: 'p-4 my-2 rounded-lg',
-  h1: 'text-2xl font-bold mb-2',
-  h2: 'text-xl font-semibold mb-2',
-  h3: 'text-lg font-medium mb-2',
-  p: 'mb-4 text-gray-700',
+  div: 'p-4 my-2 rounded-lg bg-[rgb(30,30,30)]',
+  h1: 'text-2xl font-bold my-2',
+  h2: 'text-xl font-semibold my-2',
+  h3: 'text-lg font-medium my-2',
+  p: 'my-4',
   a: 'text-blue-500 hover:underline',
-  ul: 'list-disc list-inside mb-4',
-  ol: 'list-decimal list-inside mb-4',
-  li: 'mb-2',
-  code: 'bg-gray-200 p-1 rounded'
+  ul: 'list-disc list-inside my-4',
+  ol: 'list-decimal list-inside my-4',
+  li: 'my-2',
+  code: 'bg-gray-200 text-gray-700 p-1 rounded'
 }
 
 const ComponentDemo = ({ theme }: { theme: string }) => {
@@ -619,7 +619,7 @@ const ComponentDemo = ({ theme }: { theme: string }) => {
                       </ChatInteractions.Sources>
 
                       <ChatInteractions.AssistantMessage
-                        className={`p-3 bg-gray-100 text-sm max-w-full ${theme === 'dark' ? 'bg-gray-800' : ''} ${themeClasses.text} rounded-lg my-3`}
+                        className={`p-3 bg-gray-100 text-sm max-w-full ${theme === 'dark' ? 'bg-gray-800' : theme === 'playful' ? 'bg-white/90' : ''} ${themeClasses.text} rounded-lg my-3`}
                         markdownClassnames={markdownClassnames}
                       >
                         {interaction.response}
