@@ -218,6 +218,10 @@ export function useSearch(): useSearchReturn {
       });
       dispatch({ type: "SET_NLP_LOADING", payload: { loading: true } });
       dispatch({ type: "SET_NLP_ERROR", payload: { error: null } });
+      dispatch({
+        type: "SET_NLP_RESULTS",
+        payload: { results: [] },
+      });
 
       try {
         const searchResults = await client.ai.NLPSearch(options);
