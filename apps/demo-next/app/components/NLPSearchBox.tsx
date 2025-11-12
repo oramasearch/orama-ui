@@ -3,10 +3,11 @@ import React from 'react'
 import { oramaDocsCollection } from '@/data'
 import { SearchInput, SearchRoot, SearchResults } from '@orama/ui/components'
 import { ArrowRight } from 'lucide-react'
-import { useRecentSearches } from '@orama/ui/hooks'
+import { useRecentSearches, useSearch } from '@orama/ui/hooks'
 
 export const InnerSearchBox = () => {
   const { recentSearches, addSearch } = useRecentSearches('english')
+  const { NLPSearch } = useSearch()
 
   return (
     <>
@@ -53,7 +54,7 @@ export const InnerSearchBox = () => {
                           <li
                             key={search.timestamp}
                             className='text-sm text-slate-600 dark:text-slate-400 cursor-pointer hover:underline'
-                            // onClick={() => addSearch(search.term)}
+                            onClick={() => NLPSearch({ query: search.term })}
                           >
                             {search.term}
                           </li>
