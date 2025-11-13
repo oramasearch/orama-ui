@@ -59,7 +59,7 @@ export const InnerSearchBox = () => {
                                 key={`recent-search-${index}`}
                                 term={term}
                                 mode='nlp'
-                                className='text-xs uppercase text-pink-500 hover:underline cursor-pointer'
+                                className='text-xs uppercase text-pink-500 hover:text-pink-400 cursor-pointer'
                               >
                                 {term}
                               </RecentSearches.Item>
