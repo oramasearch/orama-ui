@@ -50,16 +50,24 @@ export interface SearchRootProps extends React.PropsWithChildren {
    */
   lang?: Lang
   /**
+   * Namespace for the search context.
+   * This allows for scoping recent searches and other context-specific data.
+   */
+  namespace?: string
+  /**
    * Initial state for the search context.
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
-  initialState?: Partial<Omit<SearchContextProps, 'client' | 'lang'>>
+  initialState?: Partial<
+    Omit<SearchContextProps, 'client' | 'lang' | 'namespace'>
+  >
 }
 
 export const SearchRoot = ({
   client,
   lang,
+  namespace,
   initialState = {},
   children
 }: SearchRootProps) => {
@@ -74,6 +82,7 @@ export const SearchRoot = ({
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
     client: client || searchState.client,
+    namespace,
     lang: lang || searchState.lang,
     ...initialState
   })

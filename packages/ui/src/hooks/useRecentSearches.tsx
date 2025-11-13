@@ -75,27 +75,33 @@ const STOPWORDS: Record<Lang, string[]> = {
   tamil: tamil_stopwords
 }
 
-function loadFromStorage(): RecentSearch[] {
+function loadFromStorage(namespace?: string): RecentSearch[] {
   try {
-    const data = localStorage.getItem(RECENT_SEARCHES_KEY)
+    const key = namespace
+      ? `${RECENT_SEARCHES_KEY}_${namespace}`
+      : RECENT_SEARCHES_KEY
+    const data = localStorage.getItem(key)
     return data ? JSON.parse(data) : []
   } catch {
     return []
   }
 }
 
-function saveToStorage(searches: RecentSearch[]) {
-  localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches))
+function saveToStorage(searches: RecentSearch[], namespace?: string) {
+  const key = namespace
+    ? `${RECENT_SEARCHES_KEY}_${namespace}`
+    : RECENT_SEARCHES_KEY
+  localStorage.setItem(key, JSON.stringify(searches))
 }
 
-export function useRecentSearches(lang: Lang = 'english') {
+export function useRecentSearches(lang: Lang = 'english', namespace?: string) {
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const recentSearches = loadFromStorage()
+    const recentSearches = loadFromStorage(namespace)
     setRecentSearches(recentSearches)
-  }, [])
+  }, [namespace])
 
   const addSearchImmediate = useCallback(
     (term: string) => {
@@ -110,11 +116,11 @@ export function useRecentSearches(lang: Lang = 'english') {
           0,
           MAX_RECENT
         )
-        saveToStorage(newList)
+        saveToStorage(newList, namespace)
         return newList
       })
     },
-    [lang]
+    [lang, namespace]
   )
 
   const addSearchDebounced = useCallback(
@@ -144,9 +150,12 @@ export function useRecentSearches(lang: Lang = 'english') {
   }, [])
 
   const clearSearches = useCallback(() => {
-    localStorage.removeItem(RECENT_SEARCHES_KEY)
+    const key = namespace
+      ? `${RECENT_SEARCHES_KEY}_${namespace}`
+      : RECENT_SEARCHES_KEY
+    localStorage.removeItem(key)
     setRecentSearches([])
-  }, [])
+  }, [namespace])
 
   return { recentSearches, addSearch, clearSearches }
 }

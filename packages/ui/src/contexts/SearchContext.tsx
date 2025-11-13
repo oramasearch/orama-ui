@@ -23,6 +23,7 @@ export type SearchContextProps = {
   count?: number
   nlpCount?: number
   lang?: Lang
+  namespace?: string
 }
 
 export type SearchAction =
@@ -54,7 +55,8 @@ export const initialSearchState: SearchContextProps = {
   nlpError: null,
   count: 0,
   nlpCount: 0,
-  lang: 'english'
+  lang: 'english',
+  namespace: undefined
 }
 
 export const SearchContext =

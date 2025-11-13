@@ -107,7 +107,7 @@ export const InnerSearchBox = () => {
 
 export const NLPSearchBox = () => {
   return (
-    <SearchRoot client={oramaDocsCollection}>
+    <SearchRoot client={oramaDocsCollection} namespace='demo-nlp-search'>
       <InnerSearchBox />
     </SearchRoot>
   )

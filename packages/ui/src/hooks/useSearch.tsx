@@ -47,9 +47,9 @@ type SearchOptions = CloudSearchParams & {
 export function useSearch(): useSearchReturn {
   const context = useSearchContext()
   const dispatch = useSearchDispatch()
-  const { client, selectedFacet, lang } = context
+  const { client, selectedFacet, lang, namespace } = context
   const isMounted = useRef(true)
-  const { addSearch } = useRecentSearches(lang)
+  const { addSearch } = useRecentSearches(lang, namespace)
 
   useEffect(() => {
     isMounted.current = true
