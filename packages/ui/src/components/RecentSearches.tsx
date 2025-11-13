@@ -41,7 +41,7 @@ export default function RecentSearchesProvider({
   const searchContext = useSearchContext()
   const { lang, namespace } = searchContext
 
-  const { recentSearches, addSearch, clearSearches } = useRecentSearches(
+  const { addSearch, clearSearches, recentSearches } = useRecentSearches(
     lang,
     namespace
   )
@@ -50,10 +50,15 @@ export default function RecentSearchesProvider({
     return null
   }
 
-  // set local recent searches
   return (
     <RecentSearchesContext.Provider
-      value={{ onSearch, onClear, recentSearches, addSearch, clearSearches }}
+      value={{
+        onSearch,
+        onClear,
+        recentSearches,
+        addSearch,
+        clearSearches
+      }}
     >
       {children}
     </RecentSearchesContext.Provider>
@@ -159,9 +164,9 @@ function ClearComponent({ children, className, onClick, ...rest }: ClearProps) {
   const { clearSearches, recentSearches } = ctx || {}
 
   const handleClick = () => {
+    clearSearches?.()
     onClick?.()
     ctx?.onClear?.()
-    clearSearches?.()
   }
 
   if (recentSearches?.length === 0) {

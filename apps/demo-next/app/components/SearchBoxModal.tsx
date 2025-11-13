@@ -57,7 +57,7 @@ export const InnerSearchBox = () => {
             </div>
           </SearchResults.Loading>
 
-          <SearchResults.NoResults className='p-4'>
+          <SearchResults.NoResults className='p-4 overflow-auto'>
             {(searchTerm) => (
               <>
                 {searchTerm ? (

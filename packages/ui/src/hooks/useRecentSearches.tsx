@@ -94,8 +94,10 @@ export function useRecentSearches(lang: Lang = 'english', namespace?: string) {
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const recentSearches = loadFromStorage(namespace)
-    setRecentSearches(recentSearches)
+    if (namespace) {
+      const recentSearches = loadFromStorage(namespace)
+      setRecentSearches(recentSearches)
+    }
   }, [namespace])
 
   const addSearchImmediate = useCallback(
@@ -105,15 +107,15 @@ export function useRecentSearches(lang: Lang = 'english', namespace?: string) {
       if (term.length < MIN_TERM_LENGTH) return
       if (STOPWORDS[lang || 'english'].includes(term)) return
 
-      setRecentSearches((prev) => {
-        const filtered = prev.filter((s) => s.term !== term)
-        const newList = [{ term, timestamp: Date.now() }, ...filtered].slice(
-          0,
-          MAX_RECENT
-        )
-        saveToStorage(newList, namespace)
-        return newList
-      })
+      const currentSearches = loadFromStorage(namespace)
+      const newSearchTermList = currentSearches.filter((s) => s.term !== term)
+      const newList = [
+        { term, timestamp: Date.now() },
+        ...newSearchTermList
+      ].slice(0, MAX_RECENT)
+      saveToStorage(newList, namespace)
+
+      setRecentSearches(newList)
     },
     [lang, namespace]
   )
