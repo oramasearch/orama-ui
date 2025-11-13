@@ -32,9 +32,9 @@ import { useRecentSearches } from './useRecentSearches'
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  search: (options: SearchOptions, searchOnType?: boolean) => Promise<void>
+  search: (options: SearchOptions, debounce?: boolean) => Promise<void>
   reset: () => void
-  NLPSearch: (options: NLPSearchParams, searchOnType?: boolean) => Promise<void>
+  NLPSearch: (options: NLPSearchParams, debounce?: boolean) => Promise<void>
   context: ReturnType<typeof useSearchContext>
   dispatch: ReturnType<typeof useSearchDispatch>
 }
@@ -59,7 +59,7 @@ export function useSearch(): useSearchReturn {
   }, [])
 
   const search = useCallback(
-    async (options: SearchOptions, searchOnType: boolean = true) => {
+    async (options: SearchOptions, debounce: boolean = true) => {
       if (!client) {
         dispatch({
           type: 'SET_ERROR',
@@ -77,7 +77,7 @@ export function useSearch(): useSearchReturn {
       })
       dispatch({ type: 'SET_LOADING', payload: { loading: true } })
       dispatch({ type: 'SET_ERROR', payload: { error: null } })
-      addSearch(searchOnType ? 1000 : undefined)(options.term || '')
+      addSearch(debounce ? 1000 : undefined)(options.term || '')
 
       const groupBy = options.groupBy || null
 
@@ -206,7 +206,7 @@ export function useSearch(): useSearchReturn {
   }, [dispatch])
 
   const NLPSearch = useCallback(
-    async (options: NLPSearchParams, searchOnType: boolean = false) => {
+    async (options: NLPSearchParams, debounce: boolean = false) => {
       if (!client) {
         dispatch({
           type: 'SET_NLP_ERROR',
@@ -226,7 +226,7 @@ export function useSearch(): useSearchReturn {
         type: 'SET_NLP_RESULTS',
         payload: { results: [] }
       })
-      addSearch(searchOnType ? 1000 : undefined)(options.query || '')
+      addSearch(debounce ? 1000 : undefined)(options.query || '')
 
       try {
         const searchResults = await client.ai.NLPSearch(options)
