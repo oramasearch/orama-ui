@@ -185,7 +185,7 @@ export const SearchInputForm = ({
     }
 
     if (mode === 'nlp') {
-      NLPSearch({ query: searchTerm, ...searchParams })
+      NLPSearch({ query: searchTerm, ...searchParams }, false)
 
       if (onNlpSearch) {
         onNlpSearch(searchTerm, searchParams)
@@ -295,12 +295,15 @@ export const SearchInputField = ({
       return
     }
 
-    search({
-      term: newValue,
-      limit: 10,
-      ...searchParams,
-      boost: searchParams?.boost ?? {}
-    })
+    search(
+      {
+        term: newValue,
+        limit: 10,
+        ...searchParams,
+        boost: searchParams?.boost ?? {}
+      },
+      searchOnType
+    )
   }
 
   return (

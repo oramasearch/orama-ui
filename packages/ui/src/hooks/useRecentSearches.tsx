@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { stopwords as arabic_stopwords } from '@orama/stopwords/arabic'
 import { stopwords as english_stopwords } from '@orama/stopwords/english'
 import { stopwords as french_stopwords } from '@orama/stopwords/french'
@@ -30,6 +30,7 @@ import { stopwords as sanskrit_stopwords } from '@orama/stopwords/sanskrit'
 import { stopwords as serbian_stopwords } from '@orama/stopwords/serbian'
 import { stopwords as slovenian_stopwords } from '@orama/stopwords/slovenian'
 import { stopwords as tamil_stopwords } from '@orama/stopwords/tamil'
+import { Lang } from '@/types'
 
 const RECENT_SEARCHES_KEY = 'recent_searches'
 const MAX_RECENT = 10
@@ -39,39 +40,6 @@ interface RecentSearch {
   term: string
   timestamp: number
 }
-
-type Lang =
-  | 'arabic'
-  | 'english'
-  | 'french'
-  | 'german'
-  | 'italian'
-  | 'japanese'
-  | 'portuguese'
-  | 'russian'
-  | 'spanish'
-  | 'turkish'
-  | 'armenian'
-  | 'bulgarian'
-  | 'danish'
-  | 'dutch'
-  | 'finnish'
-  | 'greek'
-  | 'hungarian'
-  | 'indonesian'
-  | 'norwegian'
-  | 'romanian'
-  | 'swedish'
-  | 'ukrainian'
-  | 'indian'
-  | 'irish'
-  | 'lithuanian'
-  | 'mandarin'
-  | 'nepali'
-  | 'sanskrit'
-  | 'serbian'
-  | 'slovenian'
-  | 'tamil'
 
 const STOPWORDS: Record<Lang, string[]> = {
   arabic: arabic_stopwords,
@@ -122,26 +90,57 @@ function saveToStorage(searches: RecentSearch[]) {
 
 export function useRecentSearches(lang: Lang = 'english') {
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    setRecentSearches(loadFromStorage())
+    const recentSearches = loadFromStorage()
+    setRecentSearches(recentSearches)
   }, [])
 
-  const addSearch = useCallback((term: string) => {
-    term = term.trim().toLowerCase()
+  const addSearchImmediate = useCallback(
+    (term: string) => {
+      term = term.trim().toLowerCase()
 
-    if (term.length < MIN_TERM_LENGTH) return
-    if (STOPWORDS[lang || 'english'].includes(term)) return
+      if (term.length < MIN_TERM_LENGTH) return
+      if (STOPWORDS[lang || 'english'].includes(term)) return
 
-    setRecentSearches((prev) => {
-      const filtered = prev.filter((s) => s.term !== term)
-      const newList = [{ term, timestamp: Date.now() }, ...filtered].slice(
-        0,
-        MAX_RECENT
-      )
-      saveToStorage(newList)
-      return newList
-    })
+      setRecentSearches((prev) => {
+        const filtered = prev.filter((s) => s.term !== term)
+        const newList = [{ term, timestamp: Date.now() }, ...filtered].slice(
+          0,
+          MAX_RECENT
+        )
+        saveToStorage(newList)
+        return newList
+      })
+    },
+    [lang]
+  )
+
+  const addSearchDebounced = useCallback(
+    (term: string, ms: number) => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current)
+      }
+      debounceTimeout.current = window.setTimeout(() => {
+        addSearchImmediate(term)
+      }, ms)
+    },
+    [addSearchImmediate]
+  )
+
+  const addSearch = (debounceMs?: number) => {
+    return debounceMs
+      ? (term: string) => addSearchDebounced(term, debounceMs)
+      : addSearchImmediate
+  }
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current)
+      }
+    }
   }, [])
 
   const clearSearches = useCallback(() => {

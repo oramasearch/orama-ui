@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import { useRecentSearches, useSearch } from '@orama/ui/hooks'
 
 export const InnerSearchBox = () => {
-  const { recentSearches, addSearch } = useRecentSearches('english')
+  const { recentSearches } = useRecentSearches('english')
   const { NLPSearch } = useSearch()
 
   return (
@@ -14,12 +14,7 @@ export const InnerSearchBox = () => {
       <div className='w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col'>
         <div className='flex flex-col justify-between h-140 gap-2'>
           <SearchInput.Provider mode='nlp'>
-            <SearchInput.Form
-              className='flex gap-2 w-full p-2 border border-gray-300 rounded-lg focus-within::ring-1 focus-within::ring-pink-400 transition-colors'
-              onNlpSearch={(term) => {
-                addSearch(term)
-              }}
-            >
+            <SearchInput.Form className='flex gap-2 w-full p-2 border border-gray-300 rounded-lg focus-within::ring-1 focus-within::ring-pink-400 transition-colors'>
               <SearchInput.Input
                 inputId='product-search'
                 searchOnType={false}
