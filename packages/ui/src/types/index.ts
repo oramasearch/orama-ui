@@ -24,6 +24,11 @@ export type SearchParams = Omit<OramaSearchParams, 'term'> & {
     filterBy?: Record<string, string>[]
   };
 
+export type RecentSearch = {
+  term: string
+  timestamp: number
+}
+
 export type Lang =
   | 'arabic'
   | 'english'

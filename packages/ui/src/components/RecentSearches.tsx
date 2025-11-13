@@ -1,14 +1,17 @@
 import { useSearchContext } from '@/contexts'
 import { useRecentSearches, useSearch } from '@/hooks'
-import { SearchParams } from '@/types'
+import { RecentSearch, SearchParams } from '@/types'
 import React, { createContext, useContext } from 'react'
 
 type OnSearch = (query: string) => void
 type OnClear = () => void
 
 type RecentSearchesContextValue = {
-  onSearch: OnSearch
+  onSearch?: OnSearch
   onClear?: OnClear
+  recentSearches?: RecentSearch[]
+  addSearch?: (debounceMs?: number) => (term: string) => void
+  clearSearches?: () => void
 }
 
 const RecentSearchesContext = createContext<RecentSearchesContextValue | null>(
@@ -16,7 +19,7 @@ const RecentSearchesContext = createContext<RecentSearchesContextValue | null>(
 )
 
 export interface RecentSearchesProps {
-  onSearch: OnSearch
+  onSearch?: OnSearch
   onClear?: OnClear
   children?: React.ReactNode
 }
@@ -35,8 +38,22 @@ export default function RecentSearchesProvider({
   onClear,
   children
 }: RecentSearchesProps) {
+  const searchContext = useSearchContext()
+  const { lang, namespace } = searchContext
+
+  const { recentSearches, addSearch, clearSearches } = useRecentSearches(
+    lang,
+    namespace
+  )
+
+  if (!recentSearches || recentSearches.length === 0) {
+    return null
+  }
+
   return (
-    <RecentSearchesContext.Provider value={{ onSearch, onClear }}>
+    <RecentSearchesContext.Provider
+      value={{ onSearch, onClear, recentSearches, addSearch, clearSearches }}
+    >
       {children}
     </RecentSearchesContext.Provider>
   )
@@ -55,10 +72,13 @@ const RecentSearchesList = ({
   itemClassName,
   ...rest
 }: RecentSearchesListProps) => {
-  const searchContext = useSearchContext()
-  const { lang, namespace } = searchContext
-
-  const { recentSearches } = useRecentSearches(lang, namespace)
+  const ctx = useContext(RecentSearchesContext)
+  if (!ctx) {
+    throw new Error(
+      'RecentSearches.Item must be used within a RecentSearches.Provider'
+    )
+  }
+  const recentSearches = ctx?.recentSearches || []
 
   if (recentSearches.length === 0) {
     return null
@@ -99,6 +119,11 @@ function ItemComponent({
   ...rest
 }: ItemProps) {
   const ctx = useContext(RecentSearchesContext)
+  if (!ctx) {
+    throw new Error(
+      'RecentSearches.Item must be used within a RecentSearches.Provider'
+    )
+  }
   const { search, NLPSearch } = useSearch()
 
   const handleClick = () => {
@@ -129,15 +154,19 @@ type ClearProps = {
 
 function ClearComponent({ children, className, onClick, ...rest }: ClearProps) {
   const ctx = useContext(RecentSearchesContext)
-  const searchContext = useSearchContext()
-  const { lang, namespace } = searchContext
 
-  const { clearSearches } = useRecentSearches(lang, namespace)
+  const { clearSearches, recentSearches } = ctx || {}
+
+  console.log('ClearComponent recentSearches', recentSearches)
 
   const handleClick = () => {
     onClick?.()
     ctx?.onClear?.()
-    clearSearches()
+    clearSearches?.()
+  }
+
+  if (recentSearches?.length === 0) {
+    return null
   }
 
   return (

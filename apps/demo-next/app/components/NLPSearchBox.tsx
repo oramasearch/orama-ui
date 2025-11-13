@@ -1,14 +1,15 @@
 'use client'
 import React from 'react'
 import { oramaDocsCollection } from '@/data'
-import { SearchInput, SearchRoot, SearchResults } from '@orama/ui/components'
+import {
+  SearchInput,
+  SearchRoot,
+  SearchResults,
+  RecentSearches
+} from '@orama/ui/components'
 import { ArrowRight } from 'lucide-react'
-import { useRecentSearches, useSearch } from '@orama/ui/hooks'
 
 export const InnerSearchBox = () => {
-  const { recentSearches } = useRecentSearches('english')
-  const { NLPSearch } = useSearch()
-
   return (
     <>
       <div className='w-full lg:max-w-xl mx-auto border-gray-200 border-1 rounded-lg p-4 bg-white flex flex-col'>
@@ -39,27 +40,39 @@ export const InnerSearchBox = () => {
                     <p className='text-sm text-slate-500 dark:text-slate-400'>
                       {`No results found for "${searchTerm}". Please try a different search term.`}
                     </p>
-                  ) : recentSearches.length > 0 ? (
-                    <div>
-                      <h4 className='text-md font-medium text-slate-700 dark:text-slate-300 mb-2'>
-                        Recent Searches
-                      </h4>
-                      <ul className='space-y-1'>
-                        {recentSearches.map((search) => (
-                          <li
-                            key={search.timestamp}
-                            className='text-sm text-slate-600 dark:text-slate-400 cursor-pointer hover:underline'
-                            onClick={() => NLPSearch({ query: search.term })}
-                          >
-                            {search.term}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                   ) : (
-                    <p className='text-sm text-slate-500 dark:text-slate-400'>
-                      Start typing to search for products.
-                    </p>
+                    <>
+                      <p className='text-sm text-slate-500 dark:text-slate-400'>
+                        Start typing to search for products.
+                      </p>
+                      <RecentSearches.Provider>
+                        <div className='border-t border-slate-200 dark:border-slate-700 my-4'>
+                          <h3 className='mt-4 mb-2 text-sm font-medium text-slate-700 dark:text-slate-300'>
+                            Your recent searches
+                          </h3>
+                          <RecentSearches.List
+                            className='space-y-1'
+                            itemClassName=''
+                          >
+                            {(term, index) => (
+                              <RecentSearches.Item
+                                key={`recent-search-${index}`}
+                                term={term}
+                                mode='nlp'
+                                className='text-xs uppercase text-pink-500 hover:underline cursor-pointer'
+                              >
+                                {term}
+                              </RecentSearches.Item>
+                            )}
+                          </RecentSearches.List>
+                          <div className='flex justify-end'>
+                            <RecentSearches.Clear className='text-xs text-slate-400 hover:underline cursor-pointer'>
+                              Clear recent searches
+                            </RecentSearches.Clear>
+                          </div>
+                        </div>
+                      </RecentSearches.Provider>
+                    </>
                   )}
                 </>
               )}

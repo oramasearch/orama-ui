@@ -30,16 +30,11 @@ import { stopwords as sanskrit_stopwords } from '@orama/stopwords/sanskrit'
 import { stopwords as serbian_stopwords } from '@orama/stopwords/serbian'
 import { stopwords as slovenian_stopwords } from '@orama/stopwords/slovenian'
 import { stopwords as tamil_stopwords } from '@orama/stopwords/tamil'
-import { Lang } from '@/types'
+import type { Lang, RecentSearch } from '@/types'
 
 const RECENT_SEARCHES_KEY = 'recent_searches'
 const MAX_RECENT = 10
 const MIN_TERM_LENGTH = 2
-
-interface RecentSearch {
-  term: string
-  timestamp: number
-}
 
 const STOPWORDS: Record<Lang, string[]> = {
   arabic: arabic_stopwords,
