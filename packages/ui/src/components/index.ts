@@ -9,5 +9,6 @@ export { SearchRoot } from "./SearchRoot";
 export { Suggestions } from "./Suggestions";
 export { SlidingPanel } from "./SlidingPanel";
 export { Tabs } from "./Tabs";
+export { RecentSearches } from "./RecentSearches";
 export { default as OramaLogo } from "./OramaLogo";
 export { default as OramaIcon } from "./OramaIcon";
