@@ -190,6 +190,43 @@ The component integrates with:
 - **useRecentSearches**: For persistence and state management  
 - **useSearch**: For executing searches when items are clicked
 
+### Namespace Configuration
+
+Recent searches are automatically scoped by namespace to isolate different search contexts. The namespace is inherited from the `SearchRoot` provider:
+
+```tsx
+import { SearchRoot, RecentSearches } from '@/components'
+
+// Different namespaces create separate search histories
+function ProductSearch() {
+  return (
+    <SearchRoot namespace="products">
+      <RecentSearches.Provider>
+        {/* This will save searches under "recent_searches_products" */}
+        <RecentSearches.List>
+          {(term) => <RecentSearches.Item term={term}>{term}</RecentSearches.Item>}
+        </RecentSearches.List>
+      </RecentSearches.Provider>
+    </SearchRoot>
+  )
+}
+
+function DocumentSearch() {
+  return (
+    <SearchRoot namespace="documents">
+      <RecentSearches.Provider>
+        {/* This will save searches under "recent_searches_documents" */}
+        <RecentSearches.List>
+          {(term) => <RecentSearches.Item term={term}>{term}</RecentSearches.Item>}
+        </RecentSearches.List>
+      </RecentSearches.Provider>
+    </SearchRoot>
+  )
+}
+```
+
+**Important**: If you want to maintain separate recent search histories for different search contexts (e.g., product search vs. document search), you must provide a unique `namespace` prop to the `SearchRoot` component. Without a namespace, all searches will be stored under the default `recent_searches` key.
+
 ## Accessibility
 
 - Uses semantic HTML (`<ul>`, `<li>`, `<button>`)
