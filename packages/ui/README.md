@@ -94,6 +94,7 @@ Orama UI follows these core principles:
 - **[`SearchResults`](./docs/components/SearchResults.md)** - Displays search results with customizable rendering
 - **[`ChatInteractions`](./docs/components/ChatInteractions.md)** - Renders chat messages and user actions
 - **[`Suggestions`](./docs/components/Suggestions.md)** - Displays prompt suggestions
+- **[`RecentSearches`](./docs/components/RecentSearches.md)** - Component for managing and displaying recent search history
 
 ### Input Components
 
@@ -118,6 +119,7 @@ Orama UI follows these core principles:
 
 - **[`useSearch`](./docs/hooks/useSearch.md)** - Access search state, query, results, and search functions
 - **[`useChat`](./docs/hooks/useChat.md)** - Manage chat conversations, messages, and AI interactions
+- **[`useRecentSearches`](./docs/hooks/useRecentSearches.md)** - Manage recent search history and state
 
 ### Utility Hooks
 
