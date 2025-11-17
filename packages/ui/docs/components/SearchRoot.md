@@ -15,13 +15,13 @@ The `SearchRoot` component provides the context and state management for Orama s
 
 ## Props
 
-| Name           | Type                                     | Default | Description                                                                                           |
-| -------------- | ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                            |
-| `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                               |
-| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language. |
+| Name           | Type                                     | Default | Description                                                                                                                       |
+| -------------- | ---------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                                                        |
+| `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                                                           |
+| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.                              |
 | `namespace`    | `string` (optional)                      | —       | Namespace for the search context. Allows for scoping recent searches and other context-specific data. Default value is `english`. |
-| `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data. |
+| `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data.                             |
 
 ### initialState Properties
 
@@ -89,15 +89,19 @@ const orama = new OramaCloud({
 ### Multiple Search Contexts with Namespaces
 
 ```tsx
-{/* Product search context */}
+{
+  /* Product search context */
+}
 <SearchRoot client={orama} namespace="products" lang="en">
   <ProductSearch />
-</SearchRoot>
+</SearchRoot>;
 
-{/* Documentation search context */}
+{
+  /* Documentation search context */
+}
 <SearchRoot client={orama} namespace="docs" lang="en">
   <DocumentationSearch />
-</SearchRoot>
+</SearchRoot>;
 ```
 
 ### With Custom Search Handler
@@ -167,7 +171,7 @@ You can use `initialState` to pre-populate the search with existing data:
         query: params.term,
         filters: params.filterBy,
         namespace: "help-center",
-        language: "en"
+        language: "en",
       });
 
       // Custom search logic

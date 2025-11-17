@@ -13,23 +13,26 @@ A React hook for managing and persisting recent search queries with language-awa
 ## Usage
 
 ```tsx
-import { useRecentSearches } from '@/hooks/useRecentSearches'
+import { useRecentSearches } from "@/hooks/useRecentSearches";
 
 function SearchComponent() {
-  const { recentSearches, addSearch, clearSearches } = useRecentSearches('english', 'products')
+  const { recentSearches, addSearch, clearSearches } = useRecentSearches(
+    "english",
+    "products",
+  );
 
   const handleSearch = (query: string) => {
     // Add search immediately
-    addSearch()(query)
-    
+    addSearch()(query);
+
     // Or add search with debounce
-    addSearch(300)(query)
-  }
+    addSearch(300)(query);
+  };
 
   return (
     <div>
       <input onChange={(e) => handleSearch(e.target.value)} />
-      
+
       <div>
         <h3>Recent Searches</h3>
         {recentSearches.map((search) => (
@@ -40,7 +43,7 @@ function SearchComponent() {
         <button onClick={clearSearches}>Clear All</button>
       </div>
     </div>
-  )
+  );
 }
 ```
 
@@ -55,22 +58,25 @@ function SearchComponent() {
 ### Returns
 
 #### `recentSearches: RecentSearch[]`
+
 Array of recent search objects, ordered by most recent first.
 
 ```tsx
 type RecentSearch = {
-  term: string
-  timestamp: number
-}
+  term: string;
+  timestamp: number;
+};
 ```
 
 #### `addSearch: (debounceMs?: number) => (term: string) => void`
+
 Function that returns a search handler. Can be used with or without debouncing.
 
 - Without debounce: `addSearch()(term)`
 - With debounce: `addSearch(500)(term)` - waits 500ms before adding
 
 #### `clearSearches: () => void`
+
 Removes all recent searches from storage and state.
 
 ## Configuration
@@ -90,6 +96,7 @@ Removes all recent searches from storage and state.
 ## Storage
 
 The hook uses localStorage with the following key pattern:
+
 - Default: `recent_searches`
 - With namespace: `recent_searches_{namespace}`
 

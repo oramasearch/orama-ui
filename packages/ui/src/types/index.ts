@@ -19,45 +19,45 @@ export type GroupedResult = GroupCount & {
 
 export type GroupedResults = GroupedResult[];
 
-export type SearchParams = Omit<OramaSearchParams, 'term'> & {
-    groupedBy?: string
-    filterBy?: Record<string, string>[]
-  };
+export type SearchParams = Omit<OramaSearchParams, "term"> & {
+  groupedBy?: string;
+  filterBy?: Record<string, string>[];
+};
 
 export type RecentSearch = {
-  term: string
-  timestamp: number
-}
+  term: string;
+  timestamp: number;
+};
 
 export type Lang =
-  | 'arabic'
-  | 'english'
-  | 'french'
-  | 'german'
-  | 'italian'
-  | 'japanese'
-  | 'portuguese'
-  | 'russian'
-  | 'spanish'
-  | 'turkish'
-  | 'armenian'
-  | 'bulgarian'
-  | 'danish'
-  | 'dutch'
-  | 'finnish'
-  | 'greek'
-  | 'hungarian'
-  | 'indonesian'
-  | 'norwegian'
-  | 'romanian'
-  | 'swedish'
-  | 'ukrainian'
-  | 'indian'
-  | 'irish'
-  | 'lithuanian'
-  | 'mandarin'
-  | 'nepali'
-  | 'sanskrit'
-  | 'serbian'
-  | 'slovenian'
-  | 'tamil'
+  | "arabic"
+  | "english"
+  | "french"
+  | "german"
+  | "italian"
+  | "japanese"
+  | "portuguese"
+  | "russian"
+  | "spanish"
+  | "turkish"
+  | "armenian"
+  | "bulgarian"
+  | "danish"
+  | "dutch"
+  | "finnish"
+  | "greek"
+  | "hungarian"
+  | "indonesian"
+  | "norwegian"
+  | "romanian"
+  | "swedish"
+  | "ukrainian"
+  | "indian"
+  | "irish"
+  | "lithuanian"
+  | "mandarin"
+  | "nepali"
+  | "sanskrit"
+  | "serbian"
+  | "slovenian"
+  | "tamil";

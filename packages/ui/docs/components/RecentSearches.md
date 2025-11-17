@@ -15,13 +15,13 @@ A compound component for displaying and managing recent search queries with auto
 ## Basic Usage
 
 ```tsx
-import { RecentSearches } from '@/components/RecentSearches'
+import { RecentSearches } from "@/components/RecentSearches";
 
 function SearchInterface() {
   return (
-    <RecentSearches.Provider 
-      onSearch={(query) => console.log('Searched:', query)}
-      onClear={() => console.log('Cleared recent searches')}
+    <RecentSearches.Provider
+      onSearch={(query) => console.log("Searched:", query)}
+      onClear={() => console.log("Cleared recent searches")}
     >
       <RecentSearches.List className="recent-list">
         {(term, index) => (
@@ -30,37 +30,37 @@ function SearchInterface() {
           </RecentSearches.Item>
         )}
       </RecentSearches.List>
-      
+
       <RecentSearches.Clear className="clear-btn">
         Clear All
       </RecentSearches.Clear>
     </RecentSearches.Provider>
-  )
+  );
 }
 ```
 
 ## Advanced Usage
 
 ```tsx
-import { RecentSearches } from '@/components/RecentSearches'
+import { RecentSearches } from "@/components/RecentSearches";
 
 function AdvancedSearchInterface() {
   const handleSearch = (query: string) => {
     // Additional logic
-    doSomething(query)
-  }
+    doSomething(query);
+  };
 
   return (
     <RecentSearches.Provider onSearch={handleSearch}>
       <div className="search-history">
         <h3>Recent Searches</h3>
-        
-        <RecentSearches.List 
+
+        <RecentSearches.List
           className="grid grid-cols-2 gap-2"
           itemClassName="recent-search-item"
         >
           {(term, index) => (
-            <RecentSearches.Item 
+            <RecentSearches.Item
               term={term}
               mode="nlp"
               searchParams={{ limit: 20, offset: 0 }}
@@ -71,13 +71,13 @@ function AdvancedSearchInterface() {
             </RecentSearches.Item>
           )}
         </RecentSearches.List>
-        
+
         <RecentSearches.Clear className="mt-4 text-red-500 underline">
           Clear History
         </RecentSearches.Clear>
       </div>
     </RecentSearches.Provider>
-  )
+  );
 }
 ```
 
@@ -89,11 +89,11 @@ The root component that provides context and manages recent searches state.
 
 #### Props
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type                      | Description                                                  |
+| ---------- | ------------------------- | ------------------------------------------------------------ |
 | `onSearch` | `(query: string) => void` | Optional callback fired when a recent search item is clicked |
-| `onClear` | `() => void` | Optional callback fired when clear button is clicked |
-| `children` | `React.ReactNode` | Child components |
+| `onClear`  | `() => void`              | Optional callback fired when clear button is clicked         |
+| `children` | `React.ReactNode`         | Child components                                             |
 
 #### Behavior
 
@@ -108,12 +108,12 @@ Renders the list of recent searches using a render prop pattern.
 
 #### Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `children` | `(term: string, index: number) => React.ReactNode` | Render function for each search term |
-| `className` | `string` | CSS class for the `<ul>` element |
-| `itemClassName` | `string` | CSS class applied to each `<li>` element |
-| `...rest` | `React.HTMLAttributes<HTMLUListElement>` | Additional props passed to the `<ul>` element |
+| Prop            | Type                                               | Description                                   |
+| --------------- | -------------------------------------------------- | --------------------------------------------- |
+| `children`      | `(term: string, index: number) => React.ReactNode` | Render function for each search term          |
+| `className`     | `string`                                           | CSS class for the `<ul>` element              |
+| `itemClassName` | `string`                                           | CSS class applied to each `<li>` element      |
+| `...rest`       | `React.HTMLAttributes<HTMLUListElement>`           | Additional props passed to the `<ul>` element |
 
 #### Features
 
@@ -127,15 +127,15 @@ Interactive button component for individual search terms.
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `term` | `string` | Required | The search term to display and execute |
-| `children` | `React.ReactNode` | Optional | Content to display (defaults to term) |
-| `onClick` | `() => void` | Optional | Additional click handler |
-| `className` | `string` | Optional | CSS class for styling |
-| `mode` | `'search' \| 'nlp'` | `'search'` | Search mode to use |
-| `searchParams` | `SearchParams` | Optional | Additional search parameters |
-| `...rest` | `React.ButtonHTMLAttributes<HTMLButtonElement>` | - | Additional button props |
+| Prop           | Type                                            | Default    | Description                            |
+| -------------- | ----------------------------------------------- | ---------- | -------------------------------------- |
+| `term`         | `string`                                        | Required   | The search term to display and execute |
+| `children`     | `React.ReactNode`                               | Optional   | Content to display (defaults to term)  |
+| `onClick`      | `() => void`                                    | Optional   | Additional click handler               |
+| `className`    | `string`                                        | Optional   | CSS class for styling                  |
+| `mode`         | `'search' \| 'nlp'`                             | `'search'` | Search mode to use                     |
+| `searchParams` | `SearchParams`                                  | Optional   | Additional search parameters           |
+| `...rest`      | `React.ButtonHTMLAttributes<HTMLButtonElement>` | -          | Additional button props                |
 
 #### Behavior
 
@@ -150,12 +150,12 @@ Button component for clearing all recent searches.
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | `'Clear'` | Button content |
-| `className` | `string` | Optional | CSS class for styling |
-| `onClick` | `() => void` | Optional | Additional click handler |
-| `...rest` | `React.ButtonHTMLAttributes<HTMLButtonElement>` | - | Additional button props |
+| Prop        | Type                                            | Default   | Description              |
+| ----------- | ----------------------------------------------- | --------- | ------------------------ |
+| `children`  | `React.ReactNode`                               | `'Clear'` | Button content           |
+| `className` | `string`                                        | Optional  | CSS class for styling    |
+| `onClick`   | `() => void`                                    | Optional  | Additional click handler |
+| `...rest`   | `React.ButtonHTMLAttributes<HTMLButtonElement>` | -         | Additional button props  |
 
 #### Behavior
 
@@ -167,17 +167,17 @@ Button component for clearing all recent searches.
 ## Types
 
 ```tsx
-type OnSearch = (query: string) => void
-type OnClear = () => void
+type OnSearch = (query: string) => void;
+type OnClear = () => void;
 
 interface RecentSearch {
-  term: string
-  timestamp: number
+  term: string;
+  timestamp: number;
 }
 
 interface SearchParams {
-  limit?: number
-  offset?: number
+  limit?: number;
+  offset?: number;
   // ... other search parameters
 }
 ```
@@ -187,7 +187,7 @@ interface SearchParams {
 The component integrates with:
 
 - **SearchContext**: For language and namespace configuration
-- **useRecentSearches**: For persistence and state management  
+- **useRecentSearches**: For persistence and state management
 - **useSearch**: For executing searches when items are clicked
 
 ### Namespace Configuration
@@ -195,7 +195,7 @@ The component integrates with:
 Recent searches are automatically scoped by namespace to isolate different search contexts. The namespace is inherited from the `SearchRoot` provider:
 
 ```tsx
-import { SearchRoot, RecentSearches } from '@/components'
+import { SearchRoot, RecentSearches } from "@/components";
 
 // Different namespaces create separate search histories
 function ProductSearch() {
@@ -204,11 +204,13 @@ function ProductSearch() {
       <RecentSearches.Provider>
         {/* This will save searches under "recent_searches_products" */}
         <RecentSearches.List>
-          {(term) => <RecentSearches.Item term={term}>{term}</RecentSearches.Item>}
+          {(term) => (
+            <RecentSearches.Item term={term}>{term}</RecentSearches.Item>
+          )}
         </RecentSearches.List>
       </RecentSearches.Provider>
     </SearchRoot>
-  )
+  );
 }
 
 function DocumentSearch() {
@@ -217,11 +219,13 @@ function DocumentSearch() {
       <RecentSearches.Provider>
         {/* This will save searches under "recent_searches_documents" */}
         <RecentSearches.List>
-          {(term) => <RecentSearches.Item term={term}>{term}</RecentSearches.Item>}
+          {(term) => (
+            <RecentSearches.Item term={term}>{term}</RecentSearches.Item>
+          )}
         </RecentSearches.List>
       </RecentSearches.Provider>
     </SearchRoot>
-  )
+  );
 }
 ```
 
@@ -239,12 +243,12 @@ function DocumentSearch() {
 Components accept `className` props for custom styling:
 
 ```tsx
-<RecentSearches.List 
-  className="flex flex-wrap gap-2" 
+<RecentSearches.List
+  className="flex flex-wrap gap-2"
   itemClassName="inline-block"
 >
   {(term) => (
-    <RecentSearches.Item 
+    <RecentSearches.Item
       term={term}
       className="px-3 py-1 bg-blue-100 rounded-full text-sm hover:bg-blue-200 transition-colors"
     >

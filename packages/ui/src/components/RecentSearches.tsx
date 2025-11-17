@@ -1,27 +1,27 @@
-import { useSearchContext } from '@/contexts'
-import { useRecentSearches, useSearch } from '@/hooks'
-import { RecentSearch, SearchParams } from '@/types'
-import React, { createContext, useContext } from 'react'
+import { useSearchContext } from "@/contexts";
+import { useRecentSearches, useSearch } from "@/hooks";
+import { RecentSearch, SearchParams } from "@/types";
+import React, { createContext, useContext } from "react";
 
-type OnSearch = (query: string) => void
-type OnClear = () => void
+type OnSearch = (query: string) => void;
+type OnClear = () => void;
 
 type RecentSearchesContextValue = {
-  onSearch?: OnSearch
-  onClear?: OnClear
-  recentSearches?: RecentSearch[]
-  addSearch?: (debounceMs?: number) => (term: string) => void
-  clearSearches?: () => void
-}
+  onSearch?: OnSearch;
+  onClear?: OnClear;
+  recentSearches?: RecentSearch[];
+  addSearch?: (debounceMs?: number) => (term: string) => void;
+  clearSearches?: () => void;
+};
 
 const RecentSearchesContext = createContext<RecentSearchesContextValue | null>(
-  null
-)
+  null,
+);
 
 export interface RecentSearchesProps {
-  onSearch?: OnSearch
-  onClear?: OnClear
-  children?: React.ReactNode
+  onSearch?: OnSearch;
+  onClear?: OnClear;
+  children?: React.ReactNode;
 }
 
 /**
@@ -36,18 +36,18 @@ export interface RecentSearchesProps {
 export default function RecentSearchesProvider({
   onSearch,
   onClear,
-  children
+  children,
 }: RecentSearchesProps) {
-  const searchContext = useSearchContext()
-  const { lang, namespace } = searchContext
+  const searchContext = useSearchContext();
+  const { lang, namespace } = searchContext;
 
   const { addSearch, clearSearches, recentSearches } = useRecentSearches(
     lang,
-    namespace
-  )
+    namespace,
+  );
 
   if (!recentSearches || recentSearches.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -57,42 +57,42 @@ export default function RecentSearchesProvider({
         onClear,
         recentSearches,
         addSearch,
-        clearSearches
+        clearSearches,
       }}
     >
       {children}
     </RecentSearchesContext.Provider>
-  )
+  );
 }
 
 export interface RecentSearchesListProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
-  children: (term: string, index: number) => React.ReactNode
-  className?: string
-  itemClassName?: string
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+  children: (term: string, index: number) => React.ReactNode;
+  className?: string;
+  itemClassName?: string;
 }
 
 const RecentSearchesList = ({
   children,
-  className = '',
+  className = "",
   itemClassName,
   ...rest
 }: RecentSearchesListProps) => {
-  const ctx = useContext(RecentSearchesContext)
+  const ctx = useContext(RecentSearchesContext);
   if (!ctx) {
     throw new Error(
-      'RecentSearches.Item must be used within a RecentSearches.Provider'
-    )
+      "RecentSearches.Item must be used within a RecentSearches.Provider",
+    );
   }
-  const recentSearches = ctx?.recentSearches || []
+  const recentSearches = ctx?.recentSearches || [];
 
   if (recentSearches.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <div>
-      <ul className={className} aria-live='polite' {...rest}>
+      <ul className={className} aria-live="polite" {...rest}>
         {recentSearches.map((searchTerm, index) => (
           <li key={`searchTerm-${index}`} className={itemClassName}>
             {children(searchTerm.term, index)}
@@ -100,88 +100,88 @@ const RecentSearchesList = ({
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 type ItemProps = {
-  term: string
-  children?: React.ReactNode
-  onClick?: () => void
-  className?: string
-  mode?: 'search' | 'nlp'
-  searchParams?: SearchParams
+  term: string;
+  children?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  mode?: "search" | "nlp";
+  searchParams?: SearchParams;
 } & Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'children' | 'className' | 'onClick'
->
+  "children" | "className" | "onClick"
+>;
 
 function ItemComponent({
   term,
   children,
   className,
   onClick,
-  mode = 'search',
+  mode = "search",
   searchParams,
   ...rest
 }: ItemProps) {
-  const ctx = useContext(RecentSearchesContext)
+  const ctx = useContext(RecentSearchesContext);
   if (!ctx) {
     throw new Error(
-      'RecentSearches.Item must be used within a RecentSearches.Provider'
-    )
+      "RecentSearches.Item must be used within a RecentSearches.Provider",
+    );
   }
-  const { search, NLPSearch } = useSearch()
+  const { search, NLPSearch } = useSearch();
 
   const handleClick = () => {
-    if (mode === 'nlp') {
-      NLPSearch({ query: term, ...searchParams }, false)
+    if (mode === "nlp") {
+      NLPSearch({ query: term, ...searchParams }, false);
     } else {
-      search({ term, ...searchParams }, false)
+      search({ term, ...searchParams }, false);
     }
-    onClick?.()
-    ctx?.onSearch?.(term)
-  }
+    onClick?.();
+    ctx?.onSearch?.(term);
+  };
 
   return (
-    <button type='button' className={className} onClick={handleClick} {...rest}>
+    <button type="button" className={className} onClick={handleClick} {...rest}>
       {children}
     </button>
-  )
+  );
 }
 
 type ClearProps = {
-  children?: React.ReactNode
-  className?: string
-  onClick?: () => void
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 } & Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'children' | 'className' | 'onClick'
->
+  "children" | "className" | "onClick"
+>;
 
 function ClearComponent({ children, className, onClick, ...rest }: ClearProps) {
-  const ctx = useContext(RecentSearchesContext)
+  const ctx = useContext(RecentSearchesContext);
 
-  const { clearSearches, recentSearches } = ctx || {}
+  const { clearSearches, recentSearches } = ctx || {};
 
   const handleClick = () => {
-    clearSearches?.()
-    onClick?.()
-    ctx?.onClear?.()
-  }
+    clearSearches?.();
+    onClick?.();
+    ctx?.onClear?.();
+  };
 
   if (recentSearches?.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <button type='button' className={className} onClick={handleClick} {...rest}>
-      {children ?? 'Clear'}
+    <button type="button" className={className} onClick={handleClick} {...rest}>
+      {children ?? "Clear"}
     </button>
-  )
+  );
 }
 export const RecentSearches = {
   Provider: RecentSearchesProvider,
   List: RecentSearchesList,
   Item: ItemComponent,
-  Clear: ClearComponent
-}
+  Clear: ClearComponent,
+};

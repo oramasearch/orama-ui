@@ -1,12 +1,12 @@
-import React, { useReducer } from 'react'
+import React, { useReducer } from "react";
 import {
   SearchContext,
   SearchDispatchContext,
   searchReducer,
-  useSearchContext
-} from '../contexts'
-import { type SearchContextProps } from '../contexts/SearchContext'
-import { Lang } from '@/types'
+  useSearchContext,
+} from "../contexts";
+import { type SearchContextProps } from "../contexts/SearchContext";
+import { Lang } from "@/types";
 
 /**
  * SearchRoot component provides context for managing search state and actions.
@@ -43,25 +43,25 @@ export interface SearchRootProps extends React.PropsWithChildren {
    * Required Orama client to be used for search operations.
    * This client is essential for executing search queries and managing results.
    */
-  client: SearchContextProps['client']
+  client: SearchContextProps["client"];
   /**
    * Language for the search context.
    * This setting helps tailor search behavior and results to the specified language.
    */
-  lang?: Lang
+  lang?: Lang;
   /**
    * Namespace for the search context.
    * This allows for scoping recent searches and other context-specific data.
    */
-  namespace?: string
+  namespace?: string;
   /**
    * Initial state for the search context.
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
   initialState?: Partial<
-    Omit<SearchContextProps, 'client' | 'lang' | 'namespace'>
-  >
+    Omit<SearchContextProps, "client" | "lang" | "namespace">
+  >;
 }
 
 export const SearchRoot = ({
@@ -69,14 +69,14 @@ export const SearchRoot = ({
   lang,
   namespace,
   initialState = {},
-  children
+  children,
 }: SearchRootProps) => {
-  const searchState = useSearchContext()
+  const searchState = useSearchContext();
 
-  if (typeof window !== 'undefined' && !client && !searchState.client) {
+  if (typeof window !== "undefined" && !client && !searchState.client) {
     console.warn(
-      'SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.'
-    )
+      "SearchRoot: No client provided. Either pass a client in initialState or ensure a parent SearchRoot has a client.",
+    );
   }
 
   const [state, dispatch] = useReducer(searchReducer, {
@@ -84,8 +84,8 @@ export const SearchRoot = ({
     client: client || searchState.client,
     namespace,
     lang: lang || searchState.lang,
-    ...initialState
-  })
+    ...initialState,
+  });
 
   return (
     <SearchContext.Provider value={state}>
@@ -93,5 +93,5 @@ export const SearchRoot = ({
         {children}
       </SearchDispatchContext.Provider>
     </SearchContext.Provider>
-  )
-}
+  );
+};
