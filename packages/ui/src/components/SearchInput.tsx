@@ -6,9 +6,8 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { PolymorphicComponentProps } from "@/types";
+import type { PolymorphicComponentProps, SearchParams } from "@/types";
 import { useSearch } from "../hooks";
-import { SearchParams } from "@orama/core";
 
 type SearchMode = "search" | "nlp";
 interface SearchInputContextValue {
@@ -100,10 +99,7 @@ interface SearchInputFormProps
   /**
    * Search parameters to be used for the search operation when form is submitted.
    */
-  searchParams?: Omit<SearchParams, "term"> & {
-    groupedBy?: string;
-    filterBy?: Record<string, string>[];
-  };
+  searchParams?: SearchParams;
   /**
    * Callback function for NLP search. Required when mode is 'nlp'.
    * Receives the search term and optional search parameters.
@@ -178,8 +174,6 @@ export const SearchInputForm = ({
 
     onSubmit?.(event);
 
-    console.log("Submitting search for:", searchTerm);
-
     if (!searchTerm) {
       dispatch({ type: "SET_LOADING", payload: { loading: false } });
       dispatch({ type: "SET_NLP_LOADING", payload: { loading: false } });
@@ -187,7 +181,7 @@ export const SearchInputForm = ({
     }
 
     if (mode === "nlp") {
-      NLPSearch({ query: searchTerm, ...searchParams });
+      NLPSearch({ query: searchTerm, ...searchParams }, false);
 
       if (onNlpSearch) {
         onNlpSearch(searchTerm, searchParams);
@@ -244,10 +238,7 @@ export interface SearchInputProps
    * This can include filters, grouping, etc.
    * Get them from Orama
    */
-  searchParams?: Omit<SearchParams, "term"> & {
-    groupedBy?: string;
-    filterBy?: Record<string, string>[];
-  };
+  searchParams?: SearchParams;
   /**
    * If true, the search will be triggered on each keystroke.
    * If false, the search will only be triggered on form submission.
@@ -297,12 +288,15 @@ export const SearchInputField = ({
       return;
     }
 
-    search({
-      term: newValue,
-      limit: 10,
-      ...searchParams,
-      boost: searchParams?.boost ?? {},
-    });
+    search(
+      {
+        term: newValue,
+        limit: 10,
+        ...searchParams,
+        boost: searchParams?.boost ?? {},
+      },
+      searchOnType,
+    );
   };
 
   return (

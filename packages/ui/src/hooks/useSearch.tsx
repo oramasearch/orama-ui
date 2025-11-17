@@ -6,6 +6,7 @@ import {
   useSearchDispatch,
 } from "../contexts";
 import { GroupsCount } from "@/types";
+import { useRecentSearches } from "./useRecentSearches";
 
 /**
  * Custom React hook for managing search functionality within the application.
@@ -31,9 +32,9 @@ import { GroupsCount } from "@/types";
  * - Ensures state updates only occur while the component is mounted.
  */
 export interface useSearchReturn {
-  search: (options: SearchOptions) => Promise<void>;
+  search: (options: SearchOptions, debounce?: boolean) => Promise<void>;
   reset: () => void;
-  NLPSearch: (options: NLPSearchParams) => Promise<void>;
+  NLPSearch: (options: NLPSearchParams, debounce?: boolean) => Promise<void>;
   context: ReturnType<typeof useSearchContext>;
   dispatch: ReturnType<typeof useSearchDispatch>;
 }
@@ -46,8 +47,9 @@ type SearchOptions = CloudSearchParams & {
 export function useSearch(): useSearchReturn {
   const context = useSearchContext();
   const dispatch = useSearchDispatch();
-  const { client, selectedFacet } = context;
+  const { client, selectedFacet, lang, namespace } = context;
   const isMounted = useRef(true);
+  const { addSearch } = useRecentSearches(lang, namespace);
 
   useEffect(() => {
     isMounted.current = true;
@@ -57,7 +59,7 @@ export function useSearch(): useSearchReturn {
   }, []);
 
   const search = useCallback(
-    async (options: SearchOptions) => {
+    async (options: SearchOptions, debounce: boolean = true) => {
       if (!client) {
         dispatch({
           type: "SET_ERROR",
@@ -75,6 +77,8 @@ export function useSearch(): useSearchReturn {
       });
       dispatch({ type: "SET_LOADING", payload: { loading: true } });
       dispatch({ type: "SET_ERROR", payload: { error: null } });
+      addSearch(debounce ? 1000 : undefined)(options.term || "");
+
       const groupBy = options.groupBy || null;
 
       try {
@@ -174,7 +178,7 @@ export function useSearch(): useSearchReturn {
         }
       }
     },
-    [client, dispatch, selectedFacet],
+    [client, dispatch, selectedFacet, addSearch],
   );
 
   const reset = useCallback(() => {
@@ -202,7 +206,7 @@ export function useSearch(): useSearchReturn {
   }, [dispatch]);
 
   const NLPSearch = useCallback(
-    async (options: NLPSearchParams) => {
+    async (options: NLPSearchParams, debounce: boolean = false) => {
       if (!client) {
         dispatch({
           type: "SET_NLP_ERROR",
@@ -222,6 +226,7 @@ export function useSearch(): useSearchReturn {
         type: "SET_NLP_RESULTS",
         payload: { results: [] },
       });
+      addSearch(debounce ? 1000 : undefined)(options.query || "");
 
       try {
         const searchResults = await client.ai.NLPSearch(options);
@@ -244,7 +249,7 @@ export function useSearch(): useSearchReturn {
         dispatch({ type: "SET_NLP_LOADING", payload: { loading: false } });
       }
     },
-    [client, dispatch],
+    [client, dispatch, addSearch],
   );
 
   return {

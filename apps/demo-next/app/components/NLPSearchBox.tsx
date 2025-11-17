@@ -1,7 +1,12 @@
 "use client";
 import React from "react";
 import { oramaDocsCollection } from "@/data";
-import { SearchInput, SearchRoot, SearchResults } from "@orama/ui/components";
+import {
+  SearchInput,
+  SearchRoot,
+  SearchResults,
+  RecentSearches,
+} from "@orama/ui/components";
 import { ArrowRight } from "lucide-react";
 
 export const InnerSearchBox = () => {
@@ -36,9 +41,38 @@ export const InnerSearchBox = () => {
                       {`No results found for "${searchTerm}". Please try a different search term.`}
                     </p>
                   ) : (
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Start typing to search for documents.
-                    </p>
+                    <>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        Start typing to search for products.
+                      </p>
+                      <RecentSearches.Provider>
+                        <div className="border-t border-slate-200 dark:border-slate-700 my-4">
+                          <h3 className="mt-4 mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                            Your recent searches
+                          </h3>
+                          <RecentSearches.List
+                            className="space-y-1"
+                            itemClassName=""
+                          >
+                            {(term, index) => (
+                              <RecentSearches.Item
+                                key={`recent-search-${index}`}
+                                term={term}
+                                mode="nlp"
+                                className="text-xs uppercase text-pink-500 hover:text-pink-400 cursor-pointer"
+                              >
+                                {term}
+                              </RecentSearches.Item>
+                            )}
+                          </RecentSearches.List>
+                          <div className="flex justify-end">
+                            <RecentSearches.Clear className="text-xs text-slate-400 hover:underline cursor-pointer">
+                              Clear recent searches
+                            </RecentSearches.Clear>
+                          </div>
+                        </div>
+                      </RecentSearches.Provider>
+                    </>
                   )}
                 </>
               )}
@@ -86,7 +120,7 @@ export const InnerSearchBox = () => {
 
 export const NLPSearchBox = () => {
   return (
-    <SearchRoot client={oramaDocsCollection}>
+    <SearchRoot client={oramaDocsCollection} namespace="demo-nlp-search">
       <InnerSearchBox />
     </SearchRoot>
   );

@@ -267,7 +267,6 @@ export interface SearchResultsListProps
   children: (result: Hit, index: number) => React.ReactNode;
   className?: string;
   itemClassName?: string;
-  emptyMessage?: string;
 }
 
 const SearchResultsList = ({

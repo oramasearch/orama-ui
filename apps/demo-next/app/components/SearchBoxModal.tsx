@@ -9,6 +9,7 @@ import {
   SearchResults,
   Suggestions,
   Modal,
+  RecentSearches,
 } from "@orama/ui/components";
 import { Hit } from "@orama/core";
 import Link from "next/link";
@@ -56,7 +57,7 @@ export const InnerSearchBox = () => {
             </div>
           </SearchResults.Loading>
 
-          <SearchResults.NoResults className="p-4">
+          <SearchResults.NoResults className="p-4 overflow-auto">
             {(searchTerm) => (
               <>
                 {searchTerm ? (
@@ -65,30 +66,58 @@ export const InnerSearchBox = () => {
                     <p>No results found for &quot;{searchTerm}&quot;</p>
                   </div>
                 ) : (
-                  <Suggestions.Wrapper className="flex flex-col justify-center">
-                    <p className="text-sm text-slate-800 font-semibold mb-2">
-                      Highlighted content
-                    </p>
-                    <ul className="mt-1 space-y-1">
-                      {mockInitialContent.map((item) => (
-                        <li key={item.id}>
-                          <a className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer w-full">
-                            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                              <item.icon className="w-4 h-4 text-purple-600" />
-                            </div>
-                            <div className="text-left">
-                              <div className="font-medium text-sm">
-                                {item.title}
+                  <>
+                    <Suggestions.Wrapper className="flex flex-col justify-center">
+                      <p className="text-sm text-slate-800 font-semibold mb-2">
+                        Highlighted content
+                      </p>
+                      <ul className="mt-1 space-y-1">
+                        {mockInitialContent.map((item) => (
+                          <li key={item.id}>
+                            <a className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer w-full">
+                              <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <item.icon className="w-4 h-4 text-purple-600" />
                               </div>
-                              <div className="text-xs text-gray-500 capitalize">
-                                {item.type}
+                              <div className="text-left">
+                                <div className="font-medium text-sm">
+                                  {item.title}
+                                </div>
+                                <div className="text-xs text-gray-500 capitalize">
+                                  {item.type}
+                                </div>
                               </div>
-                            </div>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </Suggestions.Wrapper>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </Suggestions.Wrapper>
+                    <RecentSearches.Provider>
+                      <div className="border-t border-slate-200 dark:border-slate-700 my-4 flex flex-col justify-center pt-4">
+                        <p className="text-sm text-slate-800 font-semibold mb-2">
+                          Your Recent Searches
+                        </p>
+                        <RecentSearches.List
+                          className="space-y-1"
+                          itemClassName="px-3"
+                        >
+                          {(term, index) => (
+                            <RecentSearches.Item
+                              key={`recent-search-${index}`}
+                              term={term}
+                              className="text-xs uppercase text-gray-500 hover:text-gray-700 cursor-pointer"
+                            >
+                              {term}
+                            </RecentSearches.Item>
+                          )}
+                        </RecentSearches.List>
+                        <div className="flex justify-end">
+                          <RecentSearches.Clear className="text-xs text-slate-400 hover:underline cursor-pointer mb-2">
+                            Clear recent searches
+                          </RecentSearches.Clear>
+                        </div>
+                      </div>
+                    </RecentSearches.Provider>
+                  </>
                 )}
               </>
             )}
@@ -170,7 +199,10 @@ export const SearchBoxModal = () => {
         >
           <Modal.Inner className="flex max-w-lg h-120 m-auto bg-white">
             <Modal.Content>
-              <SearchRoot client={oramaDocsCollection}>
+              <SearchRoot
+                client={oramaDocsCollection}
+                namespace="demo-default-search"
+              >
                 <ChatRoot client={oramaDocsCollection}>
                   <InnerSearchBox />
                 </ChatRoot>

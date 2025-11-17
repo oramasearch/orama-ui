@@ -9,20 +9,23 @@ The `SearchRoot` component provides the context and state management for Orama s
 - Initializes and provides the search state and dispatch context.
 - Accepts a custom Orama `client` instance.
 - Ensures all child components can access and update the search state.
+- Supports language-specific search behavior and namespaced contexts.
 
 ---
 
 ## Props
 
-| Name           | Type                                     | Default | Description                                                                                           |
-| -------------- | ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                            |
-| `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                               |
-| `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data. |
+| Name           | Type                                     | Default | Description                                                                                                                       |
+| -------------- | ---------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                                                        |
+| `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                                                           |
+| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.                              |
+| `namespace`    | `string` (optional)                      | —       | Namespace for the search context. Allows for scoping recent searches and other context-specific data. Default value is `english`. |
+| `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data.                             |
 
 ### initialState Properties
 
-The `initialState` prop accepts a partial `SearchContextProps` object with the following optional properties:s
+The `initialState` prop accepts a partial `SearchContextProps` object with the following optional properties:
 
 | Property        | Type                                                                                                  | Description                                                         |
 | --------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -61,11 +64,53 @@ const orama = new OramaCloud({
 </SearchRoot>
 ```
 
+### With Language Support
+
+```tsx
+<SearchRoot client={orama} lang="italian">
+  <SearchInput.Wrapper>
+    <SearchInput.Label htmlFor="search">Cerca...</SearchInput.Label>
+    <SearchInput.Input inputId="search" />
+  </SearchInput.Wrapper>
+</SearchRoot>
+```
+
+### With Namespace for Scoped Context
+
+```tsx
+<SearchRoot client={orama} namespace="documentation">
+  <SearchInput.Wrapper>
+    <SearchInput.Label htmlFor="search">Search Documentation</SearchInput.Label>
+    <SearchInput.Input inputId="search" />
+  </SearchInput.Wrapper>
+</SearchRoot>
+```
+
+### Multiple Search Contexts with Namespaces
+
+```tsx
+{
+  /* Product search context */
+}
+<SearchRoot client={orama} namespace="products" lang="en">
+  <ProductSearch />
+</SearchRoot>;
+
+{
+  /* Documentation search context */
+}
+<SearchRoot client={orama} namespace="docs" lang="en">
+  <DocumentationSearch />
+</SearchRoot>;
+```
+
 ### With Custom Search Handler
 
 ```tsx
 <SearchRoot
   client={orama}
+  lang="es"
+  namespace="blog"
   initialState={{
     search: async (params) => {
       console.log("Searching with params:", params);
@@ -88,6 +133,8 @@ You can use `initialState` to pre-populate the search with existing data:
 ```tsx
 <SearchRoot
   client={orama}
+  lang="fr"
+  namespace="products"
   initialState={{
     searchTerm: "React components",
     selectedFacet: "documentation",
@@ -115,12 +162,16 @@ You can use `initialState` to pre-populate the search with existing data:
 ```tsx
 <SearchRoot
   client={orama}
+  lang="en"
+  namespace="help-center"
   initialState={{
     search: async (params) => {
       // Analytics tracking
       analytics.track("search_performed", {
         query: params.term,
         filters: params.filterBy,
+        namespace: "help-center",
+        language: "en",
       });
 
       // Custom search logic
@@ -158,9 +209,29 @@ You can use `initialState` to pre-populate the search with existing data:
   - `SearchContext` for accessing the current search state.
   - `SearchDispatchContext` for dispatching actions to update the state.
 - The `client` prop is required for search operations.
+- The `lang` prop configures language-specific search behavior.
+- The `namespace` prop allows for scoped contexts, useful for separating different search areas.
 - The `initialState` prop allows flexible configuration of search behavior and pre-population of data.
 
-## How initialState Works
+## How Props Work
+
+### Language (`lang`)
+
+The `lang` prop helps tailor search behavior and results to a specific language:
+
+- Influences search algorithms and result ranking
+- Can affect tokenization and stemming
+- Useful for multi-language applications
+
+### Namespace (`namespace`)
+
+The `namespace` prop allows for scoping search contexts:
+
+- Separates recent searches between different search areas
+- Enables multiple independent search contexts in the same application
+- Useful for apps with different search domains (e.g., products vs. documentation)
+
+### Initial State (`initialState`)
 
 1. **Flexible Configuration**: The `initialState` prop allows you to configure any aspect of the search context in a single object.
 
@@ -178,5 +249,8 @@ You can use `initialState` to pre-populate the search with existing data:
 
 - All components that need to access or update the search state must be descendants of `SearchRoot`.
 - The `client` prop is required and must be a valid `OramaCloud` instance.
+- Use `lang` to configure language-specific search behavior for better results.
+- Use `namespace` to create scoped search contexts when you need multiple independent search areas.
 - Use `initialState` to customize search behavior without needing multiple individual props.
 - Pre-populating search state is useful for implementing features like saved searches or deep-linking to search results.
+- `SearchRoot` components can be nested, with child contexts inheriting from parent contexts when props are not explicitly provided.

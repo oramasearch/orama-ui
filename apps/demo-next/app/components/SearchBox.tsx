@@ -57,10 +57,7 @@ export const InnerSearchBox = () => {
 
             <FacetTabs.Wrapper>
               <FacetTabs.List className="space-x-2 mt-4 flex gap-1">
-                {(
-                  group,
-                  index, // TODO: consider to pass isSelected as second boolean argument
-                ) => (
+                {(group) => (
                   <FacetTabs.Item
                     isSelected={group.name === selectedFacet}
                     group={group}

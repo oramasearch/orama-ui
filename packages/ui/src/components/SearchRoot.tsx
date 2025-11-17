@@ -6,6 +6,7 @@ import {
   useSearchContext,
 } from "../contexts";
 import { type SearchContextProps } from "../contexts/SearchContext";
+import { Lang } from "@/types";
 
 /**
  * SearchRoot component provides context for managing search state and actions.
@@ -44,15 +45,29 @@ export interface SearchRootProps extends React.PropsWithChildren {
    */
   client: SearchContextProps["client"];
   /**
+   * Language for the search context.
+   * This setting helps tailor search behavior and results to the specified language.
+   */
+  lang?: Lang;
+  /**
+   * Namespace for the search context.
+   * This allows for scoping recent searches and other context-specific data.
+   */
+  namespace?: string;
+  /**
    * Initial state for the search context.
    * This allows you to configure the client, search callbacks, and pre-populate
    * the search with initial values like search terms, results, or facet selections.
    */
-  initialState?: Partial<Omit<SearchContextProps, "client">>;
+  initialState?: Partial<
+    Omit<SearchContextProps, "client" | "lang" | "namespace">
+  >;
 }
 
 export const SearchRoot = ({
   client,
+  lang,
+  namespace,
   initialState = {},
   children,
 }: SearchRootProps) => {
@@ -67,6 +82,8 @@ export const SearchRoot = ({
   const [state, dispatch] = useReducer(searchReducer, {
     ...searchState,
     client: client || searchState.client,
+    namespace,
+    lang: lang || searchState.lang,
     ...initialState,
   });
 

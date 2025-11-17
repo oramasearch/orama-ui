@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { SearchParams, Hit, OramaCloud } from "@orama/core";
-import { GroupsCount } from "@/types";
+import type { GroupsCount, Lang } from "@/types";
 
 export type SearchContextProps = {
   client: OramaCloud | null;
@@ -22,6 +22,8 @@ export type SearchContextProps = {
   nlpError?: Error | null;
   count?: number;
   nlpCount?: number;
+  lang?: Lang;
+  namespace?: string;
 };
 
 export type SearchAction =
@@ -53,6 +55,8 @@ export const initialSearchState: SearchContextProps = {
   nlpError: null,
   count: 0,
   nlpCount: 0,
+  lang: "english",
+  namespace: undefined,
 };
 
 export const SearchContext =
