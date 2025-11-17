@@ -94,6 +94,7 @@ Orama UI follows these core principles:
 - **[`SearchResults`](./docs/components/SearchResults.md)** - Displays search results with customizable rendering
 - **[`ChatInteractions`](./docs/components/ChatInteractions.md)** - Renders chat messages and user actions
 - **[`Suggestions`](./docs/components/Suggestions.md)** - Displays prompt suggestions
+- **[`RecentSearches`](./docs/components/RecentSearches.md)** - Component for managing and displaying recent search history
 
 ### Input Components
 
@@ -104,7 +105,6 @@ Orama UI follows these core principles:
 
 - **[`FacetTabs`](./docs/components/FacetTabs.md)** - Tab-based filtering for search facets
 - **[`Tabs`](./docs/components/Tabs.md)** - Generic tab navigation component
-- **[`RecentSearches`](./docs/components/RecentSearches.md)** - Component for managing and displaying recent search history
 
 ### Layout Components
 
