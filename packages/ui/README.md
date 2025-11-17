@@ -104,6 +104,7 @@ Orama UI follows these core principles:
 
 - **[`FacetTabs`](./docs/components/FacetTabs.md)** - Tab-based filtering for search facets
 - **[`Tabs`](./docs/components/Tabs.md)** - Generic tab navigation component
+- **[`RecentSearches`](./docs/components/RecentSearches.md)** - Component for managing and displaying recent search history
 
 ### Layout Components
 
@@ -118,6 +119,7 @@ Orama UI follows these core principles:
 
 - **[`useSearch`](./docs/hooks/useSearch.md)** - Access search state, query, results, and search functions
 - **[`useChat`](./docs/hooks/useChat.md)** - Manage chat conversations, messages, and AI interactions
+- **[`useRecentSearches`](./docs/hooks/useRecentSearches.md)** - Manage recent search history and state
 
 ### Utility Hooks
 
