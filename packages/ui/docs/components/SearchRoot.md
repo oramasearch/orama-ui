@@ -19,7 +19,8 @@ The `SearchRoot` component provides the context and state management for Orama s
 | -------------- | ---------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                                                        |
 | `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                                                           |
-| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.                              |
+| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.
+| `searchParams` | `SearchParams`                                                                         | —       | Default search parameters including grouping and filtering options.                                  |
 | `namespace`    | `string` (optional)                      | —       | Namespace for the search context. Allows for scoping recent searches and other context-specific data. Default value is `english`. |
 | `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data.                             |
 
@@ -29,7 +30,6 @@ The `initialState` prop accepts a partial `SearchContextProps` object with the f
 
 | Property        | Type                                                                                                  | Description                                                         |
 | --------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `search`        | `(params: SearchParams & { groupBy?: string; filterBy?: Record<string, string>[] }) => Promise<void>` | Custom search callback function to handle search operations.        |
 | `searchTerm`    | `string`                                                                                              | Initial search term to pre-populate the search input.               |
 | `results`       | `Hit[] \| null`                                                                                       | Array of search results to pre-populate the search results display. |
 | `selectedFacet` | `string \| null`                                                                                      | Initially selected facet/filter.                                    |
@@ -63,6 +63,30 @@ const orama = new OramaCloud({
   {/* Other search-related components */}
 </SearchRoot>
 ```
+
+### With Custom Search Parameters
+
+```tsx
+<SearchRoot 
+  client={orama}
+  searchParams={{
+    limit: 20,
+    offset: 0
+  }}
+  lang="en"
+  namespace="my-app"
+>
+  <SearchInterface />
+</SearchRoot>
+```
+
+The `searchParams` prop defines default search parameters that will be used by all search operations within the SearchRoot context. These parameters serve as the baseline configuration for any component that triggers a search.
+
+**Key Behavior:**
+- **Global Defaults**: All components calling `search()` will automatically use these parameters as defaults
+- **Component Override**: Individual components can override these defaults by passing their own parameters
+- **Parameter Merging**: When overriding, the component-specific parameters are merged with (and take precedence over) the SearchRoot defaults
+
 
 ### With Language Support
 
