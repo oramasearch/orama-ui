@@ -224,6 +224,10 @@ export function useSearch(): useSearchReturn {
         })
         return
       }
+
+      const { query, ...restOptions } = options
+      const searchOptionsToUse = restOptions || contextSearchParams || {}
+
       dispatch({
         type: 'SET_NLP_SEARCH_TERM',
         payload: {
@@ -236,10 +240,13 @@ export function useSearch(): useSearchReturn {
         type: 'SET_NLP_RESULTS',
         payload: { results: [] }
       })
-      addSearch(debounce ? 1000 : undefined)(options.query || '')
+      addSearch(debounce ? 1000 : undefined)(query || '')
 
       try {
-        const searchResults = await client.ai.NLPSearch(options)
+        const searchResults = await client.ai.NLPSearch({
+          query: query || '',
+          ...searchOptionsToUse
+        })
         const results =
           searchResults.length > 0 ? searchResults[0]?.results[0]?.hits : []
         const count =
@@ -259,7 +266,7 @@ export function useSearch(): useSearchReturn {
         dispatch({ type: 'SET_NLP_LOADING', payload: { loading: false } })
       }
     },
-    [client, dispatch, addSearch]
+    [client, dispatch, addSearch, contextSearchParams]
   )
 
   return {
