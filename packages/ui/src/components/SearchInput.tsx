@@ -267,8 +267,6 @@ export const SearchInputField = ({
   const internalRef = useRef<HTMLInputElement | null>(null)
   const inputRef = ref || internalRef
 
-  console.log('Rendering SearchInputField', searchParams, contextSearchParams)
-
   const generatedId = useRef<string>(
     `search-input-${Math.random().toString(36).substring(2, 9)}`
   )
