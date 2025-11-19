@@ -19,8 +19,8 @@ The `SearchRoot` component provides the context and state management for Orama s
 | -------------- | ---------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `client`       | `OramaCloud`                             | —       | **Required.** Orama client instance for search operations.                                                                        |
 | `children`     | `React.ReactNode`                        | —       | Components that will have access to the search context.                                                                           |
-| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.
-| `searchParams` | `SearchParams`                                                                         | —       | Default search parameters including grouping and filtering options.                                  |
+| `lang`         | `Lang` (optional)                        | —       | Language for the search context. Helps tailor search behavior and results to the specified language.                              |
+| `searchParams` | `SearchParams`                           | —       | Default search parameters including grouping and filtering options.                                                               |
 | `namespace`    | `string` (optional)                      | —       | Namespace for the search context. Allows for scoping recent searches and other context-specific data. Default value is `english`. |
 | `initialState` | `Partial<SearchContextProps>` (optional) | `{}`    | Initial state for the search context. Allows you to configure callbacks and pre-populate search data.                             |
 
@@ -28,13 +28,13 @@ The `SearchRoot` component provides the context and state management for Orama s
 
 The `initialState` prop accepts a partial `SearchContextProps` object with the following optional properties:
 
-| Property        | Type                                                                                                  | Description                                                         |
-| --------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `searchTerm`    | `string`                                                                                              | Initial search term to pre-populate the search input.               |
-| `results`       | `Hit[] \| null`                                                                                       | Array of search results to pre-populate the search results display. |
-| `selectedFacet` | `string \| null`                                                                                      | Initially selected facet/filter.                                    |
-| `groupsCount`   | `GroupsCount \| null`                                                                                 | Groups count data for faceted search.                               |
-| `count`         | `number`                                                                                              | Total number of search results.                                     |
+| Property        | Type                  | Description                                                         |
+| --------------- | --------------------- | ------------------------------------------------------------------- |
+| `searchTerm`    | `string`              | Initial search term to pre-populate the search input.               |
+| `results`       | `Hit[] \| null`       | Array of search results to pre-populate the search results display. |
+| `selectedFacet` | `string \| null`      | Initially selected facet/filter.                                    |
+| `groupsCount`   | `GroupsCount \| null` | Groups count data for faceted search.                               |
+| `count`         | `number`              | Total number of search results.                                     |
 
 ---
 
@@ -67,11 +67,11 @@ const orama = new OramaCloud({
 ### With Custom Search Parameters
 
 ```tsx
-<SearchRoot 
+<SearchRoot
   client={orama}
   searchParams={{
     limit: 20,
-    offset: 0
+    offset: 0,
   }}
   lang="en"
   namespace="my-app"
@@ -83,10 +83,10 @@ const orama = new OramaCloud({
 The `searchParams` prop defines default search parameters that will be used by all search operations within the SearchRoot context. These parameters serve as the baseline configuration for any component that triggers a search.
 
 **Key Behavior:**
+
 - **Global Defaults**: All components calling `search()` will automatically use these parameters as defaults
 - **Component Override**: Individual components can override these defaults by passing their own parameters
 - **Parameter Merging**: When overriding, the component-specific parameters are merged with (and take precedence over) the SearchRoot defaults
-
 
 ### With Language Support
 
