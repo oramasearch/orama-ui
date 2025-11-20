@@ -62,7 +62,7 @@ jobs:
       - name: Install semver
         run: pnpm add -w semver
 
-      - name: Bump version (manual)
+      - name: Bump version
         working-directory: packages/ui
         id: bump
         run: |
@@ -79,15 +79,15 @@ jobs:
         env:
           BUMP: ${{ github.event.inputs.version_type }}
 
-      # - name: Bump version
-      #   id: bump_version
-      #   working-directory: packages/ui
-      #   run: pnpm version ${{ github.event.inputs.version_type }} --no-git-tag-version --ignore-scripts
+      - name: Read new version
+        id: version
+        working-directory: packages/ui
+        run: echo "NEW_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
 
       - name: Get new version
         id: version
         working-directory: packages/ui
-        run: echo "Version is ${{ steps.bump.outputs.NEW_VERSION }}"
+        run: echo "Version is ${{ steps.version.outputs.NEW_VERSION }}"
 
       # - name: Commit version bump
       #   run: |
