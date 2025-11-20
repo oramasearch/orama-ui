@@ -95,12 +95,15 @@ jobs:
 
       - name: Commit version bump
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add .
+
           git commit -m "chore: bump @orama/ui v${BUMP_VERSION}" || echo "No changes to commit"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git push origin HEAD
+          git push origin HEAD:main
+
+          git tag v${{ steps.version.outputs.BUMP_VERSION }}
           git push origin --tags
 
       - name: Publish to NPM
