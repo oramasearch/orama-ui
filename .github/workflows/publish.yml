@@ -82,12 +82,12 @@ jobs:
       - name: Read new version
         id: version
         working-directory: packages/ui
-        run: echo "NEW_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        run: echo "BUMP_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
 
       - name: Get new version
         id: version
         working-directory: packages/ui
-        run: echo "Version is ${{ steps.version.outputs.NEW_VERSION }}"
+        run: echo "Version is ${{ steps.version.outputs.BUMP_VERSION }}"
 
       # - name: Commit version bump
       #   run: |
