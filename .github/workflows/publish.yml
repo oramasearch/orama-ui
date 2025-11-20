@@ -82,7 +82,7 @@ jobs:
       - name: Read new version
         id: version
         working-directory: packages/ui
-        run: echo "BUMP_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        run: echo "BUMP_VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_OUTPUT
 
       - name: Get new version
         working-directory: packages/ui
