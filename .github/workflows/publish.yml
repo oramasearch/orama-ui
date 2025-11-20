@@ -107,24 +107,26 @@ jobs:
         run: |
           git push origin HEAD:main
           git push origin --tags
-
-      - name: Publish to NPM
-        working-directory: packages/ui
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.version.outputs.NEW_VERSION }}
-          release_name: Release v${{ steps.version.outputs.NEW_VERSION }}
-          body: |
-            Release v${{ steps.version.outputs.NEW_VERSION }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Publish to NPM
+      #   working-directory: packages/ui
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      # - name: Create GitHub Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.version.outputs.NEW_VERSION }}
+      #     release_name: Release v${{ steps.version.outputs.NEW_VERSION }}
+      #     body: |
+      #       Release v${{ steps.version.outputs.NEW_VERSION }}
             
-            Changes in this release:
-            - Automated release from GitHub Actions
-          draft: false
-          prerelease: false
+      #       Changes in this release:
+      #       - Automated release from GitHub Actions
+      #     draft: false
+      #     prerelease: false
