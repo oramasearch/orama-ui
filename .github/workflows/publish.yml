@@ -103,12 +103,12 @@ jobs:
           git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
           git tag v${{ steps.version.outputs.BUMP_VERSION }}
 
+          echo 'github token is: ${{ secrets.GITHUB_TOKEN }}'
+
       - name: Push changes
         run: |
           git push origin HEAD:main
           git push origin --tags
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Publish to NPM
       #   working-directory: packages/ui
