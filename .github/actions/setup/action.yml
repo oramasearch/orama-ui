@@ -10,9 +10,9 @@ runs:
         node-version-file: .nvmrc
 
     - name: Install pnpm
-      id: pnpm-install
-      shell: bash
-      run: npm install -g pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8.15.6
 
     - name: Install dependencies
       run: pnpm install --no-frozen-lockfile
