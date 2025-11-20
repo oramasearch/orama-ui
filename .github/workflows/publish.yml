@@ -57,7 +57,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build project
-        run: npm run build
+        run: npm run build-ui
 
       - name: Bump version
         id: bump_version
