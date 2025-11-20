@@ -66,15 +66,15 @@ jobs:
         working-directory: packages/ui
         id: bump
         run: |
-          NEW_VERSION=$(node -e "
+          NEW_VERSION=$(node - << 'EOF'
             const fs = require('fs');
-            const pkg = require('./package.json');
-            const type = process.env.BUMP;
             const semver = require('semver');
-            pkg.version = semver.inc(pkg.version, type);
+            const pkg = require('./package.json');
+            pkg.version = semver.inc(pkg.version, process.env.BUMP);
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
             console.log(pkg.version);
-          ")
+          EOF
+          )
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
         env:
           BUMP: ${{ github.event.inputs.version_type }}
@@ -87,7 +87,7 @@ jobs:
       - name: Get new version
         id: version
         working-directory: packages/ui
-        run: echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        run: echo "Version is ${{ steps.bump.outputs.NEW_VERSION }}"
 
       # - name: Commit version bump
       #   run: |
