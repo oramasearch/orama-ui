@@ -1,0 +1,100 @@
+name: Publish NPM Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Use PATCH for fixes, use MINOR for new features and use MAJOR for breaking changes"
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: ${{ github.actor != 'dependabot'}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Format code
+        run: pnpm run format
+
+      - name: Build project
+        run: npm run build
+
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Build project
+        run: npm run build
+
+      - name: Bump version
+        id: bump_version
+        working-directory: packages/ui
+        run: npm version ${{ github.event.inputs.version_type }}
+
+      - name: Get new version
+        id: version
+        working-directory: packages/ui
+        run: echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.NEW_VERSION }}"
+          git tag "v${{ steps.version.outputs.NEW_VERSION }}"
+          git push origin HEAD --follow-tags
+
+      - name: Publish to NPM
+        working-directory: packages/ui
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.NEW_VERSION }}
+          release_name: Release v${{ steps.version.outputs.NEW_VERSION }}
+          body: |
+            Release v${{ steps.version.outputs.NEW_VERSION }}
+            
+            Changes in this release:
+            - Automated release from GitHub Actions
+          draft: false
+          prerelease: false
