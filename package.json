@@ -2,8 +2,8 @@
   "name": "orama-ui-kit",
   "private": true,
   "scripts": {
-    "build": "turbo run build --filter=!demo-react-deno",
-    "build-all": "turbo run build",
+    "build": "turbo run build",
+    "build-ui": "turbo run build --filter=@orama/ui",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
