@@ -62,7 +62,7 @@ jobs:
       - name: Bump version
         id: bump_version
         working-directory: packages/ui
-        run: npm version ${{ github.event.inputs.version_type }}
+        run: pnpm version ${{ github.event.inputs.version_type }} --no-git-tag-version
 
       - name: Get new version
         id: version
