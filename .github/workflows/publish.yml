@@ -107,8 +107,6 @@ jobs:
         run: |
           git push origin HEAD:main
           git push origin --tags
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to NPM
         working-directory: packages/ui
