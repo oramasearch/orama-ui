@@ -84,10 +84,10 @@ jobs:
       #   working-directory: packages/ui
       #   run: pnpm version ${{ github.event.inputs.version_type }} --no-git-tag-version --ignore-scripts
 
-      # - name: Get new version
-      #   id: version
-      #   working-directory: packages/ui
-      #   run: echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+      - name: Get new version
+        id: version
+        working-directory: packages/ui
+        run: echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       # - name: Commit version bump
       #   run: |
