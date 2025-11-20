@@ -60,7 +60,7 @@ jobs:
         run: npm run build-ui
 
       - name: Install semver
-        run: pnpm add semver --global
+        run: pnpm add -w semver
 
       - name: Bump version (manual)
         working-directory: packages/ui
