@@ -105,9 +105,10 @@ jobs:
 
       - name: Push changes
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin HEAD:main
           git push origin --tags
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to NPM
         working-directory: packages/ui
