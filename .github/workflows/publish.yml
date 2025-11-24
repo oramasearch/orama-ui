@@ -104,9 +104,11 @@ jobs:
           git tag v${{ steps.version.outputs.BUMP_VERSION }}
 
       - name: Push changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} --tags
+          git push origin HEAD:main
+          git push origin --tags
 
       # - name: Publish to NPM
       #   working-directory: packages/ui
