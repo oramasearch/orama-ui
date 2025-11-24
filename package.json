@@ -18,8 +18,11 @@
   "engines": {
     "node": ">=18"
   },
-   "workspaces": [
+  "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "semver": "^7.7.3"
+  }
 }
