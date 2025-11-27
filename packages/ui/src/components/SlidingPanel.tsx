@@ -98,10 +98,8 @@ function Wrapper({
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [open, onClose, trapFocus]);
 
-  // Focus panel when opened
   useEffect(() => {
     if (open && panelRef.current) {
-      // Focus the first focusable element or the panel itself
       const focusable = panelRef.current.querySelector<HTMLElement>(
         'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
       );
@@ -209,10 +207,10 @@ function Content({
       className={`orama:w-full orama:fixed orama:transition-transform orama:z-50 ${className || ""}`}
       style={{
         transform: isAnimating ? translateOpen : translateClosed,
-        bottom: position === "top" ? "auto" : 0,
-        left: position === "left" ? 0 : "auto",
-        right: position === "right" ? 0 : "auto",
-        top: position === "top" ? 0 : "auto",
+        bottom: position === "bottom" ? 0 : undefined,
+        left: position === "left" ? 0 : undefined,
+        right: position === "right" ? 0 : undefined,
+        top: position === "top" ? 0 : undefined,
         visibility: isVisible ? "visible" : "hidden",
         pointerEvents: open ? "auto" : "none",
       }}
