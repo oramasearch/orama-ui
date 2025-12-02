@@ -92,6 +92,16 @@ jobs:
         working-directory: packages/ui
         run: echo "Version is ${{ steps.version.outputs.BUMP_VERSION }}"
 
+      # - name: Commit and tag version bump
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      #     git add .
+
+      #     git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
+      #     git tag v${{ steps.version.outputs.BUMP_VERSION }}
+
       - name: Commit and tag version bump
         run: |
           git config user.name "github-actions[bot]"
@@ -100,26 +110,25 @@ jobs:
           git add .
 
           git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
-          git tag v${{ steps.version.outputs.BUMP_VERSION }}
 
       - name: Push changes
         run: |
           git push origin HEAD:main
           git push origin --tags
 
-      - name: Configure npm with token
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      # - name: Configure npm with token
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      - name: Publish to NPM
-        working-directory: packages/ui
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish to NPM
+      #   working-directory: packages/ui
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
-      - name: Create GitHub draft release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create v${{ steps.version.outputs.BUMP_VERSION }} \
-            --generate-notes
+      # - name: Create GitHub draft release
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     gh release create v${{ steps.version.outputs.BUMP_VERSION }} \
+      #       --generate-notes
