@@ -35,11 +35,11 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-      - name: Format code
-        run: pnpm run format
-
       - name: Build project
-        run: npm run build-ui
+        run: npm run build-ui && npm run build-demo
+        env:
+          NEXT_PUBLIC_ORAMA_COLLECTION_ID: ${{ secrets.NEXT_PUBLIC_ORAMA_COLLECTION_ID }}
+          NEXT_PUBLIC_ORAMA_API_KEY: ${{ secrets.NEXT_PUBLIC_ORAMA_API_KEY }}
 
 
   publish:
@@ -54,6 +54,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup
+
+      - name: Format code
+        run: pnpm run format
 
       - name: Build project
         run: npm run build-ui
