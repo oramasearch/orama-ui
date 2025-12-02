@@ -37,6 +37,9 @@ jobs:
 
       - name: Build project
         run: npm run build-ui && npm run build-demo
+        env:
+          NEXT_PUBLIC_ORAMA_COLLECTION_ID: ${{ secrets.NEXT_PUBLIC_ORAMA_COLLECTION_ID }}
+          NEXT_PUBLIC_ORAMA_API_KEY: ${{ secrets.NEXT_PUBLIC_ORAMA_API_KEY }}
 
 
   publish:
@@ -58,39 +61,39 @@ jobs:
       - name: Build project
         run: npm run build-ui
 
-      - name: Install semver
-        run: pnpm add -w semver
+      # - name: Install semver
+      #   run: pnpm add -w semver
 
-      - name: Bump version
-        working-directory: packages/ui
-        id: bump
-        run: |
-          NEW_VERSION=$(node - << 'EOF'
-            const fs = require('fs');
-            const semver = require('semver');
-            const pkg = require('./package.json');
-            pkg.version = semver.inc(pkg.version, process.env.BUMP);
-            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-            console.log(pkg.version);
-          EOF
-          )
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-        env:
-          BUMP: ${{ github.event.inputs.version_type }}
+      # - name: Bump version
+      #   working-directory: packages/ui
+      #   id: bump
+      #   run: |
+      #     NEW_VERSION=$(node - << 'EOF'
+      #       const fs = require('fs');
+      #       const semver = require('semver');
+      #       const pkg = require('./package.json');
+      #       pkg.version = semver.inc(pkg.version, process.env.BUMP);
+      #       fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+      #       console.log(pkg.version);
+      #     EOF
+      #     )
+      #     echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+      #   env:
+      #     BUMP: ${{ github.event.inputs.version_type }}
 
-      - name: Read new version
-        id: version
-        working-directory: packages/ui
-        run: |
-          BUMP_VERSION=$(node <<'EOF'
-            console.log(require('./package.json').version);
-          EOF
-          )
-          echo "BUMP_VERSION=$BUMP_VERSION" >> $GITHUB_OUTPUT
+      # - name: Read new version
+      #   id: version
+      #   working-directory: packages/ui
+      #   run: |
+      #     BUMP_VERSION=$(node <<'EOF'
+      #       console.log(require('./package.json').version);
+      #     EOF
+      #     )
+      #     echo "BUMP_VERSION=$BUMP_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Get new version
-        working-directory: packages/ui
-        run: echo "Version is ${{ steps.version.outputs.BUMP_VERSION }}"
+      # - name: Get new version
+      #   working-directory: packages/ui
+      #   run: echo "Version is ${{ steps.version.outputs.BUMP_VERSION }}"
 
       # - name: Commit and tag version bump
       #   run: |
@@ -102,19 +105,19 @@ jobs:
       #     git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
       #     git tag v${{ steps.version.outputs.BUMP_VERSION }}
 
-      - name: Commit and tag version bump
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # - name: Commit and tag version bump
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add .
+      #     git add .
 
-          git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
+      #     git commit -m "chore: bump @orama/ui v${{ steps.version.outputs.BUMP_VERSION }}" || echo "No changes to commit"
 
-      - name: Push changes
-        run: |
-          git push origin HEAD:main
-          git push origin --tags
+      # - name: Push changes
+      #   run: |
+      #     git push origin HEAD:main
+      #     git push origin --tags
 
       # - name: Configure npm with token
       #   run: |
