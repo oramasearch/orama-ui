@@ -35,9 +35,6 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-      - name: Format code
-        run: pnpm run format
-
       - name: Build project
         run: npm run build-ui
 
@@ -54,6 +51,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup
+
+      - name: Format code
+        run: pnpm run format
 
       - name: Build project
         run: npm run build-ui
