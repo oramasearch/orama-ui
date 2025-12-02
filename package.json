@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "build-ui": "turbo run build --filter=@orama/ui",
+    "build-demo": "turbo run build --filter=demo-next",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
