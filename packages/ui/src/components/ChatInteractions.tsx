@@ -17,8 +17,10 @@ import theme from "prism-react-renderer/themes/vsDark/index.js";
 import { useChat, useClipboard, useLastInteractionMinHeight } from "../hooks";
 import { useChatContext, useChatDispatch } from "../contexts";
 
-export interface ChatInteractionsWrapperProps
-  extends Omit<ComponentPropsWithRef<"div">, "children"> {
+export interface ChatInteractionsWrapperProps extends Omit<
+  ComponentPropsWithRef<"div">,
+  "children"
+> {
   children: (
     interaction: Interaction,
     index?: number,
@@ -35,8 +37,7 @@ export interface UserPromptProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export interface AssistantMessageProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface AssistantMessageProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   markdownClassnames?: Partial<Record<keyof JSX.IntrinsicElements, string>>;
   theme?: PrismTheme;
@@ -46,21 +47,21 @@ export interface UserActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export interface SourcesProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+export interface SourcesProps extends Omit<
+  React.HTMLAttributes<HTMLUListElement>,
+  "children"
+> {
   interaction: Interaction;
   children: (document: AnyObject, index: number) => ReactNode;
   className?: string;
   itemClassName?: string;
 }
 
-export interface ScrollToBottomButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ScrollToBottomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-export interface ActionButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
 }
 
@@ -451,8 +452,10 @@ const RegenerateLatest = ({
   );
 };
 
-export interface CopyMessageProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+export interface CopyMessageProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> {
   children: (copied: boolean) => React.ReactNode;
   interaction: Interaction;
 }

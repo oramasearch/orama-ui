@@ -54,8 +54,7 @@ const ModalRoot = ({ children, defaultOpen }: ModalRootProps) => {
   );
 };
 
-interface ModalTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ModalTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   enableCmdK?: boolean;
 }
@@ -357,8 +356,7 @@ const ModalContent = ({
   );
 };
 
-interface ModalCloseProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ModalCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 

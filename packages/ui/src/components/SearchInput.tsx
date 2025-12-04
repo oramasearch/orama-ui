@@ -90,8 +90,7 @@ export const SearchInputWrapper = <T extends ElementType = "div">({
   );
 };
 
-interface SearchInputFormProps
-  extends React.FormHTMLAttributes<HTMLFormElement> {
+interface SearchInputFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
   /**
    * Optional class name for custom styling of the form.
    */
@@ -210,8 +209,7 @@ export const SearchInputForm = ({
   );
 };
 
-export interface SearchInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   ref?: React.Ref<HTMLInputElement>;
   /**
    * The `id` attribute for the input field.
@@ -342,8 +340,7 @@ export const SearchInputLabel = <T extends ElementType = "label">({
   );
 };
 
-export interface SearchInputSubmitProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SearchInputSubmitProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * Optional class name for custom styling of the button.
    */

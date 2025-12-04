@@ -44,8 +44,10 @@ export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export interface TabsDynamicListProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface TabsDynamicListProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: (item: ChatTabItem) => ReactNode;
 }
 
@@ -56,8 +58,7 @@ interface TabsButtonProps {
   disabled?: boolean;
 }
 
-interface TabsTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface TabsTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   tabId: string;
   children: React.ReactNode;
   className?: string;

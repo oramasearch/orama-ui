@@ -1,7 +1,6 @@
 import { useChat } from "../hooks";
 import React, { useCallback, useEffect, useMemo } from "react";
-interface PromptTextAreaWrapperProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface PromptTextAreaWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
@@ -17,8 +16,7 @@ export const PromptTextAreaWrapper = ({
   );
 };
 
-interface PromptTextAreaFieldProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface PromptTextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   ref?: React.Ref<HTMLTextAreaElement>;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
@@ -31,8 +29,7 @@ interface PromptTextAreaFieldProps
   "aria-describedby"?: string;
 }
 
-interface PromptTextAreaButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface PromptTextAreaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   ask?: (prompt: string) => void;
   disabled?: boolean;
   isLoading?: boolean;

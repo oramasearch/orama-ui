@@ -65,8 +65,10 @@ export default function RecentSearchesProvider({
   );
 }
 
-export interface RecentSearchesListProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+export interface RecentSearchesListProps extends Omit<
+  React.HTMLAttributes<HTMLUListElement>,
+  "children"
+> {
   children: (term: string, index: number) => React.ReactNode;
   className?: string;
   itemClassName?: string;

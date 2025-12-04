@@ -9,8 +9,10 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-interface ListProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+interface ListProps extends Omit<
+  React.HTMLAttributes<HTMLUListElement>,
+  "children"
+> {
   children: (group: GroupedResult, isSelected: boolean) => ReactNode;
   className?: string;
   itemClassName?: string;

@@ -18,8 +18,7 @@ const SuggestionsWrapper = ({
   );
 };
 
-interface SuggestionsItemProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface SuggestionsItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   children: React.ReactNode;
   className?: string;

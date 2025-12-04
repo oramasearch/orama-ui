@@ -84,8 +84,7 @@ const SearchResultsProvider = ({
   );
 };
 
-export interface SearchResultsWrapperProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface SearchResultsWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   mode?: SearchMode;
 }
@@ -113,8 +112,10 @@ export const SearchResultsWrapper = ({
   );
 };
 
-export interface SearchResultsGroupedWrapperProps
-  extends Omit<ComponentPropsWithRef<"div">, "children"> {
+export interface SearchResultsGroupedWrapperProps extends Omit<
+  ComponentPropsWithRef<"div">,
+  "children"
+> {
   children: (groupedResult: GroupedResult) => React.ReactNode;
   groupBy: string;
   className?: string;
@@ -182,8 +183,10 @@ export const SearchResultsGroupedWrapper = ({
   );
 };
 
-export interface SearchResultsNoResultsProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface SearchResultsNoResultsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: (searchTerm: string) => React.ReactNode;
   className?: string;
 }
@@ -211,8 +214,7 @@ export const SearchResultsNoResults = ({
   );
 };
 
-export interface SearchResultsLoadingProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface SearchResultsLoadingProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
@@ -238,8 +240,10 @@ export const SearchResultsLoading = ({
   );
 };
 
-export interface SearchResultsErrorProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface SearchResultsErrorProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: (error: Error) => React.ReactNode;
   className?: string;
 }
@@ -262,8 +266,10 @@ export const SearchResultsError = ({
   );
 };
 
-export interface SearchResultsListProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+export interface SearchResultsListProps extends Omit<
+  React.HTMLAttributes<HTMLUListElement>,
+  "children"
+> {
   children: (result: Hit, index: number) => React.ReactNode;
   className?: string;
   itemClassName?: string;
