@@ -1,74 +1,67 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { stopwords as arabic_stopwords } from "@orama/stopwords/arabic";
-import { stopwords as english_stopwords } from "@orama/stopwords/english";
-import { stopwords as french_stopwords } from "@orama/stopwords/french";
-import { stopwords as german_stopwords } from "@orama/stopwords/german";
-import { stopwords as italian_stopwords } from "@orama/stopwords/italian";
-import { stopwords as japanese_stopwords } from "@orama/stopwords/japanese";
-import { stopwords as portuguese_stopwords } from "@orama/stopwords/portuguese";
-import { stopwords as russian_stopwords } from "@orama/stopwords/russian";
-import { stopwords as spanish_stopwords } from "@orama/stopwords/spanish";
-import { stopwords as turkish_stopwords } from "@orama/stopwords/turkish";
-import { stopwords as armenian_stopwords } from "@orama/stopwords/armenian";
-import { stopwords as bulgarian_stopwords } from "@orama/stopwords/bulgarian";
-import { stopwords as danish_stopwords } from "@orama/stopwords/danish";
-import { stopwords as dutch_stopwords } from "@orama/stopwords/dutch";
-import { stopwords as finnish_stopwords } from "@orama/stopwords/finnish";
-import { stopwords as greek_stopwords } from "@orama/stopwords/greek";
-import { stopwords as hungarian_stopwords } from "@orama/stopwords/hungarian";
-import { stopwords as indonesian_stopwords } from "@orama/stopwords/indonesian";
-import { stopwords as norwegian_stopwords } from "@orama/stopwords/norwegian";
-import { stopwords as romanian_stopwords } from "@orama/stopwords/romanian";
-import { stopwords as swedish_stopwords } from "@orama/stopwords/swedish";
-import { stopwords as ukrainian_stopwords } from "@orama/stopwords/ukrainian";
-import { stopwords as indian_stopwords } from "@orama/stopwords/indian";
-import { stopwords as irish_stopwords } from "@orama/stopwords/irish";
-import { stopwords as lithuanian_stopwords } from "@orama/stopwords/lithuanian";
-import { stopwords as mandarin_stopwords } from "@orama/stopwords/mandarin";
-import { stopwords as nepali_stopwords } from "@orama/stopwords/nepali";
-import { stopwords as sanskrit_stopwords } from "@orama/stopwords/sanskrit";
-import { stopwords as serbian_stopwords } from "@orama/stopwords/serbian";
-import { stopwords as slovenian_stopwords } from "@orama/stopwords/slovenian";
-import { stopwords as tamil_stopwords } from "@orama/stopwords/tamil";
 import type { Lang, RecentSearch } from "@/types";
 
 const RECENT_SEARCHES_KEY = "recent_searches";
 const MAX_RECENT = 10;
 const MIN_TERM_LENGTH = 2;
 
-const STOPWORDS: Record<Lang, string[]> = {
-  arabic: arabic_stopwords,
-  english: english_stopwords,
-  french: french_stopwords,
-  german: german_stopwords,
-  italian: italian_stopwords,
-  japanese: japanese_stopwords,
-  portuguese: portuguese_stopwords,
-  russian: russian_stopwords,
-  spanish: spanish_stopwords,
-  turkish: turkish_stopwords,
-  armenian: armenian_stopwords,
-  bulgarian: bulgarian_stopwords,
-  danish: danish_stopwords,
-  dutch: dutch_stopwords,
-  finnish: finnish_stopwords,
-  greek: greek_stopwords,
-  hungarian: hungarian_stopwords,
-  indonesian: indonesian_stopwords,
-  norwegian: norwegian_stopwords,
-  romanian: romanian_stopwords,
-  swedish: swedish_stopwords,
-  ukrainian: ukrainian_stopwords,
-  indian: indian_stopwords,
-  irish: irish_stopwords,
-  lithuanian: lithuanian_stopwords,
-  mandarin: mandarin_stopwords,
-  nepali: nepali_stopwords,
-  sanskrit: sanskrit_stopwords,
-  serbian: serbian_stopwords,
-  slovenian: slovenian_stopwords,
-  tamil: tamil_stopwords,
+// Dynamic imports for stopwords - only load what's needed
+const STOPWORDS_LOADERS: Record<Lang, () => Promise<{ stopwords: string[] }>> = {
+  arabic: () => import("@orama/stopwords/arabic"),
+  english: () => import("@orama/stopwords/english"),
+  french: () => import("@orama/stopwords/french"),
+  german: () => import("@orama/stopwords/german"),
+  italian: () => import("@orama/stopwords/italian"),
+  japanese: () => import("@orama/stopwords/japanese"),
+  portuguese: () => import("@orama/stopwords/portuguese"),
+  russian: () => import("@orama/stopwords/russian"),
+  spanish: () => import("@orama/stopwords/spanish"),
+  turkish: () => import("@orama/stopwords/turkish"),
+  armenian: () => import("@orama/stopwords/armenian"),
+  bulgarian: () => import("@orama/stopwords/bulgarian"),
+  danish: () => import("@orama/stopwords/danish"),
+  dutch: () => import("@orama/stopwords/dutch"),
+  finnish: () => import("@orama/stopwords/finnish"),
+  greek: () => import("@orama/stopwords/greek"),
+  hungarian: () => import("@orama/stopwords/hungarian"),
+  indonesian: () => import("@orama/stopwords/indonesian"),
+  norwegian: () => import("@orama/stopwords/norwegian"),
+  romanian: () => import("@orama/stopwords/romanian"),
+  swedish: () => import("@orama/stopwords/swedish"),
+  ukrainian: () => import("@orama/stopwords/ukrainian"),
+  indian: () => import("@orama/stopwords/indian"),
+  irish: () => import("@orama/stopwords/irish"),
+  lithuanian: () => import("@orama/stopwords/lithuanian"),
+  mandarin: () => import("@orama/stopwords/mandarin"),
+  nepali: () => import("@orama/stopwords/nepali"),
+  sanskrit: () => import("@orama/stopwords/sanskrit"),
+  serbian: () => import("@orama/stopwords/serbian"),
+  slovenian: () => import("@orama/stopwords/slovenian"),
+  tamil: () => import("@orama/stopwords/tamil"),
 };
+
+// Cache loaded stopwords to avoid re-importing
+const stopwordsCache = new Map<Lang, string[]>();
+
+async function getStopwords(lang: Lang): Promise<string[]> {
+  if (stopwordsCache.has(lang)) {
+    return stopwordsCache.get(lang)!;
+  }
+
+  try {
+    const module = await STOPWORDS_LOADERS[lang]();
+    const stopwords = module.stopwords;
+    stopwordsCache.set(lang, stopwords);
+    return stopwords;
+  } catch (error) {
+    console.warn(`Failed to load stopwords for language: ${lang}`, error);
+    // Fallback to English stopwords
+    if (lang !== 'english') {
+      return getStopwords('english');
+    }
+    return [];
+  }
+}
 
 function loadFromStorage(namespace?: string): RecentSearch[] {
   try {
@@ -101,11 +94,14 @@ export function useRecentSearches(lang: Lang = "english", namespace?: string) {
   }, [namespace]);
 
   const addSearchImmediate = useCallback(
-    (term: string) => {
+    async (term: string) => {
       term = term.trim().toLowerCase();
 
       if (term.length < MIN_TERM_LENGTH) return;
-      if (STOPWORDS[lang || "english"].includes(term)) return;
+
+      // Load stopwords dynamically
+      const stopwords = await getStopwords(lang || "english");
+      if (stopwords.includes(term)) return;
 
       const currentSearches = loadFromStorage(namespace);
       const newSearchTermList = currentSearches.filter((s) => s.term !== term);
