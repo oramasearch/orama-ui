@@ -6,7 +6,6 @@ import {
   Modal,
   SearchRoot,
   ChatRoot,
-  OramaLogo,
   OramaIcon,
 } from "@orama/ui/components";
 import Link from "next/link";
@@ -23,7 +22,6 @@ const Header: React.FC = () => {
       <Link href="/">
         <div className="flex items-center">
           <OramaIcon theme="dark" size={24} className="mr-2" />
-          <OramaLogo theme="dark" size={24} className="mr-2" />
         </div>
       </Link>
       <h1 className="text-xl font-bold">Orama UI Demo</h1>
