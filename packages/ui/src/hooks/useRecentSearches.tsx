@@ -6,39 +6,40 @@ const MAX_RECENT = 10;
 const MIN_TERM_LENGTH = 2;
 
 // Dynamic imports for stopwords - only load what's needed
-const STOPWORDS_LOADERS: Record<Lang, () => Promise<{ stopwords: string[] }>> = {
-  arabic: () => import("@orama/stopwords/arabic"),
-  english: () => import("@orama/stopwords/english"),
-  french: () => import("@orama/stopwords/french"),
-  german: () => import("@orama/stopwords/german"),
-  italian: () => import("@orama/stopwords/italian"),
-  japanese: () => import("@orama/stopwords/japanese"),
-  portuguese: () => import("@orama/stopwords/portuguese"),
-  russian: () => import("@orama/stopwords/russian"),
-  spanish: () => import("@orama/stopwords/spanish"),
-  turkish: () => import("@orama/stopwords/turkish"),
-  armenian: () => import("@orama/stopwords/armenian"),
-  bulgarian: () => import("@orama/stopwords/bulgarian"),
-  danish: () => import("@orama/stopwords/danish"),
-  dutch: () => import("@orama/stopwords/dutch"),
-  finnish: () => import("@orama/stopwords/finnish"),
-  greek: () => import("@orama/stopwords/greek"),
-  hungarian: () => import("@orama/stopwords/hungarian"),
-  indonesian: () => import("@orama/stopwords/indonesian"),
-  norwegian: () => import("@orama/stopwords/norwegian"),
-  romanian: () => import("@orama/stopwords/romanian"),
-  swedish: () => import("@orama/stopwords/swedish"),
-  ukrainian: () => import("@orama/stopwords/ukrainian"),
-  indian: () => import("@orama/stopwords/indian"),
-  irish: () => import("@orama/stopwords/irish"),
-  lithuanian: () => import("@orama/stopwords/lithuanian"),
-  mandarin: () => import("@orama/stopwords/mandarin"),
-  nepali: () => import("@orama/stopwords/nepali"),
-  sanskrit: () => import("@orama/stopwords/sanskrit"),
-  serbian: () => import("@orama/stopwords/serbian"),
-  slovenian: () => import("@orama/stopwords/slovenian"),
-  tamil: () => import("@orama/stopwords/tamil"),
-};
+const STOPWORDS_LOADERS: Record<Lang, () => Promise<{ stopwords: string[] }>> =
+  {
+    arabic: () => import("@orama/stopwords/arabic"),
+    english: () => import("@orama/stopwords/english"),
+    french: () => import("@orama/stopwords/french"),
+    german: () => import("@orama/stopwords/german"),
+    italian: () => import("@orama/stopwords/italian"),
+    japanese: () => import("@orama/stopwords/japanese"),
+    portuguese: () => import("@orama/stopwords/portuguese"),
+    russian: () => import("@orama/stopwords/russian"),
+    spanish: () => import("@orama/stopwords/spanish"),
+    turkish: () => import("@orama/stopwords/turkish"),
+    armenian: () => import("@orama/stopwords/armenian"),
+    bulgarian: () => import("@orama/stopwords/bulgarian"),
+    danish: () => import("@orama/stopwords/danish"),
+    dutch: () => import("@orama/stopwords/dutch"),
+    finnish: () => import("@orama/stopwords/finnish"),
+    greek: () => import("@orama/stopwords/greek"),
+    hungarian: () => import("@orama/stopwords/hungarian"),
+    indonesian: () => import("@orama/stopwords/indonesian"),
+    norwegian: () => import("@orama/stopwords/norwegian"),
+    romanian: () => import("@orama/stopwords/romanian"),
+    swedish: () => import("@orama/stopwords/swedish"),
+    ukrainian: () => import("@orama/stopwords/ukrainian"),
+    indian: () => import("@orama/stopwords/indian"),
+    irish: () => import("@orama/stopwords/irish"),
+    lithuanian: () => import("@orama/stopwords/lithuanian"),
+    mandarin: () => import("@orama/stopwords/mandarin"),
+    nepali: () => import("@orama/stopwords/nepali"),
+    sanskrit: () => import("@orama/stopwords/sanskrit"),
+    serbian: () => import("@orama/stopwords/serbian"),
+    slovenian: () => import("@orama/stopwords/slovenian"),
+    tamil: () => import("@orama/stopwords/tamil"),
+  };
 
 // Cache loaded stopwords to avoid re-importing
 const stopwordsCache = new Map<Lang, string[]>();
@@ -56,8 +57,8 @@ async function getStopwords(lang: Lang): Promise<string[]> {
   } catch (error) {
     console.warn(`Failed to load stopwords for language: ${lang}`, error);
     // Fallback to English stopwords
-    if (lang !== 'english') {
-      return getStopwords('english');
+    if (lang !== "english") {
+      return getStopwords("english");
     }
     return [];
   }
