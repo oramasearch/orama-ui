@@ -2,12 +2,7 @@
 import React from "react";
 import { oramaDocsCollection } from "@/data";
 import { InnerSearchBox } from "./SearchBoxModal";
-import {
-  Modal,
-  SearchRoot,
-  ChatRoot,
-  OramaIcon,
-} from "@orama/ui/components";
+import { Modal, SearchRoot, ChatRoot, OramaIcon } from "@orama/ui/components";
 import Link from "next/link";
 
 const Header: React.FC = () => {
